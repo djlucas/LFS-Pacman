@@ -1,0 +1,11 @@
+LFS Instructions provided under the Creative Commons
+Attribution-NonCommercial-ShareAlike 2.0 license.
+See CCPL-NCSA-2.0.txt for full license text.
+
+PKGBUILD files provided under the Creative Commons 
+Attribution-NonCommercial-ShareAlike 4.0 International license.
+See CCPL-NCSA-4.0.txt for full license text.
+
+LFS code provided under the MIT license.
+See MIT.txt for full license text.
+
