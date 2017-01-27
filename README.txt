@@ -57,8 +57,8 @@ http://ftp.debian.org/debian/pool/main/f/fakeroot/fakeroot_1.21.orig.tar.gz
 http://www.linuxfromscratch.org/~dj/fakeroot-1.21-bootstrap-1.patch
 http://www.linuxfromscratch.org/~dj/fakeroot-1.21-dlerror-1.patch
 
-  patch -Np1 -i fakeroot-1.21-bootstrap-1.patch
-  patch -Np1 -i fakeroot-1.21-dlerror-1.patch
+  patch -Np1 -i ../fakeroot-1.21-bootstrap-1.patch
+  patch -Np1 -i ../fakeroot-1.21-dlerror-1.patch
   chmod 755 configure
   ./configure --prefix=/usr  \
               --disable-static \
@@ -73,7 +73,7 @@ PACMAN:
 https://sources.archlinux.org/other/pacman/pacman-5.0.1.tar.gz
 http://www.linuxfromscratch.org/~dj/pacman-5.0.1-roundup-1.patch
 
-patch -Np1 -i pacman-5.0.1-roundup-1.patch
+patch -Np1 -i ../pacman-5.0.1-roundup-1.patch
 ./configure --prefix=/usr \
             --sysconfdir=/etc \
             --localstatedir=/var \
