@@ -1,0 +1,102 @@
+1..50
+ok 1 -  - tokencount
+PASS: test/scripts/parseopts_test.sh 1 -  - tokencount
+ok 2 -  - result
+PASS: test/scripts/parseopts_test.sh 2 -  - result
+ok 3 - -s -r - tokencount
+PASS: test/scripts/parseopts_test.sh 3 - -s -r - tokencount
+ok 4 - -s -r - result
+PASS: test/scripts/parseopts_test.sh 4 - -s -r - result
+ok 5 - -sr - tokencount
+PASS: test/scripts/parseopts_test.sh 5 - -sr - tokencount
+ok 6 - -sr - result
+PASS: test/scripts/parseopts_test.sh 6 - -sr - result
+ok 7 - -s -p - tokencount
+PASS: test/scripts/parseopts_test.sh 7 - -s -p - tokencount
+ok 8 - -s -p - result
+PASS: test/scripts/parseopts_test.sh 8 - -s -p - result
+ok 9 - -p PKGBUILD -L - tokencount
+PASS: test/scripts/parseopts_test.sh 9 - -p PKGBUILD -L - tokencount
+ok 10 - -p PKGBUILD -L - result
+PASS: test/scripts/parseopts_test.sh 10 - -p PKGBUILD -L - result
+ok 11 - -pPKGBUILD - tokencount
+PASS: test/scripts/parseopts_test.sh 11 - -pPKGBUILD - tokencount
+ok 12 - -pPKGBUILD - result
+PASS: test/scripts/parseopts_test.sh 12 - -pPKGBUILD - result
+ok 13 - --sir - tokencount
+PASS: test/scripts/parseopts_test.sh 13 - --sir - tokencount
+ok 14 - --sir - result
+PASS: test/scripts/parseopts_test.sh 14 - --sir - result
+ok 15 - --log - tokencount
+PASS: test/scripts/parseopts_test.sh 15 - --log - tokencount
+ok 16 - --log - result
+PASS: test/scripts/parseopts_test.sh 16 - --log - result
+ok 17 - -sr --pkg - tokencount
+PASS: test/scripts/parseopts_test.sh 17 - -sr --pkg - tokencount
+ok 18 - -sr --pkg - result
+PASS: test/scripts/parseopts_test.sh 18 - -sr --pkg - result
+ok 19 - --pkg foo - tokencount
+PASS: test/scripts/parseopts_test.sh 19 - --pkg foo - tokencount
+ok 20 - --pkg foo - result
+PASS: test/scripts/parseopts_test.sh 20 - --pkg foo - result
+ok 21 - --pkg foo bar baz - tokencount
+PASS: test/scripts/parseopts_test.sh 21 - --pkg foo bar baz - tokencount
+ok 22 - --pkg foo bar baz - result
+PASS: test/scripts/parseopts_test.sh 22 - --pkg foo bar baz - result
+ok 23 - --pkg foo=bar baz - tokencount
+PASS: test/scripts/parseopts_test.sh 23 - --pkg foo=bar baz - tokencount
+ok 24 - --pkg foo=bar baz - result
+PASS: test/scripts/parseopts_test.sh 24 - --pkg foo=bar baz - result
+ok 25 - foo --pkg=bar baz - tokencount
+PASS: test/scripts/parseopts_test.sh 25 - foo --pkg=bar baz - tokencount
+ok 26 - foo --pkg=bar baz - result
+PASS: test/scripts/parseopts_test.sh 26 - foo --pkg=bar baz - result
+ok 27 - baz --pkg=foo bar - tokencount
+PASS: test/scripts/parseopts_test.sh 27 - baz --pkg=foo bar - tokencount
+ok 28 - baz --pkg=foo bar - result
+PASS: test/scripts/parseopts_test.sh 28 - baz --pkg=foo bar - result
+ok 29 - --force=always -s - tokencount
+PASS: test/scripts/parseopts_test.sh 29 - --force=always -s - tokencount
+ok 30 - --force=always -s - result
+PASS: test/scripts/parseopts_test.sh 30 - --force=always -s - result
+ok 31 - --pkg=foo=bar - tokencount
+PASS: test/scripts/parseopts_test.sh 31 - --pkg=foo=bar - tokencount
+ok 32 - --pkg=foo=bar - result
+PASS: test/scripts/parseopts_test.sh 32 - --pkg=foo=bar - result
+ok 33 - -s -r -- foo bar baz - tokencount
+PASS: test/scripts/parseopts_test.sh 33 - -s -r -- foo bar baz - tokencount
+ok 34 - -s -r -- foo bar baz - result
+PASS: test/scripts/parseopts_test.sh 34 - -s -r -- foo bar baz - result
+ok 35 - -s foo baz -r - tokencount
+PASS: test/scripts/parseopts_test.sh 35 - -s foo baz -r - tokencount
+ok 36 - -s foo baz -r - result
+PASS: test/scripts/parseopts_test.sh 36 - -s foo baz -r - result
+ok 37 - -pfoo bar -s - tokencount
+PASS: test/scripts/parseopts_test.sh 37 - -pfoo bar -s - tokencount
+ok 38 - -pfoo bar -s - result
+PASS: test/scripts/parseopts_test.sh 38 - -pfoo bar -s - result
+ok 39 - -i foo bar - tokencount
+PASS: test/scripts/parseopts_test.sh 39 - -i foo bar - tokencount
+ok 40 - -i foo bar - result
+PASS: test/scripts/parseopts_test.sh 40 - -i foo bar - result
+ok 41 - --nocol - tokencount
+PASS: test/scripts/parseopts_test.sh 41 - --nocol - tokencount
+ok 42 - --nocol - result
+PASS: test/scripts/parseopts_test.sh 42 - --nocol - result
+ok 43 - --conf foo - tokencount
+PASS: test/scripts/parseopts_test.sh 43 - --conf foo - tokencount
+ok 44 - --conf foo - result
+PASS: test/scripts/parseopts_test.sh 44 - --conf foo - result
+ok 45 - --for - tokencount
+PASS: test/scripts/parseopts_test.sh 45 - --for - tokencount
+ok 46 - --for - result
+PASS: test/scripts/parseopts_test.sh 46 - --for - result
+ok 47 - --force - tokencount
+PASS: test/scripts/parseopts_test.sh 47 - --force - tokencount
+ok 48 - --force - result
+PASS: test/scripts/parseopts_test.sh 48 - --force - result
+ok 49 - --clean=foo - tokencount
+PASS: test/scripts/parseopts_test.sh 49 - --clean=foo - tokencount
+ok 50 - --clean=foo - result
+PASS: test/scripts/parseopts_test.sh 50 - --clean=foo - result
+# All 50 tests successfully run.

@@ -1,0 +1,56 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=binutils
+pkgver=2.27
+pkgrel=1
+pkgdesc="The Binutils package contains a linker, an assembler, and other tools for handling object files."
+arch=('i686' 'x86_64')
+url="http://www.gnu.org/software/${pkgname}/"
+license=('GPL')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'file'
+             'gawk'
+             'gcc'
+             'grep'
+             'make'
+             'perl'
+             'sed'
+             'texinfo')
+depends=('glibc'
+         'zlib')
+source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.bz2")
+prepare(){
+  cd ${srcdir}/${pkgname}-${pkgver}
+  # Kill $CPP and $CPPFLAGS when testing header files (Thanks Arch Linux)
+  sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" libiberty/configure
+  mkdir -v build
+}
+
+build(){ 
+  cd ${srcdir}/${pkgname}-${pkgver}/build
+  ../configure --prefix=/usr       \
+               --enable-shared     \
+               --enable-ld=default \
+               --enable-plugins    \
+               --enable-gold       \
+               --disable-werror    \
+               --with-system-zlib
+  # Make sure build environment is sane before wasting time
+  make configure-host
+
+  make tooldir=/usr
+}
+
+check(){
+  cd ${srcdir}/${pkgname}-${pkgver}/build
+  make LDFLAGS="" check
+}
+
+package(){
+  cd ${srcdir}/${pkgname}-${pkgver}/build
+  make prefix=${pkgdir}/usr tooldir=${pkgdir}/usr install
+}
+sha256sums=('369737ce51587f92466041a97ab7d2358c6d9e1b6490b3940eb09fb0a9a6ac88')

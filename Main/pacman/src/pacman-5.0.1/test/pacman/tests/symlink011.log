@@ -1,0 +1,17 @@
+1..1
+# Running 'symlink011'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..8
+    ok 1 - PACMAN_RETCODE=1
+    ok 2 - PKG_VERSION=dummy|1.0-1
+    ok 3 - FILE_EXIST=usr/bin/myprog
+    ok 4 - LINK_EXIST=usr/bin/myprogsuffix
+    ok 5 - FILE_EXIST=usr/bin/otherprog
+    ok 6 - FILE_TYPE=usr/bin/myprog|file
+    ok 7 - FILE_TYPE=usr/bin/myprogsuffix|link
+    ok 8 - FILE_TYPE=usr/bin/otherprog|file
+ok 1 - Unowned broken symlink replaced by one in package
+PASS: test/pacman/tests/symlink011.py 1 - Unowned broken symlink replaced by one in package

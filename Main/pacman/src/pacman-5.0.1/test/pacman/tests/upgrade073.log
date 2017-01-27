@@ -1,0 +1,20 @@
+1..1
+# Running 'upgrade073'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..11
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PKG_VERSION=dummy|1.0-2
+    not ok 3 - PKG_DEPENDS=dummy|dep1
+    not ok 4 - PKG_DEPENDS=dep1|dep2
+    not ok 5 - PKG_EXIST=dummy
+    not ok 6 - FILE_EXIST=bin/dummy
+    not ok 7 - FILE_EXIST=usr/man/man1/dummy.1
+    not ok 8 - PKG_EXIST=dep1
+    not ok 9 - FILE_EXIST=bin/dep1
+    not ok 10 - PKG_EXIST=dep2
+    not ok 11 - FILE_EXIST=bin/dep2
+not ok 1 - Install a package with cascaded dependencies
+FAIL: test/pacman/tests/upgrade073.py 1 - Install a package with cascaded dependencies

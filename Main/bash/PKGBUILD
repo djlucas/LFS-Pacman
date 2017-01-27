@@ -1,0 +1,50 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=bash
+pkgver=4.4
+pkgrel=1
+pkgdesc="The Bash package contains the Bourne-Again SHell."
+arch=('i686' 'x86_64')
+url="http://www.gnu.org/software/${pkgname}/"
+groups=('core')
+license=('GPL')
+makedepends=('bash'
+             'binutils'
+             'bison'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'patch'
+             'sed'
+             'texinfo')
+depends=('glibc'
+         'ncurses'
+         'readline'
+         'gettext')
+_confargs=""
+source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr                    \
+              --docdir=/usr/share/doc/bash-4.4 \
+              --without-bash-malloc            \
+              --with-installed-readline
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make tests
+}
+
+package(){
+  # Setup for LFS /usr merge filesystem layout
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/bin"
+  mv -vf "${pkgdir}/usr/bin/bash" "${pkgdir}/bin"
+}
+
+sha256sums=('d86b3392c1202e8ff5a423b302e6284db7f8f435ea9f39b5b1b20fd3ac36dfcb')

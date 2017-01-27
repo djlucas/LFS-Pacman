@@ -1,0 +1,13 @@
+1..1
+# Running 'smoke001'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..4
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PKG_EXIST=pkg050
+    not ok 3 - PKG_EXIST=pkg674
+    not ok 4 - PKG_EXIST=pkg999
+not ok 1 - Install a thousand packages in a single transaction
+FAIL: test/pacman/tests/smoke001.py 1 - Install a thousand packages in a single transaction

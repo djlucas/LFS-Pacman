@@ -1,0 +1,13 @@
+1..1
+# Running 'provision002'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..4
+    not ok 1 - PACMAN_RETCODE=0
+    ok 2 - !PKG_EXIST=pkg1
+    ok 3 - PKG_EXIST=pkg2
+    not ok 4 - PKG_VERSION=pkg2|1.0-2
+not ok 1 - -S provision, multiple providers, one installed
+FAIL: test/pacman/tests/provision002.py 1 - -S provision, multiple providers, one installed

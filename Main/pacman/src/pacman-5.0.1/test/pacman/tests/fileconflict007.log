@@ -1,0 +1,13 @@
+1..1
+# Running 'fileconflict007'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..4
+    not ok 1 - PACMAN_RETCODE=0
+    ok 2 - PKG_EXIST=pkg
+    not ok 3 - PKG_VERSION=pkg|1.0-2
+    ok 4 - FILE_TYPE=dir/symdir/|dir
+not ok 1 - Fileconflict with symlinks (klibc case)
+FAIL: test/pacman/tests/fileconflict007.py 1 - Fileconflict with symlinks (klibc case)

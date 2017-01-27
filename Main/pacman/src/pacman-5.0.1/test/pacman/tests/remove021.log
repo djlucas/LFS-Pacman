@@ -1,0 +1,13 @@
+1..1
+# Running 'remove021'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..4
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - !PKG_EXIST=dummy
+    not ok 3 - !FILE_EXIST=etc/dummy.conf
+    ok 4 - !FILE_PACSAVE=etc/dummy.conf
+not ok 1 - Remove a package with a modified file marked for backup (--nosave)
+FAIL: test/pacman/tests/remove021.py 1 - Remove a package with a modified file marked for backup (--nosave)

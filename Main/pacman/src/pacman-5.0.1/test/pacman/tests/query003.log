@@ -1,0 +1,11 @@
+1..1
+# Running 'query003'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..2
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PACMAN_OUTPUT=^local/foobar
+not ok 1 - Query search for a package
+FAIL: test/pacman/tests/query003.py 1 - Query search for a package

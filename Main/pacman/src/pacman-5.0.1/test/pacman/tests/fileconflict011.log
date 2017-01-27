@@ -1,0 +1,12 @@
+1..1
+# Running 'fileconflict011'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..3
+    ok 1 - PACMAN_RETCODE=1
+    ok 2 - PKG_VERSION=pkg1|1.0-1
+    ok 3 - DIR_EXIST=dir/conflict/
+ok 1 - dir->file change during package upgrade (filesystem directory conflict)
+PASS: test/pacman/tests/fileconflict011.py 1 - dir->file change during package upgrade (filesystem directory conflict)

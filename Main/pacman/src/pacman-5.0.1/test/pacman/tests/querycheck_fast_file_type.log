@@ -1,0 +1,11 @@
+1..1
+# Running 'querycheck_fast_file_type'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..2
+    ok 1 - PACMAN_RETCODE=1
+    not ok 2 - PACMAN_OUTPUT=warning.*(File type mismatch)
+not ok 1 - check file type without mtree
+FAIL: test/pacman/tests/querycheck_fast_file_type.py 1 - check file type without mtree

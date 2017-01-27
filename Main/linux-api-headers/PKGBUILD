@@ -1,0 +1,39 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=linux-api-headers
+pkgver=4.9.5
+pkgrel=1
+pkgdesc="The Linux API Headers expose the kernel's API for use by Glibc."
+arch=('i686' 'x86_64')
+url="http://www.kernel.org/"
+groups=('core')
+license=('GPL')
+makedepends=('bash'
+             'coreutils'
+             'diffutils'
+             'findutils'
+             'glibc'
+             'grep'
+             'gzip'
+             'kmod'
+             'make'
+             'ncurses'
+             'perl'
+             'sed')
+depends=('rootfs')
+source=("http://ftp.kernel.org/pub/linux/kernel/v4.x/linux-${pkgver}.tar.xz")
+
+build(){
+  cd ${srcdir}/linux-${pkgver}
+  make mrproper
+  make INSTALL_HDR_PATH=dest headers_install
+  find dest/include \( -name .install -o -name ..install.cmd \) -delete
+}
+
+package(){
+  install -vdm755 ${pkgdir}/usr/include/
+  cd ${srcdir}/linux-${pkgver}
+  cp -rv dest/include/* ${pkgdir}/usr/include
+}
+
+sha256sums=('fcf5c43efcc9540815dae8f4d4f73c04dca9a6906c762cbee1242fdd908cf5a7')

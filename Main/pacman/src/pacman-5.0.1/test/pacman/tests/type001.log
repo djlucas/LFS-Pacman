@@ -1,0 +1,15 @@
+1..1
+# Running 'type001'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..6
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - FILE_TYPE=foo/|dir
+    not ok 3 - FILE_TYPE=foo/file1|file
+    not ok 4 - FILE_TYPE=foo/file2|file
+    not ok 5 - FILE_TYPE=foo/dir|dir
+    not ok 6 - FILE_TYPE=foo/symdir|link
+not ok 1 - Check the types of default files in a package
+FAIL: test/pacman/tests/type001.py 1 - Check the types of default files in a package

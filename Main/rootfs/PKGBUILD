@@ -1,0 +1,52 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+pkgname=rootfs
+pkgver=1.0
+pkgrel=1
+pkgdesc="Skeleton directory layout and core /etc and /var/log files for initial install"
+arch=('any')
+license=('Creative Commons Attribution-NonCommercial-ShareAlike 4.0')
+groups=('lfs-base')
+source=('passwd'
+        'group')
+backup=('etc/passwd'
+        'etc/group'
+        'var/log/btmp'
+        'var/log/lastlog'
+        'var/log/wtmp')
+
+package(){
+  #6.2
+  install -vdm755 ${pkgdir}/{dev,proc,run,sys}
+  mknod -m 666 ${pkgdir}/dev/console c 5 1
+  mknod -m 666 ${pkgdir}/dev/null c 1 3
+  chmod -v 1777 ${pkgdir}/run
+  chmod -v 555 ${pkgdir}/{proc,sys}
+  #6.5
+  install -vdm755 ${pkgdir}/{bin,boot,etc/{opt,sysconfig},home,lib/firmware,mnt,opt}
+  install -vdm755 ${pkgdir}/{media/{floppy,cdrom},sbin,srv,var}
+  install -vdm750 ${pkgdir}/root
+  install -vdm1777 ${pkgdir}/tmp ${pkgdir}/var/tmp
+  install -vdm755 ${pkgdir}/usr/{,local/}{bin,include,lib,sbin,src}
+  install -vdm755 ${pkgdir}/usr/{,local/}share/{color,dict,doc,info,locale,man}
+  install -vdm755 ${pkgdir}/usr/{,local/}share/{misc,terminfo,zoneinfo}
+  install -vdm755 ${pkgdir}/usr/libexec
+  install -vdm755 ${pkgdir}/usr/{,local/}share/man/man{1..8}
+  case $CARCH in
+    x86_64) install -vdm755 ${pkgdir}/lib64
+    ;;
+  esac
+  install -vdm755 ${pkgdir}/var/{log,mail,spool}
+  ln -sv ../run ${pkgdir}/var/run
+  ln -sv ../run/lock ${pkgdir}/var/lock
+  install -vdm755 ${pkgdir}/var/{opt,cache,lib/{color,misc,locate},local}
+  #6.6
+  ln -sv /proc/self/mounts ${pkgdir}/etc/mtab
+  install -vm644 ${srcdir}/passwd ${pkgdir}/etc/passwd
+  install -vm644 ${srcdir}/group ${pkgdir}/etc/group
+  touch ${pkgdir}/var/log/{btmp,lastlog,faillog,wtmp}
+  chgrp -v 13 ${pkgdir}/var/log/lastlog
+  chmod -v 664  ${pkgdir}/var/log/lastlog
+  chmod -v 600  ${pkgdir}/var/log/btmp
+}
+sha256sums=('93e5d18aec29e9f0390600b8825d998defe584c4cb2495b27e3f2ed507b9a5a5'
+            '4a35cd4cccb548923afc36b8085030f8cc7782ced95236f7637782d89f7c28b8')

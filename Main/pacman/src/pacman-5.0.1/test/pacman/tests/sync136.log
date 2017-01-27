@@ -1,0 +1,11 @@
+1..1
+# Running 'sync136'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..2
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PKG_VERSION=dummy|1:1.0-1
+not ok 1 - Sysupgrade with a sync package forcing a downgrade
+FAIL: test/pacman/tests/sync136.py 1 - Sysupgrade with a sync package forcing a downgrade

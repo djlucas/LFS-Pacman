@@ -1,0 +1,15 @@
+1..1
+# Running 'epoch005'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..6
+    not ok 1 - PACMAN_RETCODE=0
+    ok 2 - PKG_VERSION=pkg_0|1234327518932650063289125782697891:1.0-1
+    ok 3 - PKG_VERSION=pkg_1|1234327518932650063289125782697891:1.0-1
+    ok 4 - PKG_VERSION=pkg_2|1234327518932650063289125782697891:1.0-1
+    not ok 5 - PKG_VERSION=pkg_3|1234327518932650063289125782697891:1.1-1
+    not ok 6 - PKG_VERSION=pkg_4|1234327518932650063289125782697892:1.0-1
+not ok 1 - Sysupgrade with sync packages having absurd epochs
+FAIL: test/pacman/tests/epoch005.py 1 - Sysupgrade with sync packages having absurd epochs

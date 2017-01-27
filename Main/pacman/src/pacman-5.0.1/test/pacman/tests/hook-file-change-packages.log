@@ -1,0 +1,13 @@
+1..1
+# Running 'hook-file-change-packages'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..4
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PKG_VERSION=foo|1-2
+    not ok 3 - PKG_VERSION=bar|1-2
+    not ok 4 - FILE_EXIST=hook-output
+not ok 1 - Triggering file moves between packages
+FAIL: test/pacman/tests/hook-file-change-packages.py 1 - Triggering file moves between packages

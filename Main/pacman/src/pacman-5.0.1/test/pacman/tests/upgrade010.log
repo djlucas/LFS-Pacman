@@ -1,0 +1,13 @@
+1..1
+# Running 'upgrade010'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..4
+    not ok 1 - PKG_VERSION=dummy|1.0-2
+    ok 2 - !FILE_MODIFIED=etc/dummy.conf
+    not ok 3 - FILE_PACNEW=etc/dummy.conf
+    ok 4 - !FILE_PACSAVE=etc/dummy.conf
+not ok 1 - Upgrade a package, with a file in NoUpgrade
+FAIL: test/pacman/tests/upgrade010.py 1 - Upgrade a package, with a file in NoUpgrade

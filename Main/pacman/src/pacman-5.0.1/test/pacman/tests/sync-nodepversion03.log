@@ -1,0 +1,12 @@
+1..1
+# Running 'sync-nodepversion03'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..3
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PKG_EXIST=pkg1
+    ok 3 - !PKG_EXIST=pkg2
+not ok 1 - nodepversion: -Sdd works but no deps
+FAIL: test/pacman/tests/sync-nodepversion03.py 1 - nodepversion: -Sdd works but no deps

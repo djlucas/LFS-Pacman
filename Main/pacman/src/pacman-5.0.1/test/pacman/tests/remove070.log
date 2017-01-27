@@ -1,0 +1,17 @@
+1..1
+# Running 'remove070'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..8
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - !PKG_EXIST=pkg1
+    ok 3 - PKG_EXIST=pkg2
+    ok 4 - DIR_EXIST=bin/
+    ok 5 - DIR_EXIST=opt/
+    not ok 6 - !DIR_EXIST=lib/onlyinp1/
+    ok 7 - DIR_EXIST=lib/onlyinp2/
+    ok 8 - DIR_EXIST=lib/alsoonfs/
+not ok 1 - Remove a package with various directory overlaps
+FAIL: test/pacman/tests/remove070.py 1 - Remove a package with various directory overlaps

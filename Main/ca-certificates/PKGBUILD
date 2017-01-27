@@ -1,0 +1,26 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+pkgname=ca-certificates
+pkgver=20170119
+pkgrel=1
+pkgdesc="The ca-certificates package containt utilities for working with certificates and contains the default BLFS Mozilla CAs."
+arch=('any')
+url="http://www.linuxfromscratch.org/blfs/view/stable/postlfs/cacerts.html"
+groups=('base')
+license=('cc-by-nc-sa-2.0')
+depends=('bash' 'coreutils' 'grep' 'openssl' 'sed')
+makedepends=('help2man' 'java' 'nss')
+source=("http://anduin.linuxfromscratch.org/BLFS/other/make-ca.sh-${pkgver}"
+        "http://anduin.linuxfromscratch.org/BLFS/other/certdata.txt")
+package(){
+  install -vdm755 "${pkgdir}/usr/sbin"
+  install -vm755  "${srcdir}/make-ca.sh-${pkgver}" \
+                   "${pkgdir}/usr/sbin/make-ca.sh"
+  bash "${srcdir}/make-ca.sh-${pkgver}" \
+       -C "${srcdir}/certdata.txt" \
+       -D "${pkgdir}"
+  install -vdm755 "${pkgdir}/usr/share/man/man1"
+  help2man -N "${pkgdir}/usr/sbin/make-ca.sh" \
+           -o "${pkgdir}/usr/share/man/man1/make-ca.sh.1"
+}
+sha256sums=('8e35348f5f96108116a92f5c5755991c7da66e30bddcb4112dc3ddda851c6b2a'
+            '686ccc104641ab3c4618e6358aaa9e9434b0b091826b5a027071a92f35d0ad1f')

@@ -1,0 +1,14 @@
+1..1
+# Running 'sync900'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..5
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - !PKG_EXIST=foo
+    not ok 3 - PKG_EXIST=bar
+    ok 4 - PKG_EXIST=pkg1
+    ok 5 - PKG_EXIST=pkg2
+not ok 1 - Replace one package with another providing it
+FAIL: test/pacman/tests/sync900.py 1 - Replace one package with another providing it

@@ -1,0 +1,105 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=krb5
+pkgver=1.15
+pkgrel=1
+pkgdesc="The Kerberos network authentication system"
+arch=('i686' 'x86_64')
+url="http://web.mit.edu/kerberos/"
+license=('custom')
+groups=('core')
+depends=('e2fsprogs'
+         'openldap'
+         'keyutils')
+makedepends=('perl')
+backup=('etc/krb5.conf'
+        'var/lib/krb5kdc/kdc.conf')
+options=('!emptydirs')
+#source=("http://web.mit.edu/kerberos/dist/krb5/${pkgver%.*}/${pkgname}-${pkgver}.tar.gz"
+source=("http://web.mit.edu/kerberos/dist/krb5/${pkgver}/${pkgname}-${pkgver}.tar.gz"
+        "krb5-kadmind.service"
+        "krb5-kdc.service"
+        "krb5-kpropd.service"
+        "krb5-kpropd@.service"
+        "krb5-kpropd.socket")
+
+prepare() {
+  cd "${pkgname}-${pkgver}/src"
+  sed -e "s@python2.5/Python.h@& python2.7/Python.h@g" \
+      -e "s@-lpython2.5]@&,\n  AC_CHECK_LIB(python2.7,main,[PYTHON_LIB=-lpython2.7])@g" \
+      -i configure.in
+  sed -e 's@\^u}@^u cols 300}@' \
+      -i tests/dejagnu/config/default.exp
+  sed -e '/eq 0/{N;s/12 //}' \
+      -i plugins/kdb/db2/libdb2/test/run.test
+  autoconf
+}
+
+build() {
+  cd "${pkgname}-${pkgver}/src"
+  ./configure --prefix=/usr            \
+              --sysconfdir=/etc        \
+              --localstatedir=/var/lib \
+              --with-system-et         \
+              --with-system-ss         \
+              --enable-dns-for-realm   \
+              --with-system-verto=no   \
+              --enable-dns-for-realm   \
+              --with-ldap
+   make
+}
+
+package() {
+  cd "${pkgname}-${pkgver}/src"
+  make DESTDIR="${pkgdir}" install
+
+  for _file in gssapi_krb5 gssrpc k5crypto kadm5clnt kadm5srv \
+               kdb5 kdb_ldap krad krb5 krb5support verto ; do
+    find "${pkgdir}/usr/lib" -type f -name "lib${_file}*.so*" \
+                             -exec chmod -v 755 {} \;    
+  done
+
+  install -vdm755 "${pkgdir}/lib"
+  mv -v "${pkgdir}"/usr/lib/libkrb5.so.3* "${pkgdir}/lib"
+  mv -v "${pkgdir}"/usr/lib/libk5crypto.so.3* "${pkgdir}/lib"
+  mv -v "${pkgdir}"/usr/lib/libkrb5support.so.0* "${pkgdir}/lib"
+
+  ln -v -sf ../../lib/libkrb5.so.3.3 "${pkgdir}/usr/lib/libkrb5.so"
+  ln -v -sf ../../lib/libk5crypto.so.3.1 "${pkgdir}/usr/lib/libk5crypto.so"
+  ln -v -sf ../../lib/libkrb5support.so.0.1 \
+            "${pkgdir}/usr/lib/libkrb5support.so"
+
+  install -vdm755 "${pkgdir}/bin"
+  mv -v "${pkgdir}/usr/bin/ksu" "${pkgdir}/bin"
+  chmod -v 755 "${pkgdir}/bin/ksu"
+
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  cp -vfr ../doc/*  "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+
+  # Suggested Fixes from Arch Linux, not in LFS
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/examples/"
+  install -vpm644 plugins/kdb/ldap/libkdb_ldap/kerberos.{ldif,schema} \
+                  "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/examples/"
+  install -vdm755 "${pkgdir}/var/lib/krb5kdc"
+  install -vpm644 config-files/kdc.conf "${pkgdir}/var/lib/krb5kdc/kdc.conf"
+  install -vdm755 "${pkgdir}/etc"
+  install -vpm644 config-files/krb5.conf "${pkgdir}/etc/krb5.conf"
+  install -vdm755 "${pkgdir}/usr/share/aclocal"
+  install -vm644  util/ac_check_krb5.m4 "${pkgdir}/usr/share/aclocal"
+  install -vDm644 "${srcdir}/${pkgname}-${pkgver}/NOTICE" \
+                  "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+
+  # systemd units
+  install -dm 755 "${pkgdir}/lib/systemd/system"
+  for _service in kadmind.service kdc.service kpropd.service \
+                  kpropd@.service kpropd.socket; do
+      install -vm644 "${srcdir}/krb5-${_service}" \
+                     "${pkgdir}/lib/systemd/system/${_service}"
+  done
+}
+sha256sums=('fd34752774c808ab4f6f864f935c49945f5a56b62240b1ad4ab1af7b4ded127c'
+            '2714b17bc10a3817f623e4172e495f12082c9fb1aad4fb7defa614db2395e111'
+            '47595d5471df20c9521053b48c7a53d6915c26114e3c7eda5ad9060c698422e9'
+            'dfbf15a1cd4f2e768db595a6a3fe1243f6aaa131fe0426a3d6e10972d220bdd7'
+            '8dacbdd0ef923dcfe475acf0abc39fef0725773c6f924be7f0f98a61af8ca234'
+            '443387e026cff95ccead1d89d9b0c1079ba977752c4adb0d52d7472c722696d0')

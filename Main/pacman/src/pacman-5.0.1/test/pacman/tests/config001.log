@@ -1,0 +1,10 @@
+1..1
+# Running 'config001'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..1
+    not ok 1 - PACMAN_RETCODE=0
+not ok 1 - Quick check for Include being parsed in [options]
+FAIL: test/pacman/tests/config001.py 1 - Quick check for Include being parsed in [options]

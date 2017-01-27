@@ -1,0 +1,186 @@
+1..92
+ok 1 - 1.5.0 1.5.0
+PASS: test/util/vercmptest.sh 1 - 1.5.0 1.5.0
+ok 2 - 1.5.0 1.5.0
+PASS: test/util/vercmptest.sh 2 - 1.5.0 1.5.0
+ok 3 - 1.5.1 1.5.0
+PASS: test/util/vercmptest.sh 3 - 1.5.1 1.5.0
+ok 4 - 1.5.0 1.5.1
+PASS: test/util/vercmptest.sh 4 - 1.5.0 1.5.1
+ok 5 - 1.5.1 1.5
+PASS: test/util/vercmptest.sh 5 - 1.5.1 1.5
+ok 6 - 1.5 1.5.1
+PASS: test/util/vercmptest.sh 6 - 1.5 1.5.1
+ok 7 - 1.5.0-1 1.5.0-1
+PASS: test/util/vercmptest.sh 7 - 1.5.0-1 1.5.0-1
+ok 8 - 1.5.0-1 1.5.0-1
+PASS: test/util/vercmptest.sh 8 - 1.5.0-1 1.5.0-1
+ok 9 - 1.5.0-1 1.5.0-2
+PASS: test/util/vercmptest.sh 9 - 1.5.0-1 1.5.0-2
+ok 10 - 1.5.0-2 1.5.0-1
+PASS: test/util/vercmptest.sh 10 - 1.5.0-2 1.5.0-1
+ok 11 - 1.5.0-1 1.5.1-1
+PASS: test/util/vercmptest.sh 11 - 1.5.0-1 1.5.1-1
+ok 12 - 1.5.1-1 1.5.0-1
+PASS: test/util/vercmptest.sh 12 - 1.5.1-1 1.5.0-1
+ok 13 - 1.5.0-2 1.5.1-1
+PASS: test/util/vercmptest.sh 13 - 1.5.0-2 1.5.1-1
+ok 14 - 1.5.1-1 1.5.0-2
+PASS: test/util/vercmptest.sh 14 - 1.5.1-1 1.5.0-2
+ok 15 - 1.5-1 1.5.1-1
+PASS: test/util/vercmptest.sh 15 - 1.5-1 1.5.1-1
+ok 16 - 1.5.1-1 1.5-1
+PASS: test/util/vercmptest.sh 16 - 1.5.1-1 1.5-1
+ok 17 - 1.5-2 1.5.1-1
+PASS: test/util/vercmptest.sh 17 - 1.5-2 1.5.1-1
+ok 18 - 1.5.1-1 1.5-2
+PASS: test/util/vercmptest.sh 18 - 1.5.1-1 1.5-2
+ok 19 - 1.5-2 1.5.1-2
+PASS: test/util/vercmptest.sh 19 - 1.5-2 1.5.1-2
+ok 20 - 1.5.1-2 1.5-2
+PASS: test/util/vercmptest.sh 20 - 1.5.1-2 1.5-2
+ok 21 - 1.5 1.5-1
+PASS: test/util/vercmptest.sh 21 - 1.5 1.5-1
+ok 22 - 1.5-1 1.5
+PASS: test/util/vercmptest.sh 22 - 1.5-1 1.5
+ok 23 - 1.5-1 1.5
+PASS: test/util/vercmptest.sh 23 - 1.5-1 1.5
+ok 24 - 1.5 1.5-1
+PASS: test/util/vercmptest.sh 24 - 1.5 1.5-1
+ok 25 - 1.1-1 1.1
+PASS: test/util/vercmptest.sh 25 - 1.1-1 1.1
+ok 26 - 1.1 1.1-1
+PASS: test/util/vercmptest.sh 26 - 1.1 1.1-1
+ok 27 - 1.0-1 1.1
+PASS: test/util/vercmptest.sh 27 - 1.0-1 1.1
+ok 28 - 1.1 1.0-1
+PASS: test/util/vercmptest.sh 28 - 1.1 1.0-1
+ok 29 - 1.1-1 1.0
+PASS: test/util/vercmptest.sh 29 - 1.1-1 1.0
+ok 30 - 1.0 1.1-1
+PASS: test/util/vercmptest.sh 30 - 1.0 1.1-1
+ok 31 - 1.5b-1 1.5-1
+PASS: test/util/vercmptest.sh 31 - 1.5b-1 1.5-1
+ok 32 - 1.5-1 1.5b-1
+PASS: test/util/vercmptest.sh 32 - 1.5-1 1.5b-1
+ok 33 - 1.5b 1.5
+PASS: test/util/vercmptest.sh 33 - 1.5b 1.5
+ok 34 - 1.5 1.5b
+PASS: test/util/vercmptest.sh 34 - 1.5 1.5b
+ok 35 - 1.5b-1 1.5
+PASS: test/util/vercmptest.sh 35 - 1.5b-1 1.5
+ok 36 - 1.5 1.5b-1
+PASS: test/util/vercmptest.sh 36 - 1.5 1.5b-1
+ok 37 - 1.5b 1.5.1
+PASS: test/util/vercmptest.sh 37 - 1.5b 1.5.1
+ok 38 - 1.5.1 1.5b
+PASS: test/util/vercmptest.sh 38 - 1.5.1 1.5b
+ok 39 - 1.0a 1.0alpha
+PASS: test/util/vercmptest.sh 39 - 1.0a 1.0alpha
+ok 40 - 1.0alpha 1.0a
+PASS: test/util/vercmptest.sh 40 - 1.0alpha 1.0a
+ok 41 - 1.0alpha 1.0b
+PASS: test/util/vercmptest.sh 41 - 1.0alpha 1.0b
+ok 42 - 1.0b 1.0alpha
+PASS: test/util/vercmptest.sh 42 - 1.0b 1.0alpha
+ok 43 - 1.0b 1.0beta
+PASS: test/util/vercmptest.sh 43 - 1.0b 1.0beta
+ok 44 - 1.0beta 1.0b
+PASS: test/util/vercmptest.sh 44 - 1.0beta 1.0b
+ok 45 - 1.0beta 1.0rc
+PASS: test/util/vercmptest.sh 45 - 1.0beta 1.0rc
+ok 46 - 1.0rc 1.0beta
+PASS: test/util/vercmptest.sh 46 - 1.0rc 1.0beta
+ok 47 - 1.0rc 1.0
+PASS: test/util/vercmptest.sh 47 - 1.0rc 1.0
+ok 48 - 1.0 1.0rc
+PASS: test/util/vercmptest.sh 48 - 1.0 1.0rc
+ok 49 - 1.5.a 1.5
+PASS: test/util/vercmptest.sh 49 - 1.5.a 1.5
+ok 50 - 1.5 1.5.a
+PASS: test/util/vercmptest.sh 50 - 1.5 1.5.a
+ok 51 - 1.5.b 1.5.a
+PASS: test/util/vercmptest.sh 51 - 1.5.b 1.5.a
+ok 52 - 1.5.a 1.5.b
+PASS: test/util/vercmptest.sh 52 - 1.5.a 1.5.b
+ok 53 - 1.5.1 1.5.b
+PASS: test/util/vercmptest.sh 53 - 1.5.1 1.5.b
+ok 54 - 1.5.b 1.5.1
+PASS: test/util/vercmptest.sh 54 - 1.5.b 1.5.1
+ok 55 - 1.5.b-1 1.5.b
+PASS: test/util/vercmptest.sh 55 - 1.5.b-1 1.5.b
+ok 56 - 1.5.b 1.5.b-1
+PASS: test/util/vercmptest.sh 56 - 1.5.b 1.5.b-1
+ok 57 - 1.5-1 1.5.b
+PASS: test/util/vercmptest.sh 57 - 1.5-1 1.5.b
+ok 58 - 1.5.b 1.5-1
+PASS: test/util/vercmptest.sh 58 - 1.5.b 1.5-1
+ok 59 - 2.0 2_0
+PASS: test/util/vercmptest.sh 59 - 2.0 2_0
+ok 60 - 2_0 2.0
+PASS: test/util/vercmptest.sh 60 - 2_0 2.0
+ok 61 - 2.0_a 2_0.a
+PASS: test/util/vercmptest.sh 61 - 2.0_a 2_0.a
+ok 62 - 2_0.a 2.0_a
+PASS: test/util/vercmptest.sh 62 - 2_0.a 2.0_a
+ok 63 - 2.0a 2.0.a
+PASS: test/util/vercmptest.sh 63 - 2.0a 2.0.a
+ok 64 - 2.0.a 2.0a
+PASS: test/util/vercmptest.sh 64 - 2.0.a 2.0a
+ok 65 - 2___a 2_a
+PASS: test/util/vercmptest.sh 65 - 2___a 2_a
+ok 66 - 2_a 2___a
+PASS: test/util/vercmptest.sh 66 - 2_a 2___a
+ok 67 - 0:1.0 0:1.0
+PASS: test/util/vercmptest.sh 67 - 0:1.0 0:1.0
+ok 68 - 0:1.0 0:1.0
+PASS: test/util/vercmptest.sh 68 - 0:1.0 0:1.0
+ok 69 - 0:1.0 0:1.1
+PASS: test/util/vercmptest.sh 69 - 0:1.0 0:1.1
+ok 70 - 0:1.1 0:1.0
+PASS: test/util/vercmptest.sh 70 - 0:1.1 0:1.0
+ok 71 - 1:1.0 0:1.0
+PASS: test/util/vercmptest.sh 71 - 1:1.0 0:1.0
+ok 72 - 0:1.0 1:1.0
+PASS: test/util/vercmptest.sh 72 - 0:1.0 1:1.0
+ok 73 - 1:1.0 0:1.1
+PASS: test/util/vercmptest.sh 73 - 1:1.0 0:1.1
+ok 74 - 0:1.1 1:1.0
+PASS: test/util/vercmptest.sh 74 - 0:1.1 1:1.0
+ok 75 - 1:1.0 2:1.1
+PASS: test/util/vercmptest.sh 75 - 1:1.0 2:1.1
+ok 76 - 2:1.1 1:1.0
+PASS: test/util/vercmptest.sh 76 - 2:1.1 1:1.0
+ok 77 - 1:1.0 0:1.0-1
+PASS: test/util/vercmptest.sh 77 - 1:1.0 0:1.0-1
+ok 78 - 0:1.0-1 1:1.0
+PASS: test/util/vercmptest.sh 78 - 0:1.0-1 1:1.0
+ok 79 - 1:1.0-1 0:1.1-1
+PASS: test/util/vercmptest.sh 79 - 1:1.0-1 0:1.1-1
+ok 80 - 0:1.1-1 1:1.0-1
+PASS: test/util/vercmptest.sh 80 - 0:1.1-1 1:1.0-1
+ok 81 - 0:1.0 1.0
+PASS: test/util/vercmptest.sh 81 - 0:1.0 1.0
+ok 82 - 1.0 0:1.0
+PASS: test/util/vercmptest.sh 82 - 1.0 0:1.0
+ok 83 - 0:1.0 1.1
+PASS: test/util/vercmptest.sh 83 - 0:1.0 1.1
+ok 84 - 1.1 0:1.0
+PASS: test/util/vercmptest.sh 84 - 1.1 0:1.0
+ok 85 - 0:1.1 1.0
+PASS: test/util/vercmptest.sh 85 - 0:1.1 1.0
+ok 86 - 1.0 0:1.1
+PASS: test/util/vercmptest.sh 86 - 1.0 0:1.1
+ok 87 - 1:1.0 1.0
+PASS: test/util/vercmptest.sh 87 - 1:1.0 1.0
+ok 88 - 1.0 1:1.0
+PASS: test/util/vercmptest.sh 88 - 1.0 1:1.0
+ok 89 - 1:1.0 1.1
+PASS: test/util/vercmptest.sh 89 - 1:1.0 1.1
+ok 90 - 1.1 1:1.0
+PASS: test/util/vercmptest.sh 90 - 1.1 1:1.0
+ok 91 - 1:1.1 1.1
+PASS: test/util/vercmptest.sh 91 - 1:1.1 1.1
+ok 92 - 1.1 1:1.1
+PASS: test/util/vercmptest.sh 92 - 1.1 1:1.1
+# All 92 tests successfully run.

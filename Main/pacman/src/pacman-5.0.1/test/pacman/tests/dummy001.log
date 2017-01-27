@@ -1,0 +1,10 @@
+1..1
+# Running 'dummy001'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..1
+    not ok 1 - PACMAN_RETCODE=0
+not ok 1 - Dummy test case (modify for own use)
+FAIL: test/pacman/tests/dummy001.py 1 - Dummy test case (modify for own use)

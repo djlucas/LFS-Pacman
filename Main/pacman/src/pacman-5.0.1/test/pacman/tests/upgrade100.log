@@ -1,0 +1,15 @@
+1..1
+# Running 'upgrade100'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..6
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PKG_VERSION=fcitx-gtk2|1.0-2
+    not ok 3 - PKG_VERSION=harfbuzz|1.0-2
+    not ok 4 - PKG_VERSION=icu|1.0-2
+    not ok 5 - FILE_EXIST=found_harfbuzz
+    not ok 6 - FILE_EXIST=found_icu
+not ok 1 - Indirect dependency ordering (FS#32764)
+FAIL: test/pacman/tests/upgrade100.py 1 - Indirect dependency ordering (FS#32764)

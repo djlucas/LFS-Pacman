@@ -1,0 +1,12 @@
+1..1
+# Running 'hook-pkg-postinstall-trigger-match'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..3
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PKG_EXIST=foo
+    not ok 3 - FILE_EXIST=hook-output
+not ok 1 - Install a package matching a PostTransaction Install hook
+FAIL: test/pacman/tests/hook-pkg-postinstall-trigger-match.py 1 - Install a package matching a PostTransaction Install hook

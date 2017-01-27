@@ -1,0 +1,13 @@
+1..1
+# Running 'remove002'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..4
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - !PKG_EXIST=foo
+    not ok 3 - !FILE_EXIST=usr/share/file_0
+    not ok 4 - !FILE_EXIST=usr/share/file_999
+not ok 1 - Remove a package with several files
+FAIL: test/pacman/tests/remove002.py 1 - Remove a package with several files

@@ -1,0 +1,13 @@
+1..1
+# Running 'sync402'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..4
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PKG_EXIST=pkg1
+    not ok 3 - PKG_EXIST=pkg2
+    ok 4 - !PKG_EXIST=pkg3
+not ok 1 - Choice between two providers (1)
+FAIL: test/pacman/tests/sync402.py 1 - Choice between two providers (1)

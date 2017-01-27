@@ -1,0 +1,11 @@
+1..1
+# Running 'fileconflict024'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..2
+    ok 1 - PACMAN_RETCODE=1
+    ok 2 - PKG_EXIST=foo|1-1
+ok 1 - Filesystem conflict on upgrade with symlinks
+PASS: test/pacman/tests/fileconflict024.py 1 - Filesystem conflict on upgrade with symlinks

@@ -1,0 +1,145 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=curl
+pkgver=7.50.0
+pkgrel=1
+pkgdesc="An URL retrieval utility and library"
+arch=('i686' 'x86_64')
+url="http://${pkgname}.haxx.se/"
+license=('MIT')
+groups=('core')
+makedepends=('bash' 'binutils' 'coreutils' 'gcc' 'glibc' 'xz')
+depends=( $(pacman -Q axtls >/dev/null 2>&1 && echo 'axtls')
+          $(pacman -Q ca-certificates >/dev/null 2>&1 && echo 'ca-certificates')
+          $(pacman -Q c-ares >/dev/null 2>&1 && echo 'c-ares')
+          $(pacman -Q cyassl >/dev/null 2>&1 && echo 'cyassl')
+          $(pacman -Q gnutls >/dev/null 2>&1 && echo 'gnutls')
+          $(pacman -Q libidn >/dev/null 2>&1 && echo 'libidn')
+          $(pacman -Q libmetalink >/dev/null 2>&1 && echo 'libmetalink')
+          $(pacman -Q libpsl >/dev/null 2>&1 && echo 'libpsl')
+          $(pacman -Q librtmp >/dev/null 2>&1 && echo 'librtmp')
+          $(pacman -Q libssh2 >/dev/null 2>&1 && echo 'libssh2')
+          $(pacman -Q mbedtls >/dev/null 2>&1 && echo 'mbedtls')
+          $(pacman -Q nghttp2 >/dev/null 2>&1 && echo 'nghttp2')
+          $(pacman -Q nss >/dev/null 2>&1 && echo 'nss')
+          $(pacman -Q openldap >/dev/null 2>&1 && echo 'openldap')
+          $(pacman -Q openssl >/dev/null 2>&1 && echo 'openssl')
+          $(pacman -Q polarssl >/dev/null 2>&1 && echo 'polarssl')
+          $(pacman -Q samba >/dev/null 2>&1 && echo 'samba')
+         'zlib')
+optdepends=('axtls: use axtls instead of OpenSSL for SSL support'
+            'ca-certificates: provides trusted CA store'
+            'c-ares: use c-ares for DNS resolution'
+            'cyassl: use CYASSL instead of OpenSSL for SSL support'
+            'gnutls: use Gnutls instead of OpenSSL for SSL support'
+            'libidn: support of international domain names'
+            'libmetalink: use metalink xml files'
+            'libpsl: provide public suffix list highlighting'
+            'librtmp: download multimedia files via RTMP streams'
+            'libssh2: allow secure FTP'
+            'mbedtls: use mbedTLS instead of OpenSSL for SSL support'
+            'nghttp2: support HTTP/2 protocol'
+            'nss: use Mozilla NSS instead of OpenSSL for SSL support'
+            'openldap: OpenLDAP support'
+            'polarssl: use PolarSSL instead of OpenSSL for SSL support'
+            'python: additional test suite coverage'
+            'samba: support SMB connections and use NTLM authentication'
+            'stunnel: additional test suite coverage'
+            'valgrind: additional test suite coverage')
+options=('strip'
+         'debug')
+_confargs=""
+source=("http://${pkgname}.haxx.se/download/${pkgname}-${pkgver}.lzma")
+
+build() {
+  #Handle optional deps
+  #Prefer OpenSSL or choose first available ssl implementation (or none)
+  pacman -Q openssl >/dev/null 2>&1 &&
+    _confargs="${_confargs} --with-ssl" &&
+    _openssl="1" &&
+    _ssl="1"
+  if [ "${_openssl}" -eq "0" ]
+  then
+    [ "${_ssl}" -eq "0" ] &&
+       pacman -Q gnutls >/dev/null 2>&1 &&
+       _ssl="1" &&
+       _confargs="${_confargs} --with-gnutls"
+    [ "${_ssl}" -eq "0" ] &&
+       pacman -Q polarssl >/dev/null 2>&1 &&
+       _ssl="1" &&
+       _confargs="${_confargs} --with-polarssl"
+    [ "${_ssl}" -eq "0" ] &&
+       pacman -Q mbedssl >/dev/null 2>&1 &&
+       _ssl="1" &&
+       _confargs="${_confargs} --with-mbedssl"
+    [ "${_ssl}" -eq "0" ] &&
+       pacman -Q cyassl >/dev/null 2>&1 &&
+       _ssl="1" &&
+       _confargs="${_confargs} --with-cyassl"
+    [ "${_ssl}" -eq "0" ] &&
+       pacman -Q nss >/dev/null 2>&1 &&
+       _ssl="1" &&
+       _confargs="${_confargs} --with-nss"
+    [ "${_ssl}" -eq "0" ] &&
+       pacman -Q axtls >/dev/null 2>&1 &&
+       _ssl="1" &&
+       _confargs="${_confargs} --with-axtls"
+  fi
+
+  # CA Certificates
+  pacman -Q ca-certificates >/dev/null 2>&1 &&
+    if [ "${_ssl}" -eq "1" ]
+    then
+      if [ "${_openssl}" -eq "1" ]
+      then
+        _confargs="${_confargs} --with-ca-path=/etc/ssl/certs"
+      else
+        _confargs="${_confargs} --with-ca-file=/etc/ssl/ca-bundle.crt"
+      fi
+    fi
+
+  # Other optional deps
+  pacamn -Q c-ares >/dev/null 2>&1 && _confargs="${_confargs} --enable-ares"
+  pacman -Q libidn >/dev/null 2>&1 && _confargs="${_confargs} --with-libidn"
+  pacman -Q libmetalink >/dev/null 2>&1 && \
+    _confargs="${_confargs} --with-libmetalink"
+  pacman -Q libpsl >/dev/null 2>&1 && _confargs="${_confargs} --with-libpsl"
+  pacman -Q librtmp >/dev/null 2>&1 && _confargs="${_confargs} --with-librmtp"
+  pacman -Q libssh2 >/dev/null 2>&1 && _confargs="${_confargs} --with-libssh2"
+  pacman -Q nghttp2 >/dev/null 2>&1 && _confargs="${_confargs} --with-nghttp2"
+  pacman -Q openldap >/dev/null 2>&1 && _confargs="${_confargs} --enable-ldap" &&
+    if [ "${_ssl}" -eq "1" ]
+    then
+      _confargs="${_confargs} --enable-ldaps"
+    fi
+  pacman -Q samba >/dev/null 2>&1 && \
+    _confargs="${_confargs} --enable-smb --enable-ntlm-wb"
+
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr    \
+              --disable-static \
+              --enable-threaded-resolver \
+              ${_confargs}
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
+  rm -rf docs/examples/.deps
+  find docs \( -name Makefile\* \
+            -o -name \*.1       \
+            -o -name \*.3 \)    \
+            -exec rm {} \;
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  cp -Rv docs/* "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+}
+
+sha256sums=('6a3376ffa365c9cf61eb8a0804dbf91883290c28bdaf4b76047addf75c7b1c80')
+

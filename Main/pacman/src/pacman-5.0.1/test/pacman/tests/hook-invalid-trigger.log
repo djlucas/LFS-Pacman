@@ -1,0 +1,13 @@
+1..1
+# Running 'hook-invalid-trigger'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..4
+    ok 1 - !PACMAN_RETCODE=0
+    ok 2 - !PKG_EXIST=foo
+    ok 3 - !FILE_EXIST=hook-output
+    not ok 4 - PACMAN_OUTPUT=failed to run transaction hooks
+not ok 1 - Abort on invalid hook trigger
+FAIL: test/pacman/tests/hook-invalid-trigger.py 1 - Abort on invalid hook trigger

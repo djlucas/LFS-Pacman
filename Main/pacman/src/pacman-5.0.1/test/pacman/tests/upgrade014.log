@@ -1,0 +1,20 @@
+1..1
+# Running 'upgrade014'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..11
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PKG_EXIST=dummy
+    not ok 3 - PKG_FILES=dummy|usr/common
+    not ok 4 - FILE_EXIST=bin/dummy
+    not ok 5 - FILE_EXIST=usr/man/man1/dummy.1
+    not ok 6 - FILE_EXIST=usr/common
+    not ok 7 - PKG_EXIST=foobar
+    not ok 8 - PKG_FILES=foobar|usr/common
+    not ok 9 - FILE_EXIST=bin/foobar
+    not ok 10 - FILE_EXIST=usr/man/man1/foobar.1
+    not ok 11 - FILE_EXIST=usr/common
+not ok 1 - Install two packages with a conflicting file (--force)
+FAIL: test/pacman/tests/upgrade014.py 1 - Install two packages with a conflicting file (--force)

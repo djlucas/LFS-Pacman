@@ -1,0 +1,88 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=coreutils
+pkgver=8.26
+pkgrel=1
+pkgdesc="The Coreutils package contains utilities for showing and setting the basic system characteristics."
+arch=('i686' 'x86_64')
+url="http://www.gnu.org/software/${pkgname}/"
+groups=('base')
+license=('GPL')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'patch'
+             'perl'
+             'sed'
+             'texinfo')
+depends=('glibc'
+         'acl'
+         'attr'
+         'gmp'
+         'libcap')
+checkdepends=('diffutils'
+              'e2fsprogs'
+              'findutils'
+              'shadow'
+              'util-linux')
+source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz"
+        "http://www.linuxfromscratch.org/patches/downloads/${pkgname}/${pkgname}-${pkgver}-i18n-1.patch"
+        "http://www.linuxfromscratch.org/patches/downloads/${pkgname}/${pkgname}-${pkgver}-uname-1.patch")
+
+# Set to yes if you want to run the root tests
+_run_root_tests="no"
+
+prepare(){
+  cd ${srcdir}/${pkgname}-${pkgver}
+  patch -Np1 -i ${srcdir}/${pkgname}-${pkgver}-i18n-1.patch
+
+  # Make cpu information delivered by uname -p more accurate
+  patch -Np1 -i ${srcdir}/${pkgname}-${pkgver}-uname-1.patch
+}
+
+build(){
+  cd ${srcdir}/${pkgname}-${pkgver}
+  FORCE_UNSAFE_CONFIGURE=1 \
+  ./configure       \
+      --prefix=/usr \
+      --enable-no-install-program=kill,uptime
+  FORCE_UNSAFE_CONFIGURE=1 make
+}
+
+# Don't run testsuite in chroot environment
+check(){
+  cd ${srcdir}/${pkgname}-${pkgver}
+  if [ "${_run_root_tests}" == "yes" ]
+  then
+    su -c "make NON_ROOT_USERNAME=pkguser FORCE_UNSAFE_CONFIGURE=1 check-root"
+  fi
+  make RUN_EXPENSIVE_TESTS=yes check
+}
+
+package(){
+  cd ${srcdir}/${pkgname}-${pkgver}
+  make DESTDIR=${pkgdir} install
+  install -vdm755 "${pkgdir}/bin"
+  mv -v "${pkgdir}"/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} \
+        "${pkgdir}/bin"
+  mv -v "${pkgdir}"/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} \
+        "${pkgdir}/bin"
+  mv -v "${pkgdir}"/usr/bin/{rmdir,stty,sync,true,uname} \
+        "${pkgdir}/bin"
+  install -vdm755 "${pkgdir}/usr/sbin"
+  mv -v "${pkgdir}/usr/bin/chroot" "${pkgdir}/usr/sbin"
+  install -vdm755 "${pkgdir}/usr/share/man/man8"
+  mv -v "${pkgdir}/usr/share/man/man1/chroot.1" \
+        "${pkgdir}/usr/share/man/man8/chroot.8"
+  sed -i s/\"1\"/\"8\"/1 "${pkgdir}/usr/share/man/man8/chroot.8"
+  mv -v "${pkgdir}"/usr/bin/{head,sleep,nice,test,[} \
+        "${pkgdir}/bin"
+}
+
+sha256sums=('155e94d748f8e2bc327c66e0cbebdb8d6ab265d2f37c3c928f7bf6c3beba9a8e'
+            '50944e8e9bee052b167822ff04e09b5ca242b18722280adbc0b44feea615daec'
+            '69835629d46fb5bdee8a71f4ee8f7a9db023f3771cd8d40108eb29339add76e6')

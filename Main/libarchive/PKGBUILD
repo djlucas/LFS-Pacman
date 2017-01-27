@@ -1,0 +1,42 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=libarchive
+pkgver=3.2.2
+pkgrel=1
+pkgdesc="library that can create and read several streaming archive formats"
+arch=('i686' 'x86_64')
+url="http://libarchive.org/"
+license=('BSD')
+groups=('core')
+depends=('acl'
+         'attr'
+         'bzip2'
+         'expat'
+         'libxml2'
+         'lz4'
+         'lzo'
+         'openssl'
+         'xz'
+         'zlib')
+source=("http://${pkgname}.org/downloads/${pkgname}-${pkgver}.tar.gz")
+
+build() {
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr    \
+              --without-nettle \
+              --disable-static
+  make
+}
+
+check() {
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -D -m644 COPYING "${pkgdir}/usr/share/licenses/libarchive/COPYING"
+}
+
+sha256sums=('691c194ee132d1f0f7a42541f091db811bc2e56f7107e9121be2bc8c04f1060f')

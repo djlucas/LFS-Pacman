@@ -1,0 +1,13 @@
+1..1
+# Running 'reason001'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..4
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - !PKG_EXIST=libfoo
+    not ok 3 - PKG_EXIST=libfoo-ng
+    not ok 4 - PKG_REASON=libfoo-ng|1
+not ok 1 - Copy reason (to-be-replaced -> replacement)
+FAIL: test/pacman/tests/reason001.py 1 - Copy reason (to-be-replaced -> replacement)

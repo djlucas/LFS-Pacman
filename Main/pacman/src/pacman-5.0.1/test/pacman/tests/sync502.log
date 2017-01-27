@@ -1,0 +1,14 @@
+1..1
+# Running 'sync502'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..5
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PKG_EXIST=dummy
+    not ok 3 - FILE_EXIST=bin/dummy
+    ok 4 - !FILE_EXIST=usr/share/man/man8
+    ok 5 - !FILE_EXIST=usr/share/man/man1/dummy.1
+not ok 1 - Install a package from a sync db with fnmatch'ed NoExtract
+FAIL: test/pacman/tests/sync502.py 1 - Install a package from a sync db with fnmatch'ed NoExtract

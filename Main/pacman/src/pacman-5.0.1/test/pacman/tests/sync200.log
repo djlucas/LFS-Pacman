@@ -1,0 +1,10 @@
+1..1
+# Running 'sync200'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..1
+    not ok 1 - PACMAN_RETCODE=0
+not ok 1 - Synchronize the local database
+FAIL: test/pacman/tests/sync200.py 1 - Synchronize the local database

@@ -1,0 +1,10 @@
+1..1
+# Running 'query007'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..1
+    ok 1 - PACMAN_RETCODE=1
+ok 1 - Query ownership of file in root
+PASS: test/pacman/tests/query007.py 1 - Query ownership of file in root

@@ -1,0 +1,13 @@
+1..1
+# Running 'upgrade012'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..4
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PKG_EXIST=dummy
+    not ok 3 - FILE_MODIFIED=bin/dummy
+    not ok 4 - FILE_EXIST=usr/man/man1/dummy.1
+not ok 1 - Install a package with a filesystem conflict (--force)
+FAIL: test/pacman/tests/upgrade012.py 1 - Install a package with a filesystem conflict (--force)

@@ -1,0 +1,14 @@
+1..1
+# Running 'sync024'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..5
+    not ok 1 - PACMAN_RETCODE=0
+    ok 2 - !PKG_EXIST=pkg2
+    ok 3 - !PKG_EXIST=pkg3
+    not ok 4 - PKG_EXIST=pkg1
+    not ok 5 - PKG_VERSION=pkg1|1.2-1
+not ok 1 - Install a group from a sync db repo/group syntax
+FAIL: test/pacman/tests/sync024.py 1 - Install a group from a sync db repo/group syntax

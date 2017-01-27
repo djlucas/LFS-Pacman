@@ -1,0 +1,13 @@
+1..1
+# Running 'upgrade045'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..4
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PKG_VERSION=foo|1.0-2
+    ok 3 - LINK_EXIST=etc/foo.cfg
+    not ok 4 - FILE_EXIST=etc/foo.cfg.pacnew
+not ok 1 - FS#9235, backup file is broken symlink
+FAIL: test/pacman/tests/upgrade045.py 1 - FS#9235, backup file is broken symlink

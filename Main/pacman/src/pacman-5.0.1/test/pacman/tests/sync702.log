@@ -1,0 +1,13 @@
+1..1
+# Running 'sync702'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..4
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PKG_VERSION=pkg2|1.0-2
+    not ok 3 - PKG_EXIST=pkg1
+    ok 4 - FILE_TYPE=lib|dir
+not ok 1 - incoming package replaces symlink with directory (order 2)
+FAIL: test/pacman/tests/sync702.py 1 - incoming package replaces symlink with directory (order 2)

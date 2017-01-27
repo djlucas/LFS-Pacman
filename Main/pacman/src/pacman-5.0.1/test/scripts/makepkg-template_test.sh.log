@@ -1,0 +1,5 @@
+cp: cannot stat './test/scripts/makepkg-template-tests': No such file or directory
+find: ‘./makepkg-template-tests’: No such file or directory
+1..0
+SKIP: test/scripts/makepkg-template_test.sh
+# All 0 tests successfully run.

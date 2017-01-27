@@ -1,0 +1,13 @@
+1..1
+# Running 'skip-remove-with-glob-chars'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..4
+    not ok 1 - PKG_VERSION=foo|1.0-2
+    not ok 2 - PKG_VERSION=bar|1.0-2
+    ok 3 - FILE_EXIST=foo/b*r
+    not ok 4 - !FILE_EXIST=foo/bar
+not ok 1 - transferred file with glob characters that match a removed file
+FAIL: test/pacman/tests/skip-remove-with-glob-chars.py 1 - transferred file with glob characters that match a removed file

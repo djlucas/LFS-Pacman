@@ -1,0 +1,58 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=attr
+pkgver=2.4.47
+pkgrel=1
+pkgdesc="The attr package contains utilities to administer the extended attributes on filesystem objects."
+arch=('i686' 'x86_64')
+url="http://www.gnu.org/software/${pkgname}/"
+groups=('core')
+license=('LGPL')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'tar')
+depends=('glibc')
+source=("http://download.savannah.gnu.org/releases/${pkgname}/${pkgname}-${pkgver}.src.tar.gz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+
+  # Install into versioned doc directory
+  sed -i -e 's|/@pkg_name@|&-@pkg_version@|' include/builddefs.in
+
+  # Prevent installation of man pages
+  sed -i -e "/SUBDIRS/s|man[25]||g" man/Makefile
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr \
+              --disable-static
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make -j1 tests
+  # root-tests target must be run as root
+  # make -j1 root-tests
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install install-dev install-lib
+  chmod -v 755 "${pkgdir}/usr/lib/libattr.so"
+  install -vdm755 "${pkgdir}/lib"
+  mv -v "${pkgdir}"/usr/lib/libattr.so.* "${pkgdir}/lib"
+  ln -sfv ../../lib/$(readlink "${pkgdir}/usr/lib/libattr.so") \
+          "${pkgdir}/usr/lib/libattr.so"
+}
+sha256sums=('25772f653ac5b2e3ceeb89df50e4688891e21f723c460636548971652af0a859')
+

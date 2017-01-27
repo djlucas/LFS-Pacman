@@ -1,0 +1,13 @@
+1..1
+# Running 'remove049'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..4
+    not ok 1 - PACMAN_RETCODE=0
+    ok 2 - PKG_EXIST=pkg1
+    not ok 3 - !PKG_EXIST=pkg2
+    ok 4 - PKG_EXIST=pkg3
+not ok 1 - -Ru test
+FAIL: test/pacman/tests/remove049.py 1 - -Ru test

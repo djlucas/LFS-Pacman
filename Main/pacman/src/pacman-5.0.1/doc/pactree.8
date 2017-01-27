@@ -1,0 +1,214 @@
+'\" t
+.\"     Title: pactree
+.\"    Author: [see the "Authors" section]
+.\" Generator: DocBook XSL Stylesheets v1.79.1 <http://docbook.sf.net/>
+.\"      Date: 2016-02-23
+.\"    Manual: Pacman Manual
+.\"    Source: Pacman 5.0.1
+.\"  Language: English
+.\"
+.TH "PACTREE" "8" "2016\-02\-23" "Pacman 5\&.0\&.1" "Pacman Manual"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+pactree \- package dependency tree viewer
+.SH "SYNOPSIS"
+.sp
+\fIpactree\fR [options] package
+.SH "DESCRIPTION"
+.sp
+Pactree produces a dependency tree for a package\&.
+.sp
+By default, a tree\-like output is generated, but with the \fI\-\-graph\fR option, a Graphviz description is generated\&.
+.SH "OPTIONS"
+.PP
+\fB\-a, \-\-ascii\fR
+.RS 4
+Use ASCII characters for tree formatting\&. By default, pactree will use Unicode line drawing characters if it is able to detect that the locale supports them\&.
+.RE
+.PP
+\fB\-b, \-\-dbpath\fR
+.RS 4
+Specify an alternative database location\&.
+.RE
+.PP
+\fB\-c, \-\-color\fR
+.RS 4
+Colorize output\&.
+.RE
+.PP
+\fB\-d, \-\-depth <num>\fR
+.RS 4
+Limits the number of levels of dependency to show\&. A zero means show the named package only, one shows the packages that are directly required\&.
+.RE
+.PP
+\fB\-g, \-\-graph\fR
+.RS 4
+Generate a Graphviz description\&. If this option is given, the
+\fI\-\-color\fR
+and
+\fI\-\-linear\fR
+options are ignored\&.
+.RE
+.PP
+\fB\-h, \-\-help\fR
+.RS 4
+Output syntax and command\-line options\&.
+.RE
+.PP
+\fB\-l, \-\-linear\fR
+.RS 4
+Prints package names at the start of each line, one per line\&.
+.RE
+.PP
+\fB\-r, \-\-reverse\fR
+.RS 4
+Show packages that depend on the named package\&.
+.RE
+.PP
+\fB\-s, \-\-sync\fR
+.RS 4
+Read package data from sync databases instead of local database\&.
+.RE
+.PP
+\fB\-u, \-\-unique\fR
+.RS 4
+List dependent packages once\&. Implies
+\fI\-\-linear\fR\&.
+.RE
+.PP
+\fB\-\-config <file>\fR
+.RS 4
+Specify an alternate pacman configuration file\&.
+.RE
+.SH "SEE ALSO"
+.sp
+\fBpacman\fR(8), \fBpacman.conf\fR(5), \fBmakepkg\fR(8)
+.sp
+See the pacman website at https://www\&.archlinux\&.org/pacman/ for current information on pacman and its related tools\&.
+.SH "BUGS"
+.sp
+Bugs? You must be kidding; there are no bugs in this software\&. But if we happen to be wrong, send us an email with as much detail as possible to pacman\-dev@archlinux\&.org\&.
+.SH "AUTHORS"
+.sp
+Current maintainers:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Allan McRae <allan@archlinux\&.org>
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Andrew Gregory <andrew\&.gregory\&.8@gmail\&.com>
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Dan McGee <dan@archlinux\&.org>
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Dave Reisner <dreisner@archlinux\&.org>
+.RE
+.sp
+Past major contributors:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Judd Vinet <jvinet@zeroflux\&.org>
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Aurelien Foret <aurelien@archlinux\&.org>
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Aaron Griffin <aaron@archlinux\&.org>
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Xavier Chantry <shiningxc@gmail\&.com>
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+Nagy Gabor <ngaba@bibl\&.u\-szeged\&.hu>
+.RE
+.sp
+For additional contributors, use git shortlog \-s on the pacman\&.git repository\&.

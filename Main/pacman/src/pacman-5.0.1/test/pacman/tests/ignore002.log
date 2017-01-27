@@ -1,0 +1,14 @@
+1..1
+# Running 'ignore002'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..5
+    ok 1 - PACMAN_RETCODE=1
+    ok 2 - PKG_VERSION=package1|1.0-1
+    ok 3 - PKG_VERSION=package2|1.0-1
+    ok 4 - PKG_VERSION=package3|1.0-1
+    ok 5 - PKG_VERSION=package4|1.0-1
+ok 1 - Sync with relevant ignored packages
+PASS: test/pacman/tests/ignore002.py 1 - Sync with relevant ignored packages

@@ -1,0 +1,11 @@
+1..1
+# Running 'ldconfig003'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..2
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - FILE_EXIST=etc/ld.so.cache
+not ok 1 - Make sure ldconfig runs on a sync operation
+FAIL: test/pacman/tests/ldconfig003.py 1 - Make sure ldconfig runs on a sync operation

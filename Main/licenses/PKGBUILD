@@ -1,0 +1,153 @@
+# Maintainer DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=licenses
+pkgver=20160101
+pkgrel=1
+pkgdesc="A package of standard licenses that can be referenced in a PKGBUILD file without the need to install the license as part of a package."
+arch=('any')
+license=('cc-by-nc-sa-4.0')
+url="n/a"
+groups=('base')
+makedepends=('coreutils')
+source=(apache-2.0.txt::http://www.apache.org/licenses/LICENSE-2.0.txt
+        cc-by-nc-sa-2.0.txt
+        cc-by-3.0.txt::http://creativecommons.org/licenses/by/3.0/legalcode.txt
+        cc-by-nc-3.0.txt::http://creativecommons.org/licenses/by-nc/3.0/legalcode.txt
+        cc-by-nc-nd-3.0.txt::http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode.txt
+        cc-by-nc-sa-3.0.txt::http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode.txt
+        cc-by-nd-3.0.txt::http://creativecommons.org/licenses/by-nd/3.0/legalcode.txt
+        cc-by-sa-3.0.txt::http://creativecommons.org/licenses/by-sa/3.0/legalcode.txt
+        cc-by-4.0.txt::https://creativecommons.org/licenses/by/4.0/legalcode.txt
+        cc-by-sa-4.0.txt::https://creativecommons.org/licenses/by-sa/4.0/legalcode.txt
+        cc-by-nd-4.0.txt::https://creativecommons.org/licenses/by-nd/4.0/legalcode.txt
+        cc-by-nc-4.0.txt::https://creativecommons.org/licenses/by-nc/4.0/legalcode.txt
+        cc-by-nc-sa-4.0.txt::https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt
+        cc-by-nc-nd-4.0.txt::https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.txt
+        cddl-1.0.txt::https://opensource.org/licenses/cddl1.txt
+        http://www.opensource.org/licenses/eclipse-1.0.txt
+        http://www.gnu.org/licenses/agpl-3.0.txt
+        http://www.gnu.org/licenses/gpl-2.0.txt
+        http://www.gnu.org/licenses/gpl-3.0.txt
+        http://www.gnu.org/licenses/lgpl-2.1.txt
+        http://www.gnu.org/licenses/lgpl-3.0.txt
+        http://www.gnu.org/licenses/fdl-1.2.txt
+        http://www.gnu.org/licenses/fdl-1.3.txt
+        http://www.latex-project.org/lppl.txt
+        mpl-1.1.txt::https://www.mozilla.org/media/MPL/1.1/index.0c5913925d40.txt
+        perlartistic.txt
+        http://www.perlfoundation.org/attachment/legal/artistic-2_0.txt
+        php-3.0.txt::http://www.php.net/license/3_0.txt
+        ruby-license.txt::http://www.ruby-lang.org/en/about/license.txt
+        cpl-1.0.txt
+        python-2.txt
+        w3c.txt)
+
+package() {
+  cd "$pkgdir"
+  mkdir -p usr/share/licenses/common
+  cd usr/share/licenses/common
+
+  mkdir AGPL3
+  cp "$srcdir"/agpl-3.0.txt AGPL3/license.txt
+  ln -s AGPL3 AGPL
+
+  mkdir Apache
+  cp "$srcdir"/apache-2.0.txt Apache/license.txt
+  ln -s Apache APACHE
+
+  mkdir Artistic2.0
+  cp "$srcdir"/artistic-2_0.txt Artistic2.0/license.txt
+
+  mkdir CCPL
+  cp "$srcdir"/cc-by-nc-sa-2.0.txt CCPL/
+  cp "$srcdir"/cc-by-3.0.txt CCPL/
+  cp "$srcdir"/cc-by-nc-3.0.txt CCPL/
+  cp "$srcdir"/cc-by-nc-nd-3.0.txt CCPL/
+  cp "$srcdir"/cc-by-nc-sa-3.0.txt CCPL/
+  cp "$srcdir"/cc-by-nd-3.0.txt CCPL/
+  cp "$srcdir"/cc-by-sa-3.0.txt CCPL/
+  cp "$srcdir"/cc-by-4.0.txt CCPL/
+  cp "$srcdir"/cc-by-nc-4.0.txt CCPL/
+  cp "$srcdir"/cc-by-nc-nd-4.0.txt CCPL/
+  cp "$srcdir"/cc-by-nc-sa-4.0.txt CCPL/
+  cp "$srcdir"/cc-by-nd-4.0.txt CCPL/
+  cp "$srcdir"/cc-by-sa-4.0.txt CCPL/
+
+  mkdir CDDL
+  cp "$srcdir"/cddl-1.0.txt CDDL/license.txt
+
+  mkdir CPL
+  cp "$srcdir"/cpl-1.0.txt CPL/license.txt
+
+  mkdir EPL
+  cp "$srcdir"/eclipse-1.0.txt EPL/license.txt
+
+  mkdir {GPL2,GPL3}
+  cp "$srcdir"/gpl-2.0.txt GPL2/license.txt
+  cp "$srcdir"/gpl-3.0.txt GPL3/license.txt
+  ln -s GPL2 GPL
+
+  mkdir {FDL1.2,FDL1.3}
+  cp "$srcdir"/fdl-1.2.txt FDL1.2/license.txt
+  cp "$srcdir"/fdl-1.3.txt FDL1.3/license.txt
+  ln -s FDL1.2 FDL
+
+  mkdir {LGPL2.1,LGPL3}
+  cp "$srcdir"/lgpl-2.1.txt LGPL2.1/license.txt
+  cp "$srcdir"/lgpl-3.0.txt LGPL3/license.txt
+  ln -s LGPL2.1 LGPL
+
+  mkdir LPPL
+  cp "$srcdir"/lppl.txt LPPL/license.txt
+
+  mkdir MPL
+  cp "$srcdir"/mpl-1.1.txt MPL/license.txt
+
+  mkdir PerlArtistic
+  cp "$srcdir"/perlartistic.txt PerlArtistic/license.txt
+
+  mkdir PHP
+  cp "$srcdir"/php-3.0.txt PHP/license.txt
+  
+  mkdir PSF
+  cp "$srcdir"/python-2.txt PSF/license.txt
+
+  mkdir RUBY
+  cp "$srcdir"/ruby-license.txt RUBY/license.txt
+
+  mkdir W3C
+  cp "$srcdir"/w3c.txt W3C/license.txt
+}
+
+sha256sums=('cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30'
+            'bca144d98e0c3602accd77afae806c2e3e0405525d08a444e3384cfc4891d5e6'
+            'e6bc9e9c474700b708f568bac9e5a8a9bcb2b1dad53442f5ba449fcb848b8e76'
+            '45526cb7a15234d8d686a3ba5f11b607516f90662d125d5423eb2b57f474e5e4'
+            'd74e67958cad1ae4cb585402ef66ae41958ba546e6c5e80a93920013cb81bc2a'
+            'c67189f7e563276243052aa8d96bb4154d96f85466a13c0d176b24ab08afc7ab'
+            'b9d9816260e23b4bdb71e0edc453497273f4cfc1fdf61207ee6cc1c7075a2479'
+            '3f941b3b89cf7b8370ceb83cc76d2120d471b58735d8ca60238a751a48d7f72f'
+            'cce5d01fa4a83b794271bd2c28cffdf99afd43c803e6ddefddae39b591ea7448'
+            '9348ddfd44da5a127c59141981954746a860ec8e03e0412cf3af7134af0f97e2'
+            'cd1d92e93cae06442b1c23ac52c31c4758fc219db2c241fffc2e49d2497fa136'
+            '3fbaa451ae2ab9a8d2e1c18666d8f9f00c277ba424cc826046ab0b211ce5d3b2'
+            'cd9832c492786274823efa8d026ba57f45b51fabf37fc67b85069e1ed0c062b7'
+            'e1395cf689f1f17df97c563bf4a0872ab2100d0e97917437ba9ecc348299ae2a'
+            'ebe1ba015d763d4b290c86af0f1366cd61f6d6e22b7102a77dc2772166846311'
+            '884ea7cd087fe5ad904f05eaa563be7b39502f9c197b6c682c9b993e3d34d946'
+            '57c8ff33c9c0cfc3ef00e650a1cc910d7ee479a8bc509f6c9209a7c2a11399d6'
+            '8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643'
+            '8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903'
+            'dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551'
+            'da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768'
+            '56976e64523fa1e68db4e6f464f5b2cb89d7d08f54b1d012e317b8db286b3faf'
+            '4748f03ed2dbcc14cde6ebc30799899c403e356a7465dc30fcf2b80c45fc0059'
+            '5f05fcf6ef25a6c31bccd2df7c0c46b23107bbeb2ce5cdba74efb5cc357f4dbb'
+            'f849fc26a7a99981611a3a370e83078deb617d12a45776d6c4cada4d338be469'
+            'dea83fc09f4d27ae7cbd1cb03b8c898ce58022dc07b99959e5a526ddb51c3479'
+            'f2e0707902c4cd92155bb081a6eb0d77ebab789eafb212659fa6f44fcdca531b'
+            'be9019f00e94668a1c287b1697cd77523748903cfc2cc0b7bcdaacd78a3c5c7b'
+            'f5eb1b2956d5f7a67b2e5722a3749bc2fe86f9c580f2e3f5a08519cf073b5864'
+            'c847612cf050b8f448d344ce8cec61b6efe81c2824c03ca173f3f28cb5be8c4f'
+            'c2877782cfdb63a9f60300724764d5fe505c879220dde22f29b070ef3a8944aa'
+            'b3b4d9d12f3e55595bcce1f4cbfb3b256e87c55a11ae9898ac8076d1d7b9ac45')

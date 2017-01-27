@@ -1,0 +1,12 @@
+1..1
+# Running 'fileconflict020'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..3
+    ok 1 - PACMAN_RETCODE=1
+    ok 2 - PKG_VERSION=pkg2|1.0-1
+    ok 3 - !DIR_EXIST=usr/bin/foo/
+ok 1 - upgrade introduces new directory that conflicts with a package file
+PASS: test/pacman/tests/fileconflict020.py 1 - upgrade introduces new directory that conflicts with a package file

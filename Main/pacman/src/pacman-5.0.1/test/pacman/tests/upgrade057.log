@@ -1,0 +1,14 @@
+1..1
+# Running 'upgrade057'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..5
+    not ok 1 - PACMAN_RETCODE=0
+    ok 2 - PKG_EXIST=pkg1
+    not ok 3 - PKG_VERSION=pkg2|1.0-2
+    ok 4 - PKG_DEPENDS=pkg1|pkg2
+    ok 5 - PKG_DEPENDS=pkg1|imag3
+not ok 1 - Upgrade a package that both provides and is a dependency
+FAIL: test/pacman/tests/upgrade057.py 1 - Upgrade a package that both provides and is a dependency

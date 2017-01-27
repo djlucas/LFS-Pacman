@@ -1,0 +1,14 @@
+1..1
+# Running 'symlink021'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..5
+    not ok 1 - PACMAN_RETCODE=0
+    ok 2 - FILE_TYPE=usr/include/foo|dir
+    not ok 3 - !FILE_TYPE=usr/include/bar|link
+    ok 4 - FILE_EXIST=usr/include/foo/header.h
+    ok 5 - FILE_EXIST=usr/include/bar/header.h
+not ok 1 - symlink -> dir replacment with file move
+FAIL: test/pacman/tests/symlink021.py 1 - symlink -> dir replacment with file move

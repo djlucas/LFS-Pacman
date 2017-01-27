@@ -1,0 +1,12 @@
+1..1
+# Running 'sync-nodepversion04'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..3
+    ok 1 - PACMAN_RETCODE=1
+    ok 2 - !PKG_EXIST=pkg1
+    ok 3 - !PKG_EXIST=pkg2
+ok 1 - nodepversion: provision does not exist
+PASS: test/pacman/tests/sync-nodepversion04.py 1 - nodepversion: provision does not exist

@@ -1,0 +1,15 @@
+1..1
+# Running 'ignore004'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..6
+    ok 1 - PACMAN_RETCODE=1
+    ok 2 - PKG_VERSION=packageA1|1.0-1
+    ok 3 - PKG_VERSION=packageA2|1.0-1
+    ok 4 - PKG_VERSION=packageA3|1.0-1
+    ok 5 - PKG_VERSION=packageA4|1.0-1
+    ok 6 - PKG_VERSION=packageA5|1.0-1
+ok 1 - Sync with ignore causing top-level to be ignored
+PASS: test/pacman/tests/ignore004.py 1 - Sync with ignore causing top-level to be ignored

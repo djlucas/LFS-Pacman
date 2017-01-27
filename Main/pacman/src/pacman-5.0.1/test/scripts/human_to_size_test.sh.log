@@ -1,0 +1,31 @@
+1..15
+ok 1 - 1MiB
+PASS: test/scripts/human_to_size_test.sh 1 - 1MiB
+ok 2 - 10XiB
+PASS: test/scripts/human_to_size_test.sh 2 - 10XiB
+ok 3 - 10 MiB
+PASS: test/scripts/human_to_size_test.sh 3 - 10 MiB
+ok 4 - 10 XiB
+PASS: test/scripts/human_to_size_test.sh 4 - 10 XiB
+ok 5 - .1 TiB
+PASS: test/scripts/human_to_size_test.sh 5 - .1 TiB
+ok 6 -   -3    KiB   
+PASS: test/scripts/human_to_size_test.sh 6 -   -3    KiB
+ok 7 - foo3KiB
+PASS: test/scripts/human_to_size_test.sh 7 - foo3KiB
+ok 8 - 3KiBfoo
+PASS: test/scripts/human_to_size_test.sh 8 - 3KiBfoo
+ok 9 - 3kib
+PASS: test/scripts/human_to_size_test.sh 9 - 3kib
+ok 10 - +1KiB
+PASS: test/scripts/human_to_size_test.sh 10 - +1KiB
+ok 11 - +1.0 KiB
+PASS: test/scripts/human_to_size_test.sh 11 - +1.0 KiB
+ok 12 - 1MB
+PASS: test/scripts/human_to_size_test.sh 12 - 1MB
+ok 13 - 1M
+PASS: test/scripts/human_to_size_test.sh 13 - 1M
+ok 14 -  1 G 
+PASS: test/scripts/human_to_size_test.sh 14 -  1 G
+ok 15 - 1Q
+PASS: test/scripts/human_to_size_test.sh 15 - 1Q

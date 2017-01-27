@@ -1,0 +1,14 @@
+1..1
+# Running 'upgrade029'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..5
+    ok 1 - PACMAN_RETCODE=1
+    ok 2 - PKG_VERSION=dummy|1.0-1
+    ok 3 - !FILE_PACNEW=etc/dummy.conf
+    ok 4 - !FILE_PACSAVE=etc/dummy.conf
+    ok 5 - FILE_EXIST=etc/dummy.conf
+ok 1 - Upgrade a package, with an owned file entering the pkg in 'backup'
+PASS: test/pacman/tests/upgrade029.py 1 - Upgrade a package, with an owned file entering the pkg in 'backup'

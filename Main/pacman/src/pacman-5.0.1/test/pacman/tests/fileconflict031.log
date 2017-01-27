@@ -1,0 +1,12 @@
+1..1
+# Running 'fileconflict031'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..3
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PKG_VERSION=foo|2-1
+    not ok 3 - FILE_EXIST=foo
+not ok 1 - Dir->file transition filesystem conflict resolved by removal (with subdirectory)
+FAIL: test/pacman/tests/fileconflict031.py 1 - Dir->file transition filesystem conflict resolved by removal (with subdirectory)

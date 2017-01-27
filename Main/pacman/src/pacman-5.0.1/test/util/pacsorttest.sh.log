@@ -1,0 +1,66 @@
+1..32
+ok 1 - already ordered
+PASS: test/util/pacsorttest.sh 1 - already ordered
+ok 2 - easy reordering
+PASS: test/util/pacsorttest.sh 2 - easy reordering
+ok 3 - add trailing newline
+PASS: test/util/pacsorttest.sh 3 - add trailing newline
+ok 4 - add trailing newline
+PASS: test/util/pacsorttest.sh 4 - add trailing newline
+ok 5 - stable sort
+PASS: test/util/pacsorttest.sh 5 - stable sort
+ok 6 - filename sort
+PASS: test/util/pacsorttest.sh 6 - filename sort
+ok 7 - filename sort with invalid filename
+PASS: test/util/pacsorttest.sh 7 - filename sort with invalid filename
+ok 8 - filename sort maybe with leading paths
+PASS: test/util/pacsorttest.sh 8 - filename sort maybe with leading paths
+ok 9 - filename sort with different leading paths
+PASS: test/util/pacsorttest.sh 9 - filename sort with different leading paths
+ok 10 - filename sort with uneven leading path components
+PASS: test/util/pacsorttest.sh 10 - filename sort with uneven leading path components
+ok 11 - filename sort with different extensions
+PASS: test/util/pacsorttest.sh 11 - filename sort with different extensions
+ok 12 - filename sort with epoch
+PASS: test/util/pacsorttest.sh 12 - filename sort with epoch
+ok 13 - filename sort with differing package names and epoch
+PASS: test/util/pacsorttest.sh 13 - filename sort with differing package names and epoch
+ok 14 - filename sort with package names as shared substring
+PASS: test/util/pacsorttest.sh 14 - filename sort with package names as shared substring
+ok 15 - really long input
+PASS: test/util/pacsorttest.sh 15 - really long input
+ok 16 - really long input
+PASS: test/util/pacsorttest.sh 16 - really long input
+ok 17 - really long input, reversed
+PASS: test/util/pacsorttest.sh 17 - really long input, reversed
+ok 18 - really long input, reversed
+PASS: test/util/pacsorttest.sh 18 - really long input, reversed
+ok 19 - really long input, sort key
+PASS: test/util/pacsorttest.sh 19 - really long input, sort key
+ok 20 - really long input, sort key
+PASS: test/util/pacsorttest.sh 20 - really long input, sort key
+ok 21 - really long input, sort key, reversed
+PASS: test/util/pacsorttest.sh 21 - really long input, sort key, reversed
+ok 22 - really long input, sort key, reversed
+PASS: test/util/pacsorttest.sh 22 - really long input, sort key, reversed
+ok 23 - really long input, sort key, separator
+PASS: test/util/pacsorttest.sh 23 - really long input, sort key, separator
+ok 24 - really long input, sort key, separator
+PASS: test/util/pacsorttest.sh 24 - really long input, sort key, separator
+ok 25 - really long input, sort key, separator, reversed
+PASS: test/util/pacsorttest.sh 25 - really long input, sort key, separator, reversed
+ok 26 - really long input, sort key, separator, reversed
+PASS: test/util/pacsorttest.sh 26 - really long input, sort key, separator, reversed
+ok 27 - invalid sort key (no argument)
+PASS: test/util/pacsorttest.sh 27 - invalid sort key (no argument)
+ok 28 - invalid sort key (non-numeric)
+PASS: test/util/pacsorttest.sh 28 - invalid sort key (non-numeric)
+ok 29 - invalid field separator (no argument)
+PASS: test/util/pacsorttest.sh 29 - invalid field separator (no argument)
+ok 30 - invalid field separator (multiple characters)
+PASS: test/util/pacsorttest.sh 30 - invalid field separator (multiple characters)
+ok 31 - invalid field separator (two characters must start with a slash)
+PASS: test/util/pacsorttest.sh 31 - invalid field separator (two characters must start with a slash)
+ok 32 - invalid field separator (\g is invalid)
+PASS: test/util/pacsorttest.sh 32 - invalid field separator (\g is invalid)
+# All 32 tests successfully run.

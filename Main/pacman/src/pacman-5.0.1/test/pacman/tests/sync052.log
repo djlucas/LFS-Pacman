@@ -1,0 +1,11 @@
+1..1
+# Running 'sync052'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..2
+    not ok 1 - PACMAN_RETCODE=0
+    ok 2 - PKG_VERSION=dummy|1.0-1
+not ok 1 - sysupgrade with a disabled repo
+FAIL: test/pacman/tests/sync052.py 1 - sysupgrade with a disabled repo

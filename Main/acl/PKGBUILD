@@ -1,0 +1,64 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=acl
+pkgver=2.2.52
+pkgrel=1
+pkgdesc="The Acl package contains utilities to administer Access Control Lists, which are used to define more fine-grained discretionary access rights for files and directories."
+arch=('i686' 'x86_64')
+url="http://www.gnu.org/software/${pkgname}/"
+groups=('core')
+license=('GPL')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'glibc'
+             'grep'
+             'gzip'
+             'make'
+             'sed'
+             'tar')
+depends=('attr')
+source=("http://download.savannah.gnu.org/releases/${pkgname}/${pkgname}-${pkgver}.src.tar.gz")
+
+prepare(){
+  cd ${srcdir}/${pkgname}-${pkgver}
+
+  # Install into versioned doc directory
+  sed -i -e 's|/@pkg_name@|&-@pkg_version@|' include/builddefs.in
+
+  # Fix broken tests
+  sed -i "s:| sed.*::g" test/{sbits-restore,cp,misc}.test
+
+  # Fix segfault in "getfacl -e"
+  sed -i -e "/TABS-1;/a if (x > (TABS-1)) x = (TABS-1);" \
+            libacl/__acl_to_any_text.c
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr    \
+              --disable-static \
+              --libexecdir=/usr/lib
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make -j1 tests
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install install-dev install-lib
+  chmod -v 755 "${pkgdir}/usr/lib/libacl.so"
+  install -vdm755 "${pkgdir}/lib"
+  mv -v "${pkgdir}"/usr/lib/libacl.so.* "${pkgdir}/lib"
+  ln -sfv ../../lib/$(readlink "${pkgdir}/usr/lib/libacl.so") \
+          "${pkgdir}/usr/lib/libacl.so"
+}
+
+sha256sums=('179074bb0580c06c4b4137be4c5a92a701583277967acdb5546043c7874e0d23')
+

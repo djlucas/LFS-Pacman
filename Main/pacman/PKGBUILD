@@ -1,0 +1,70 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=pacman
+pkgver=5.0.1
+pkgrel=1
+pkgdesc="A library-based package manager with dependency support"
+arch=('i686' 'x86_64')
+url="http://www.archlinux.org/pacman/"
+license=('GPL')
+groups=('core')
+depends=('bash'
+         'curl'
+         'glibc'
+         'gpgme'
+         'libarchive')
+makedepends=('asciidoc'
+             'libxslt')
+checkdepends=('python2'
+              'fakeroot')
+backup=('etc/pacman.conf'
+        'etc/makepkg.conf')
+options=('strip'
+         'debug')
+source=("https://sources.archlinux.org/other/${pkgname}/${pkgname}-${pkgver}.tar.gz"
+        "makepkg.conf.i686"
+        "makepkg.conf.x86_64"
+        "${pkgname}-${pkgver}-roundup.patch"
+        "${pkgname}.conf.i686"
+        "${pkgname}.conf.x86_64")
+
+prepare() {
+  cd "${pkgname}-${pkgver}"
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-roundup.patch"
+}
+
+build() {
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr \
+              --sysconfdir=/etc \
+              --localstatedir=/var \
+              --enable-doc \
+              --with-scriptlet-shell=/bin/bash \
+              --with-ldconfig=/sbin/ldconfig
+  make
+  make -C contrib 
+}
+
+check() {
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  make DESTDIR="${pkgdir}" -C contrib install
+  install -vdm755 "${pkgdir}/etc"
+  install -vm644  "${srcdir}/pacman.conf.${CARCH}" "${pkgdir}/etc/pacman.conf"
+  install -vm644  "${srcdir}/makepkg.conf.${CARCH}" "${pkgdir}/etc/makepkg.conf"
+  install -vDm644 contrib/PKGBUILD.vim \
+                  "${pkgdir}/usr/share/vim/vimfiles/syntax/PKGBUILD.vim"
+}
+
+sha256sums=('8bd5f407ce8e05c4be8f1c4be4d8dcc8550ea5e494937da5220ea2c23cbb8e04'
+            '89ab282bbb7477f75078f1e4b0c8f41e21f2c5746240646f32d8097159f45efa'
+            'f095d1b36d015f791d17a84e38312e9b81e93bb0e73ac79b1f4f8219ef308775'
+            'e9d65724f1784026dfe94b8038012bb2f4988abeed993b83307537fd93a7e695'
+            'f683454eabbfc348db32d59e1fb77932c3e957960cb5b3c4d2eb433e0f8c344d'
+            'f53e26b8bdd392ffe60668dc2c490d21f8ce5d6a8cc4975e327146d5dc84e606')
+

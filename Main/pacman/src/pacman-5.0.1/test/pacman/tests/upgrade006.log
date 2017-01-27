@@ -1,0 +1,15 @@
+1..1
+# Running 'upgrade006'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..6
+    not ok 1 - PACMAN_RETCODE=0
+    not ok 2 - PKG_VERSION=dummy|1.1-1
+    not ok 3 - !FILE_EXIST=usr/share/file_250
+    not ok 4 - !FILE_EXIST=usr/share/file_599
+    ok 5 - FILE_EXIST=usr/share/file_600
+    not ok 6 - FILE_EXIST=usr/share/file_999
+not ok 1 - Upgrade a package with several files
+FAIL: test/pacman/tests/upgrade006.py 1 - Upgrade a package with several files

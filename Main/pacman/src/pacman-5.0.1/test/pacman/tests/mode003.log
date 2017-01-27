@@ -1,0 +1,15 @@
+1..1
+# Running 'mode003'
+# ==> Generating test environment
+# ==> Running test
+# WARNING: fakechroot not found!
+# ==> Checking rules
+    1..6
+    not ok 1 - PACMAN_RETCODE=0
+    ok 2 - !FILE_PACSAVE=etc/profile
+    not ok 3 - FILE_PACNEW=etc/profile
+    ok 4 - FILE_EXIST=etc/profile
+    ok 5 - FILE_MODE=etc/profile|666
+    not ok 6 - FILE_MODE=etc/profile.pacnew|666
+not ok 1 - Backup file permissions test (same as orig)
+FAIL: test/pacman/tests/mode003.py 1 - Backup file permissions test (same as orig)
