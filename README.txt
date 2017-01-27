@@ -15,7 +15,7 @@ here is the start of it.
 
 There will be some deviations from LFS, and I'll add comments
 in the PKGBUILD files where necessary to make note of these. Of note for Arch
-users, I've divided the package groups into core and extra. Since 
+users, I've divided the package groups into Main and Extra. Since 
 you are building from source, you should already be familiar with reciprocal 
 dependencies. I've accounted for these in the PKGBUILD files using 
 conditionals, and have some pretty stringent requriements for the PKGBUILD
