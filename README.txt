@@ -9,24 +9,19 @@ the box, but also to be as minimal as is possible. Unfortunately, I'm also a
 long time Gnome fan and old habits die hard, so it probably goes without saying 
 that combination makes for a bit of a conflict. While I was fairly happy with
 Arch Linux for my daily driver, they too had some pain points that I disagreed 
-with. I won't go into detail, but Arch is a great, just not for me. And, once 
-again, I was looking for my perfect distro. So, here is the start of it. 
+with. I won't go into detail, but Arch is a great distro, just not perfect for
+me (as nothing is). And, once again, I was looking for my perfect distro. So,
+here is the start of it. 
 
 There will be some deviations from LFS, and I'll add comments
 in the PKGBUILD files where necessary to make note of these. Of note for Arch
-users, I've divided the package groups into Main and extra. Since 
+users, I've divided the package groups into core and extra. Since 
 you are building from source, you should already be familiar with reciprocal 
 dependencies. I've accounted for these in the PKGBUILD files using 
 conditionals, and have some pretty stringent requriements for the PKGBUILD
-files.
-
-The first deviation is that the base system was built without the /lib64
-symlinks (using jhalfs). The patch for the book is located at
-http://www.linuxfromscratch.org/~dj/lfs-nosymlinks.patch and hopefully will
-not be necessary shortly after the 7.10 release.
-
-Beyond the jhalfs run against the patchend 7.10 (or SVN), you'll need to build
-the following packages from BLFS before anything here will be useful.
+files. See PKGBUILD-Standards.txt in the root of the tree for more details.
+You'll also need to build the following packages from BLFS before anything here
+will be useful:
 
 http://www.linuxfromscratch.org/blfs/view/systemd/general/libgpg-error.html
 http://www.linuxfromscratch.org/blfs/view/systemd/general/libassuan.html
@@ -381,10 +376,7 @@ you'll have a repository ready to go that can be used with the regular Arch
 install disk to prepare a new system, just point it to your remote repository
 and use 'pacstrap /mnt core' to install the minimal required system to boot.
 
-I'll be keeping a copy of the completed repo on my server, but due to bandwidth
-constraints, I'll be unable to make it public. Maybe someday I'll find hosting
-or maybe just throw it on github for local sync to assist with LFS/BLFS rapid
-development. At some point, I plan to go back and do the SysV book as well.
+More to come...
 
 Enjoy.
 

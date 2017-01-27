@@ -1,0 +1,156 @@
+Packaging standards: Here we begin to differ from Arch pretty drastically.
+Developers are not to choose which optional dependencies are required for the
+build environment, but rather to include conditional logic for all possible
+combinations. I have began to implement this using a single variable,
+"_confargs", which is populated based on the output of 'pacman -Q <some_pkg>'.
+Additionally, if an optional package becomes a hard depndendcy (not a runtime
+only dependency), it must be included in the 'depends' array, again, with a
+conditional. Same thing for packaging, 'pacman -Q'. I don't want to see expac,
+or any of the wrappers in PKGBUILDs. The OpenSSH package is a perfect example:
+
+===============================================================================
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+pkgname=openssh
+pkgver=7.1p1
+pkgrel=2
+pkgdesc="The OpenSSH package contains ssh clients and the sshd daemon."
+arch=('i686' 'x86_64')
+url="http://www.openssh.org/portable.html"
+license=('custom:BSD')
+makedepends=('bash' 'binutils' 'coreutils' 'gcc' 'glibc'
+             'linux' 'openssl' 'sed' 'texinfo')
+depends=('glibc' 'openssl'
+         $(pacman -Q krb5 > /dev/null && echo 'krb5')
+         $(pacman -Q Linux-PAM > /dev/null && echo 'Linux-PAM')
+         $(pacman -Q libedit > /dev/null && echo 'libedit')
+         $(pacman -Q opensc > /dev/null && echo 'opensc')
+         $(pacman -Q libsectok > /dev/null && echo 'libsectok'))
+checkdepends=("openssh=${pkgver}")
+optdepends=('krb5: Kerberos SSO support'
+            'libressl: optional replacement for OpenSSL'
+            'Linux-PAM: PAM authentication support'
+            'libedit: line edting and history support for sftp'
+            'opensc: smartcard support'
+            'libsectok: smartcard support'
+            'openjdk: additional entropy source (runtime only)'
+            'net-tools: additional entropy source (runtime only)'
+            'sysstat: additional entropy source (runtime only)'
+            'xorg-xauth: X11 forwarding support (runtime only)')
+backup=('etc/ssh/ssh_config'
+        'etc/ssh/sshd_config'
+        'etc/pam.d/sshd')
+install=openssh.install
+_confargs=""
+source=("ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/${pkgname}-${pkgver}.tar.gz"
+        "sshdgenkeys.service"
+        "sshd.service"
+        "sshd@.service"
+        "sshd.socket")
+
+...
+build(){
+...
+  # Handle optional deps
+  pacman -Q krb5 2>&1>/dev/null || _confargs="${_confargs} --disable-gssapi"
+  pacman -Q Linux-PAM 2>&1>/dev/null && _confargs="${_confargs} --with-pam"
+  pacman -Q libedit 2>&1>/dev/null && _confargs="${_confargs} --with-libedit"
+  
+
+  cd ${srcdir}/${pkgname}-${pkgver}
+  ./configure --prefix=/usr                     \
+              --sysconfdir=/etc/ssh             \
+              --with-md5-passwords              \
+              --with-privsep-path=/var/lib/sshd \
+              --with-pid-dir=/run               \
+              ${_confargs}
+  make
+}
+...
+
+package(){
+...
+  # Configure for Linux-PAM if installed
+  paminstalled="$(pacman -Q Linux-PAM || true)"
+  if [ "${paminstalled}" != "" ]
+  then
+    install -vdm755 ${pkgdir}/etc/pam.d
+    sed 's@d/login@d/sshd@g' /etc/pamd./login > \
+                    ${pkgdir}/etc/pam.d/sshd
+    chmod 644 ${pkgdir}/etc/pam.d/sshd
+    sed -e 's@^#UsePAM no@UsePAM yes@' \
+        -e 's@^#PrintMotd yes@PrintMotd no@' \
+        -i ${pkgdir}/etc/ssh/sshd_config
+  fi
+...
+}
+sha256sums=('fc0a6d2d1d063d5c66dffd952493d0cda256cad204f681de0f84ef85b2ad8428'
+...
+===============================================================================
+
+I realize that is a lot to read, but it gives examples of how to handle
+optional dependencies. PKGBUILD files are just shell scripts, they are
+interpreted by bash, regardless of the calling shell for pkgbuild.
+Some key points to make nice PKGBUILD files:
+
+    All optional deps should be accounted for. If you can't test them, or can't
+    make them work, then make the build exit with an error value of 1. There is
+    an exception for packages that are not availalbe on the target platform.
+    Optional deps should also be accounted for (as mentioned above) in the
+    'depends' array if they are unconditional (not runtime only) deps. IOW, if
+    they link to a library, or if they are integral to the package running
+    correctly, or would cause error if removed. Optional dependencies should
+    also have a note explaining why they might be necessary, and be noted if
+    they are '(runtime only)'.
+
+    sha256sums is a requirement, and they belong at the bottom of the file.
+    Simply leave them out until you've finished writing the PKGBUILD, and run
+    'updpkgsums' from the root direcotry of the package to generate them.
+
+    Split packages: only when absolutely necessary! Packages should only be
+    split in the case of necessity. LFS is a source based distribution, and the
+    whole package should be installed. GCC is an obvious candidate. The gcc
+    drivers are a prime example of why you should use a split package, ie: the
+    differing languages provide for a very large group of dependencies.
+    Additionally, the core package is changed based on the drivers installed so
+    that you can't package a gcc package from one build, and add, say, gfortran
+    later as a separate build without replacing the gcc package with the one
+    built with gfortan. In this way, the gcc package requires gnat be installed
+    to build after the bootstrap version.
+
+    Order of variables/constants in the file header: Order is explicitly as
+    follows:
+        # Maintainer: Your Name <your_email_address_obfuscated_if_chosen>
+        # Contributor: Contributors name and email address (optional)
+
+        pkgbase (optional, used if a split package is necessary)
+        pkgname
+        pkgver
+        pkgrel
+        pkgdesc
+        arch
+        url
+        groups (optional)
+        license
+        makedepends
+        depends
+        checkdepends (optional, used only if depends does not cover the tests)
+        optdepends (optional)
+        backup (optional)
+        options (optional)
+        install (optional)
+        _local_variable (optional, local variables begin with "_")
+        source
+
+        _local_function() (optional, local functions begin with "_")
+
+        prepare() (optional)
+
+        build()
+
+        check() (optional only if a check or test function is not available)
+
+        package()
+        sha256sums
+
+Hopefully that is enough to go on for now. I'm sure this document will change
+in the future. Enjoy.        
