@@ -1,0 +1,298 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgbase=gcc
+pkgname=('gcc-ada'
+         'gcc-fortran'
+         'gcc-go'
+         'gcc-java'
+         'gcc-objc'
+         'gcc')
+pkgver=6.3.0
+_islver=0.16.1
+pkgrel=1
+arch=('i686' 'x86_64')
+url="http://gcc.gnu.org/"
+license=('GPL' 'LGPL' 'FDL' 'custom')
+makedepends=('bash' 'binutils' 'coreutils' 'diffutils' 'findutils' 'gawk' 
+             'gcc' 'gettext' 'glibc' 'gmp' 'grep' 'gtk2' 'm4' 'make' 'mpc'
+             'mpfr' 'patch' 'perl' 'sed' 'tar' 'texinfo')
+checkdepends=('dejagnu' 'inetutils')
+source=("http://ftp.gnu.org/gnu/${pkgbase}/${pkgbase}-${pkgver}/${pkgbase}-${pkgver}.tar.bz2"
+        "http://isl.gforge.inria.fr/isl-${_islver}.tar.bz2"
+        "gnat-gpl-2016-x86_64-linux-bin.tar.gz::http://mirrors.cdn.adacore.com/art/5739cefdc7a447658e0b016b"
+        "gnat-gpl-2014-x86-linux-bin.tar.gz::http://mirrors.cdn.adacore.com/art/564b3e9dc8e196b040fbe248"
+        "ftp://sourceware.org/pub/java/ecj-4.9.jar"
+        "http://www.antlr.org/download/antlr-4.6-complete.jar")
+noextract=("antlr-4.6-complete.jar"
+           "ecj-4.9.jar"
+           "gnat-gpl-2016-x86_64-linux-bin.tar.gz"
+           "gnat-gpl-2014-x86-linux-bin.tar.gz")
+# If you want to modify what is actually built for a local build, set these 0
+_build_ada=1
+_build_cpp=1
+_build_fortran=1
+_build_go=1
+_build_java=1
+_build_objc=1
+_confargs=""
+_languages="c,c++,lto"
+
+prepare(){
+  cd ${srcdir}/${pkgbase}-${pkgver}
+
+  # link isl for in-tree build
+  ln -s ../isl-${_islver} isl
+
+  # hack! - some configure tests for header files using "$CPP $CPPFLAGS"
+  sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {libiberty,gcc}/configure
+
+  # adjust libdir for x86_64
+  if [[ $CARCH == "x86_64" ]]; then
+    sed -e '/m64=/s/lib64/lib/' \
+        -i.orig gcc/config/i386/t-linux64
+  fi
+  mkdir build
+
+  # Use system libffi
+  sed -i 's/\(install.*:\) install-.*recursive/\1/' libffi/Makefile.in
+  sed -i 's/\(install-data-am:\).*/\1/' libffi/include/Makefile.in
+
+  # Fix a broken java test (upstream)
+  sed -i 's/absolute/file normalize/' libjava/testsuite/lib/libjava.exp
+
+  # Correct compiler error (upstream)
+  sed -i 's/major.*1000.*minor/major/' gcc/java/decl.c
+
+  if [[ "x${_build_ada}" == "x1" ]]; then
+    if [[ $(pacman -Q gcc-ada >/dev/null 2>&1) ]]; then
+      echo "gcc-ada is installed, not installing temporary Ada Core."
+    else
+      echo "gcc-ada is not installed, installing temporary Ada Core."
+      case ${CARCH} in
+        x86_64)
+          cd ${srcdir}
+          tar -xf gnat-gpl-2016-x86_64-linux-bin.tar.gz
+          cd ${srcdir}/gnat-gpl-2016-x86_64-linux-bin
+          make ins-all prefix=${srcdir}/gnat
+        ;;
+        x86)
+          cd ${srcdir}
+          tar -xf gnat-gpl-2014-x86-linux-bin.tar.gz
+          cd ${srcdir}/gnat-gpl-2014-x86-linux-bin
+          make ins-all prefix=${srcdir}/gnat
+        ;;
+      esac
+      find ${srcdir}/gnat -name ld -exec mv -v {} {}.old \;
+      find ${srcdir}/gnat -name as -exec mv -v {} {}.old \;
+    fi
+  fi
+}
+
+build(){
+  cd "${srcdir}/${pkgbase}-${pkgver}/build"
+
+  # Handle options
+  if [[ "x${_build_ada}" == "x1" ]]; then
+    _languages="${_languages},ada"
+    if [[ $(pacman -Q gcc-ada >/dev/null 2>&1) ]]; then
+      _confargs="${_confargs} --disable-bootstrap"
+    else
+      export PATH=${srcdir}/gnat/bin:${PATH}
+    fi
+  fi
+
+  if [[ "x${_build_fortran}" == "x1" ]]; then
+    _languages="${_languages},fortran"
+  fi
+
+  if [[ "x${_build_go}" == "x1" ]]; then
+    _languages="${_languages},go"
+  fi
+
+  if [[ "x${_build_java}" == "x1" ]]; then
+    _languages="${_languages},java"
+    _confargs="${_confargs} --enable-java-home"
+    _confargs="${_confargs} --with-jvm-root-dir=/usr/lib/jvm/java-gcj"
+    _confargs="${_confargs} --with-antlr-jar=${srcdir}/antlr.jar"
+    cp ${srcdir}/ecj-4.9.jar ecj.jar
+    cp ${srcdir}/antlr-4.6-complete.jar ${srcdir}/antlr.jar
+  fi
+
+  if [[ "x${_build_objc}" == "x1" ]]; then
+    _languages="${_languages},objc,obj-c++"
+  fi
+
+  # using -pipe causes spurious test-suite failures
+  # http://gcc.gnu.org/bugzilla/show_bug.cgi?id=48565
+  CFLAGS=${CFLAGS/-pipe/}
+  CXXFLAGS=${CXXFLAGS/-pipe/}
+
+  SED=sed ../configure                   \
+       --prefix=/usr                     \
+       --disable-multilib                \
+       --with-system-zlib                \
+       ${_confargs}                      \
+       --enable-languages=${_languages}
+  make
+
+  # Install to temp location and extract split packages from there
+  make DESTDIR=${srcdir}/gcc-dest install
+  if [[ "x${_build_java}" == "x1" ]]; then
+    ${srcdir}/gcc-dest/usr/bin/gcj -o ${srcdir}/gcc-dest/usr/bin/ecj \
+    ${srcdir}/ecj-4.9.jar --main=org.eclipse.jdt.internal.compiler.batch.Main
+    ln -sfv ../../../bin/ecj ${srcdir}/gcc-dest/usr/lib/jvm/java-gcj/bin/javac
+  fi
+}
+
+check(){
+  cd ${srcdir}/${pkgbase}-${pkgver}/build
+  make -k check || true
+  ${srcdir}/${pkgbase}-${pkgver}/contrib/test_summary
+}
+
+package_gcc-ada(){
+  pkgdesc="The GCC package contains the GNU compiler collection (Ada front-end)"
+  depends=("gcc=${pkgver}-${pkgrel}")
+  options=('!strip' '!staticlibs')
+
+  install -vdm755 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}
+  mv -v ${srcdir}/gcc-dest/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/ada* \
+        ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}
+  install -vdm755 ${pkgdir}/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}
+  mv -v ${srcdir}/gcc-dest/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}/gnat1 \
+        ${pkgdir}/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}
+  install -vdm755 ${pkgdir}/usr/bin
+  mv -v ${srcdir}/gcc-dest/usr/bin/gnat* ${pkgdir}/usr/bin
+  install -vdm755 ${pkgdir}/usr/share/info
+  mv -v ${srcdir}/gcc-dest/usr/share/info/gnat* ${pkgdir}/usr/share/info
+  chown -v -R root:root \
+    ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/ada{lib,include}
+}
+
+package_gcc-go(){
+  pkgdesc="The GCC package contains the GNU compiler collection (Go front-end)"
+  depends=("gcc=${pkgver}-${pkgrel}")
+  options=('!strip' '!staticlibs')
+
+  install -vdm755 ${pkgdir}/usr/lib
+  mv -v ${srcdir}/gcc-dest/usr/lib/libgo.* ${pkgdir}/usr/lib
+  mv -v ${srcdir}/gcc-dest/usr/lib/libgo{,lib}begin.a ${pkgdir}/usr/lib
+  mv -v ${srcdir}/gcc-dest/usr/lib/libnetgo* ${pkgdir}/usr/lib
+  install -vdm755 ${pkgdir}/usr/bin
+  mv -v ${srcdir}/gcc-dest/usr/bin/{{,$CARCH-pc-linux-gnu-}gccgo,go{,fmt}} \
+        ${pkgdir}/usr/bin
+  install -vdm755 ${pkgdir}/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}
+  mv -v ${srcdir}/gcc-dest/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}/{cgo,go1} \
+        ${pkgdir}/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}
+  install -vdm755 ${pkgdir}/usr/lib
+  mv -v ${srcdir}/gcc-dest/usr/lib/go ${pkgdir}/usr/lib
+  install -vdm755 ${pkgdir}/usr/share/man/man1
+  mv -v ${srcdir}/gcc-dest/usr/share/man/man1/{gccgo,go,gofmt}.1 \
+        ${pkgdir}/usr/share/man/man1
+  install -vdm755 ${pkgdir}/usr/share/info
+  mv -v ${srcdir}/gcc-dest/usr/share/info/gccgo.info ${pkgdir}/usr/share/info
+}
+
+package_gcc-fortran(){
+  pkgdesc="The GCC package contains the GNU compiler collection (Fortran front-end)"
+  depends=("gcc=${pkgver}-${pkgrel}")
+  options=('!strip' '!staticlibs')
+
+  install -vdm755 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}
+  mv -v ${srcdir}/gcc-dest/usr/lib/libgfortran* ${pkgdir}/usr/lib
+  mv -v ${srcdir}/gcc-dest/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/libcaf* \
+        ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/
+  mv -v ${srcdir}/gcc-dest/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/finclude \
+        ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/
+  install -vdm755 ${pkgdir}/usr/bin
+  mv -v ${srcdir}/gcc-dest/usr/bin/{,$CARCH-pc-linux-gnu-}gfortran \
+        ${pkgdir}/usr/bin
+  install -vdm755 ${pkgdir}/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}
+  mv -v ${srcdir}/gcc-dest/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}/f951 \
+        ${pkgdir}/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}
+  install -vdm755 ${pkgdir}/usr/share/man/man1
+  mv -v ${srcdir}/gcc-dest/usr/share/man/man1/gfortran.1 \
+        ${pkgdir}/usr/share/man/man1
+  install -vdm755 ${pkgdir}/usr/share/info
+  mv -v ${srcdir}/gcc-dest/usr/share/info/gfortran.info ${pkgdir}/usr/share/info
+
+}
+
+package_gcc-java(){
+  pkgdesc="The GCC package contains the GNU compiler collection (Java front-end and JVM)"
+  depends=("gtk2"
+           "gcc=${pkgver}-${pkgrel}")
+  options=('!strip' '!staticlibs')
+
+  install -vdm755 ${pkgdir}/usr/lib/pkgconfig
+  mv -v ${srcdir}/gcc-dest/usr/lib/jvm ${pkgdir}/usr/lib
+  mv -v ${srcdir}/gcc-dest/usr/lib/libgcj* ${pkgdir}/usr/lib
+  mv -v ${srcdir}/gcc-dest/usr/lib/libgij* ${pkgdir}/usr/lib
+  mv -v ${srcdir}/gcc-dest/usr/lib/gcj-${pkgver}-* ${pkgdir}/usr/lib
+  mv -v ${srcdir}/gcc-dest/usr/lib/jvm-exports ${pkgdir}/usr/lib
+  mv -v ${srcdir}/gcc-dest/usr/lib/security ${pkgdir}/usr/lib
+  mv -v ${srcdir}/gcc-dest/usr/lib/logging.properties ${pkgdir}/usr/lib
+  mv -v ${srcdir}/gcc-dest/usr/lib/pkgconfig/libgcj-6.pc \
+        ${pkgdir}/usr/lib/pkgconfig
+  install -vdm755 ${pkgdir}/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}
+  mv -v ${srcdir}/gcc-dest/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}/jc1 \
+        ${pkgdir}/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}
+  mv -v ${srcdir}/gcc-dest/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}/jvgenmain \
+        ${pkgdir}/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}
+  install -vdm755 ${pkgdir}/usr/bin
+  _javabins="aot-compile ecj gappletviewer gc-analyze gcj gcj-dbtool gcjh gjar gjarsigner gij gjdoc gjavah gkeytool gorbd grmic grmid grmiregistry gserialver gtnameserv jcf-dump jv-convert rebuild-gcj-db $CARCH-pc-linux-gnu-gcj"
+  for bin in ${_javabins}; do
+      mv -v ${srcdir}/gcc-dest/usr/bin/$bin ${pkgdir}/usr/bin
+  done
+  install -vdm755 ${pkgdir}/usr/share/man/man1
+  _javamans="aot-compile gappletviewer gc-analyze gcj gcj-dbtool gcjh gij gjar gjarsigner gjavah gjdoc gkeytool gnative2ascii gorbd grmic grmid grmiregistry gserialver gtnameserv jcf-dump jv-convert rebuild-gcj-db"
+  for man in ${_javamans}; do
+      mv -v ${srcdir}/gcc-dest/usr/share/man/man1/${man}.1 \
+      ${pkgdir}/usr/share/man/man1
+  done
+  install -vdm755 ${pkgdir}/usr/share/info
+  mv -v ${srcdir}/gcc-dest/usr/share/info/gcj.info ${pkgdir}/usr/share/info
+  mv -v ${srcdir}/gcc-dest/usr/share/java ${pkgdir}/usr/share
+  install -vdm755 ${pkgdir}/usr/share/gcc-${pkgver}/python
+  mv -v ${srcdir}/gcc-dest/usr/share/gcc-6.3.0/python/libjava \
+        ${pkgdir}/usr/share/gcc-${pkgver}/python
+}
+
+package_gcc-objc(){
+  pkgdesc="The GCC package contains the GNU compiler collection (Objective-C front-end)"
+  depends=("gcc=${pkgver}-${pkgrel}")
+  options=('!strip' '!staticlibs')
+
+  install -vdm755 ${pkgdir}/usr/lib
+  mv -v ${srcdir}/gcc-dest/usr/lib/libobjc* ${pkgdir}/usr/lib
+  install -vdm755 ${pkgdir}/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}
+  mv -v ${srcdir}/gcc-dest/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}/cc1obj{,plus} \
+       ${pkgdir}/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}
+}
+
+package_gcc(){
+  pkgdesc="The GCC package contains the GNU compiler collection (C and C++ front-ends)"
+  depends=("glibc")
+  options=('!strip' '!staticlibs')
+  groups=('core')
+
+  install -vdm755 ${pkgdir}/usr/
+  mv -v ${srcdir}/gcc-dest/usr/* ${pkgdir}/usr/
+  install -vdm755 ${pkgdir}/usr/share/gdb/auto-load/usr/lib
+  mv -v ${pkgdir}/usr/lib/*gdb.py ${pkgdir}/usr/share/gdb/auto-load/usr/lib
+  install -vdm755 ${pkgdir}/lib
+  ln -vsf ../usr/bin/cpp ${pkgdir}/lib
+  ln -vsf gcc ${pkgdir}/usr/bin/cc
+  install -vdm755 ${pkgdir}/usr/lib/bfd-plugins
+  ln -sfv ../../libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}/liblto_plugin.so \
+          ${pkgdir}/usr/lib/bfd-plugins
+  chown -R root:root \
+        ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/include{,-fixed}
+}
+
+sha256sums=('f06ae7f3f790fbf0f018f6d40e844451e6bc3b7bc96e128e63b09825c1f8b29f'
+            '412538bb65c799ac98e17e8cfcdacbb257a57362acfaaff254b0fcae970126d2'
+            'd083c01e054d0aeda7c67967306cfa5a8df12268664f9098a2d9b331aa24dfe7'
+            '3b693510f5d22a240abb3034934c1adbd80ccd6e4f61a4f491cc408fdfd9c042'
+            '9506e75b862f782213df61af67338eb7a23c35ff425d328affc65585477d34cd'
+            'bd74482f0ee68001926863d4239d23b70719141db522343d39defc4f2cf25969')
