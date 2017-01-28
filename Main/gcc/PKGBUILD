@@ -12,11 +12,33 @@ _islver=0.16.1
 pkgrel=1
 arch=('i686' 'x86_64')
 url="http://gcc.gnu.org/"
-license=('GPL' 'LGPL' 'FDL' 'custom')
-makedepends=('bash' 'binutils' 'coreutils' 'diffutils' 'findutils' 'gawk' 
-             'gcc' 'gettext' 'glibc' 'gmp' 'grep' 'gtk2' 'm4' 'make' 'mpc'
-             'mpfr' 'patch' 'perl' 'sed' 'tar' 'texinfo')
-checkdepends=('dejagnu' 'inetutils')
+license=('GPL'
+         'LGPL'
+         'FDL'
+         'custom')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'findutils'
+             'gawk' 
+             'gcc'
+             'gettext'
+             'glibc'
+             'gmp'
+             'grep'
+             'gtk2'
+             'm4'
+             'make'
+             'mpc'
+             'mpfr'
+             'patch'
+             'perl'
+             'sed'
+             'tar'
+             'texinfo')
+checkdepends=('dejagnu'
+              'inetutils')
 source=("http://ftp.gnu.org/gnu/${pkgbase}/${pkgbase}-${pkgver}/${pkgbase}-${pkgver}.tar.bz2"
         "http://isl.gforge.inria.fr/isl-${_islver}.tar.bz2"
         "gnat-gpl-2016-x86_64-linux-bin.tar.gz::http://mirrors.cdn.adacore.com/art/5739cefdc7a447658e0b016b"
@@ -215,7 +237,6 @@ package_gcc-fortran(){
         ${pkgdir}/usr/share/man/man1
   install -vdm755 ${pkgdir}/usr/share/info
   mv -v ${srcdir}/gcc-dest/usr/share/info/gfortran.info ${pkgdir}/usr/share/info
-
 }
 
 package_gcc-java(){
