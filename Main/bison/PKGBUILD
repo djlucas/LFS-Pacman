@@ -1,0 +1,45 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+pkgname=bison
+pkgver=3.0.4
+pkgrel=1
+pkgdesc="The Bison package contains a parser generator."
+arch=('i686' 'x86_64')
+url="http://www.gnu.org/software/${pkgname}/"
+license=('GPL3')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'glibc'
+             'grep'
+             'm4'
+             'make'
+             'perl'
+             'sed')
+depends=('bash'
+         'glibc'
+         'm4')
+checkdepends=('diffutils'
+              'findutils'
+              'flex')
+groups=('core')
+source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz")
+
+build(){
+  cd ${srcdir}/${pkgname}-${pkgver}
+  ./configure --prefix=/usr \
+              --htmldir=/usr/share/doc/{pkgname}-${pkgver}
+  make
+}
+
+check(){
+  # needs flex, unable to run check if bootstrapping
+  cd ${srcdir}/${pkgname}-${pkgver}
+  make check
+}
+
+package(){
+  cd ${srcdir}/${pkgname}-${pkgver}
+  make DESTDIR=${pkgdir} install
+}
+sha256sums=('a72428c7917bdf9fa93cb8181c971b6e22834125848cf1d03ce10b1bb0716fe1')
