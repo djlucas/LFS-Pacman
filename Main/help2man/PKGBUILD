@@ -1,0 +1,27 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=help2man
+pkgver=1.47.4
+pkgrel=1
+pkgdesc='Converts program help output to man pages.'
+arch=('i686' 'x86_64')
+url='https://www.gnu.org/software/help2man/'
+license=('GPL2')
+groups=('core')
+depends=('glibc'
+         'gcc')
+source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz")
+options=('!emptydirs')
+
+build() {
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR=${pkgdir} install
+}
+
+sha256sums=('d4ecf697d13f14dd1a78c5995f06459bff706fd1ce593d1c02d81667c0207753')
