@@ -1,0 +1,63 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=bzip2
+pkgver=1.0.6
+pkgrel=1
+pkgdesc="The Bzip2 package contains programs for compressing and decompressing files. Compressing text files with bzip2 yields a much better compression percentage than with the traditional gzip."
+arch=('i686' 'x86_64')
+url="http://www.bzip.org/"
+groups=('base')
+license=('GPL')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gcc'
+             'make'
+             'patch')
+depends=('glibc')
+source=("http://www.bzip.org/${pkgver}/${pkgname}-${pkgver}.tar.gz"
+        "http://www.linuxfromscratch.org/patches/downloads/${pkgname}/${pkgname}-${pkgver}-install_docs-1.patch")
+
+prepare(){
+  cd ${srcdir}/${pkgname}-${pkgver}
+  patch -Np1 -i ${srcdir}//${pkgname}-${pkgver}-install_docs-1.patch
+  sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+  sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+
+  # Add largefile support to libbz2
+  sed -e 's/^CFLAGS=\(.*\)$/CFLAGS=\1 \$(BIGFILES)/' \
+      -i Makefile-libbz2_so
+
+  # Use makepkg's CFLAGS
+  sed "s|-O2|${CFLAGS}|g" -i Makefile
+  sed "s|-O2|${CFLAGS}|g" -i Makefile-libbz2_so
+}
+
+build(){
+  cd ${srcdir}/${pkgname}-${pkgver}
+  make -f Makefile-libbz2_so
+  make clean
+  make
+}
+
+check(){
+  cd ${srcdir}/${pkgname}-${pkgver}
+  make test
+}
+
+package(){
+  cd ${srcdir}/${pkgname}-${pkgver}
+  make PREFIX=${pkgdir}/usr install
+  install -vdm755 ${pkgdir}/{bin,lib}
+  install -vm755  bzip2-shared ${pkgdir}/bin/bzip2
+  install -vm755 libbz2.so* ${pkgdir}/lib
+  ln -sfv ../../lib/libbz2.so.${pkgver} ${pkgdir}/usr/lib/libbz2.so.1.0
+  ln -sfv ../../lib/libbz2.so.${pkgver} ${pkgdir}/usr/lib/libbz2.so
+  rm -v ${pkgdir}/usr/bin/{bunzip2,bzcat,bzip2}
+  ln -sv bzip2 ${pkgdir}/bin/bunzip2
+  ln -sv bsip2 ${pkgdir}/bin/bzcat
+}
+
+sha256sums=('a2848f34fcd5d6cf47def00461fcb528a0484d8edef8208d6d2e2909dc61d9cd'
+            '35e3bbd9642af51fef2a8a83afba040d272da42d7e3a251d8e43255a7b496702')
