@@ -23,4 +23,4 @@ package(){
            -o "${pkgdir}/usr/share/man/man1/make-ca.sh.1"
 }
 sha256sums=('8e35348f5f96108116a92f5c5755991c7da66e30bddcb4112dc3ddda851c6b2a'
-            '686ccc104641ab3c4618e6358aaa9e9434b0b091826b5a027071a92f35d0ad1f')
+            'SKIP')
