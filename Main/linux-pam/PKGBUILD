@@ -1,0 +1,129 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+pkgname=linux-pam
+pkgver=1.3.0
+pkgrel=1
+pkgdesc="The Linux PAM package contains Pluggable Authentication Modules used to enable the local system administrator to choose how applications authenticate users."
+arch=('i686' 'x86_64')
+url="http://www.gnu.org/software/${pkgname}/"
+license=('GPL')
+groups=('core')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'glibc'
+             'make')
+depends=('glibc'
+         'systemd'
+         $( pacman -Q db >/dev/null 2>&1 && echo 'db' )
+         $( pacman -Q cracklib >/dev/null 2>&1 && echo 'cracklib' )
+         $( pacman -Q libtirpc >/dev/null 2>&1 && echo 'libtirpc' ))
+optdepends=('db: Use Berkely DB for backend'
+            'cracklib: Check for quality passwords'
+            'libtirpc: use NFS RPC')
+source=("http://linux-pam.org/library/Linux-PAM-${pkgver}.tar.bz2"
+        "http://linux-pam.org/documentation/Linux-PAM-1.2.0-docs.tar.bz2")
+noextract=("Linux-PAM-1.2.0-docs.tar.bz2")
+backup=('etc/pam.d/system-account'
+        'etc/pam.d/system-auth'
+        'etc/pam.d/system-session'
+        'etc/pam.d/system-password'
+        'etc/pam.d/other')
+
+prepare(){
+  cd "Linux-PAM-${pkgver}"
+  tar -xf ../Linux-PAM-1.2.0-docs.tar.bz2 --strip-components=1
+}
+
+build(){
+  cd "Linux-PAM-${pkgver}"
+  ./configure --prefix=/usr                    \
+              --sysconfdir=/etc                \
+              --libdir=/usr/lib                \
+              --disable-regenerate-docu        \
+              --enable-securedir=/lib/security \
+              --docdir="/usr/share/doc/Linux-PAM-${pkgver}"
+  make
+}
+
+check(){
+  # Requires PAM already installed
+  cd "Linux-PAM-${pkgver}"
+  make check
+}
+
+package(){
+  cd "Linux-PAM-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  chmod -v 4755 "${pkgdir}/sbin/unix_chkpwd"
+  install -vdm755 "${pkgdir}/lib"
+  for file in pam pam_misc pamc
+  do
+    mv -v "${pkgdir}/usr/lib/lib${file}".so.* "${pkgdir}/lib"
+    ln -sfv ../../lib/$(readlink "${pkgdir}/usr/lib/lib${file}".so) \
+            "${pkgdir}/usr/lib/lib${file}.so"
+  done
+
+# /etc/pam.d files
+install -vdm755 "${pkgdir}/etc/pam.d"
+cat > "${pkgdir}/etc/pam.d/system-account" << "EOF"
+# Begin /etc/pam.d/system-account
+
+account   required    pam_unix.so
+
+# End /etc/pam.d/system-account
+EOF
+
+cat > "${pkgdir}/etc/pam.d/system-auth" << "EOF"
+# Begin /etc/pam.d/system-auth
+
+auth      required    pam_unix.so
+
+# End /etc/pam.d/system-auth
+EOF
+
+cat > "${pkgdir}/etc/pam.d/system-session" << "EOF"
+# Begin /etc/pam.d/system-session
+
+session   required    pam_unix.so
+session   required    pam_loginuid.so
+session   optional    pam_systemd.so
+
+# End /etc/pam.d/system-session
+EOF
+
+cat > "${pkgdir}/etc/pam.d/system-password" << "EOF"
+# Begin /etc/pam.d/system-password
+
+# check new passwords for strength (man pam_cracklib)
+password  required    pam_cracklib.so   type=Linux retry=3 difok=5 \
+                                        difignore=23 minlen=9 dcredit=1 \
+                                        ucredit=1 lcredit=1 ocredit=1 \
+                                        dictpath=/lib/cracklib/pw_dict
+# use sha512 hash for encryption, use shadow, and use the
+# authentication token (chosen password) set by pam_cracklib
+# above (or any previous modules)
+password  required    pam_unix.so       sha512 shadow use_authtok
+
+# End /etc/pam.d/system-password
+EOF
+
+cat > "${pkgdir}/etc/pam.d/other" << "EOF"
+# Begin /etc/pam.d/other
+
+auth        required        pam_warn.so
+auth        required        pam_deny.so
+account     required        pam_warn.so
+account     required        pam_deny.so
+password    required        pam_warn.so
+password    required        pam_deny.so
+session     required        pam_warn.so
+session     required        pam_deny.so
+
+# End /etc/pam.d/other
+EOF
+
+}
+
+sha256sums=('241aed1ef522f66ed672719ecf2205ec513fd0075ed80cda8e086a5b1a01d1bb'
+            '3bc9ae398f759e372dbf4065ceed2df8b1ac5ab62c6688cb5f7849ce773df2c3')
