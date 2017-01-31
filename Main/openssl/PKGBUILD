@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=openssl
-_ver=1.0.2j
+_ver=1.0.2k
 # use a pacman compatible version scheme
 pkgver=${_ver/[a-z]/.${_ver//[0-9.]/}}
 pkgrel=1
@@ -54,5 +54,5 @@ package() {
   install -vDm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }
 
-sha256sums=('e7aff292be21c259c6af26469c7a9b3ba26e9abaaffd325e3dccc9785256c431')
+sha256sums=('6b3977c61f2aedf0f96367dcfb5c6e578cf37e7b8d913b4ecb6643c3cb88d8c0')
 
