@@ -1,0 +1,31 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+pkgname=gperf
+pkgver=3.1
+pkgrel=1
+pkgdesc="Gperf generates a perfect hash function from a key set."
+arch=('i686' 'x86_64')
+url="http://www.gnu.org/software/${pkgname}/"
+license=('GPL')
+groups=('core')
+makedepends=('bash' 'binutils' 'coreutils' 'gcc' 'glibc' 'make')
+depends=('glibc')
+checkdepends=('diffutils' 'expect')
+source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr \
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}"
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make -j1 check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+sha256sums=('588546b945bba4b70b6a3a616e80b4ab466e3f33024a352fc2198112cdbb3ae2')
