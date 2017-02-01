@@ -1,0 +1,46 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+pkgname=zlib
+pkgver=1.2.11
+pkgrel=1
+pkgdesc="The Zlib package contains compression and decompression routines used by some programs."
+arch=('i686' 'x86_64')
+url="http://www.zlib.net/"
+license=('custom')
+groups=('core')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'glibc'
+             'make'
+             'sed')
+depends=('glibc')
+source=("http://www.zlib.net/${pkgname}-${pkgver}.tar.xz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+  cd contrib/minizip
+  autoreconf -fi
+  ./configure --prefix=/usr --disable-static --enable-shared
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/lib"
+  mv -v "${pkgdir}"/usr/lib/libz.so.* "${pkgdir}/lib"
+  ln -sfv ../../lib/$(readlink "${pkgdir}/usr/lib/libz.so") \
+          "${pkgdir}/usr/lib/libz.so"
+  cd contrib/minizip
+  make DESTDIR="${pkgdir}" install
+ }
+
+sha256sums=('4ff941449631ace0d4d203e3483be9dbc9da454084111f97ea0a2114e19bf066')
