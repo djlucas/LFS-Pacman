@@ -1,0 +1,65 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=dbus
+pkgver=1.10.14
+pkgrel=1
+pkgdesc="D-Bus supplies a message bus for IPC, both a system daemon and a per-user-login-session daemon."
+arch=('i686' 'x86_64')
+url="http://www.freedesktop.org/wiki/Software/${pkgname}"
+groups=('core')
+license=('GPL')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gawk'
+             'gcc'
+             'grep'
+             'make'
+             'sed'
+             'util-linux')
+depends=('glibc'
+         'systemd'
+         'libx11')
+optdepends=('doxygen: generate additional documentation'
+            'xmlto: generate additional documentation'
+            'ducktype: generate additional documentation'
+            'yelp-tools: generate additonal documentation')
+checkdependd=('dbus-glib'
+              'dbus-python'
+              'pygobject'
+              'valgrind')
+source=("http://dbus.freedesktop.org/releases/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+_confargs=""
+
+build(){
+  cd ${srcdir}/${pkgname}-${pkgver}
+
+  # Handle optional deps
+  pacman -Q doxygen > /dev/null 2>&1 || \
+            _confargs="${_confargs} --disable-doxygen-docs"
+  pacman -Q xmlto >/dev/null 2>&1 || \
+            _confargs="${_confargs} --disable-xml-docs"
+
+  ./configure --prefix=/usr                                   \
+              --sysconfdir=/etc                               \
+              --localstatedir=/var                            \
+              --disable-static                                \
+              ${_confargs}                                    \
+              --docdir=/usr/share/doc/"${pkgname}-${pkgver}"  \
+              --with-console-auth-dir=/run/console
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/lib"
+  mv -v "${pkgdir}"/usr/lib/libdbus-1.so.* "${pkgdir}/lib"
+  ln -sfv ../../lib/$(readlink "${pkgdir}/usr/lib/libdbus-1.so") \
+          "${pkgdir}/usr/lib/libdbus-1.so"
+  chown -v root:messagebus "${pkgdir}/usr/libexec/dbus-daemon-launch-helper"
+  chmod -v 4750 "${pkgdir}/usr/libexec/dbus-daemon-launch-helper"
+}
+
+sha256sums=('23238f70353e38ce5ca183ebc9525c0d97ac00ef640ad29cf794782af6e6a083')
