@@ -1,0 +1,106 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+pkgname=systemd
+pkgver=232
+pkgrel=1
+pkgdesc="The systemd package contains programs for controlling the startup, running, and shutdown of the system."
+arch=('i686' 'x86_64')
+url="http://www.freedesktop.org/wiki/Software/systemd/"
+groups=('core')
+license=('GPL')
+makedepends=('binutils'
+             'coreutils'
+             'diffutils'
+             'expat'
+             'gawk'
+             'gcc'
+             'glibc'
+             'gperf>=3.1'
+             'grep'
+             'intltool'
+             'make'
+             'sed'
+             'tar')
+depends=('acl'
+         'attr'
+         'bash'
+         'dbus'
+         'kbd'
+         'kmod'
+         'libcap'
+         'linux-pam'
+         'util-linux'
+         'xz')
+backup=('etc/dbus-1/system.d/org.freedesktop.systemd1.conf'
+        'etc/dbus-1/system.d/org.freedesktop.hostname1.conf'
+        'etc/dbus-1/system.d/org.freedesktop.login1.conf'
+        'etc/dbus-1/system.d/org.freedesktop.locale1.conf'
+        'etc/dbus-1/system.d/org.freedesktop.machine1.conf'
+        'etc/dbus-1/system.d/org.freedesktop.timedate1.conf'
+        'etc/dbus-1/system.d/org.freedesktop.import1.conf'
+        'etc/dbus-1/system.d/org.freedesktop.network1.conf'
+        'etc/pam.d/systemd-user'
+        'etc/systemd/coredump.conf'
+        'etc/systemd/journald.conf'
+        'etc/systemd/journal-upload.conf'
+        'etc/systemd/logind.conf'
+        'etc/systemd/system.conf'
+        'etc/systemd/timesyncd.conf'
+        'etc/systemd/resolved.conf'
+        'etc/systemd/user.conf'
+        'etc/udev/udev.conf')
+install=systemd.install
+source=("http://anduin.linuxfromscratch.org/sources/other/${pkgname}/${pkgname}-${pkgver}.tar.xz"
+        "http://www.linuxfromscratch.org/patches/downloads/${pkgname}/${pkgname}-${pkgver}-gperf_size_t-1.patch")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  sed -e 's:test/udev-test.pl ::g'  \
+      -e 's:test-copy$(EXEEXT) ::g' \
+      -i Makefile.in
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-gperf_size_t-1.patch"
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  cc_cv_CFLAGS__flto=no                                               \
+  XSLTPROC="/usr/bin/xsltproc"                                        \
+  ./configure --prefix=/usr                                           \
+              --sysconfdir=/etc                                       \
+              --localstatedir=/var                                    \
+              --with-rootprefix=                                      \
+              --with-rootlibdir=/lib                                  \
+              --disable-split-usr                                     \
+              --disable-firstboot                                     \
+              --disable-ldconfig                                      \
+              --disable-sysusers                                      \
+              --without-python                                        \
+              --with-default-dnssec=no                                \
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}"
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  rm -rv "${pkgdir}/usr/lib/rpm"
+  install -vdm755 "${pkgdir}/etc/pam.d"
+
+cat > "${pkgdir}/etc/pam.d/systemd-user" << "EOF"
+# Begin /etc/pam.d/systemd-user
+
+account  required pam_access.so
+account  include  system-account
+
+session  required pam_env.so
+session  required pam_limits.so
+session  include  system-session
+
+auth     required pam_deny.so
+password required pam_deny.so
+
+# End /etc/pam.d/systemd-user
+EOF
+}
+
+sha256sums=('71a48202057dc53ea7a3caa1e28f97ed19bd45fb1d4b7487ee8fcc1d4cad6a39'
+            'f37f8501d564c014de73dfb2f248ca643ede4edb770982f0418735410e13cbe1')
