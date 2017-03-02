@@ -2,7 +2,7 @@
 
 pkgname=bzip2
 pkgver=1.0.6
-pkgrel=1
+pkgrel=2
 pkgdesc="The Bzip2 package contains programs for compressing and decompressing files. Compressing text files with bzip2 yields a much better compression percentage than with the traditional gzip."
 arch=('i686' 'x86_64')
 url="http://www.bzip.org/"
@@ -51,7 +51,8 @@ package(){
   make PREFIX=${pkgdir}/usr install
   install -vdm755 ${pkgdir}/{bin,lib}
   install -vm755  bzip2-shared ${pkgdir}/bin/bzip2
-  install -vm755 libbz2.so* ${pkgdir}/lib
+  install -vm755 libbz2.so.1.0.6 ${pkgdir}/lib
+  ln -sfv libbz2.so.1.0.6 ${pkgdir}/lib/libbz2.so.1.0
   ln -sfv ../../lib/libbz2.so.${pkgver} ${pkgdir}/usr/lib/libbz2.so.1.0
   ln -sfv ../../lib/libbz2.so.${pkgver} ${pkgdir}/usr/lib/libbz2.so
   rm -v ${pkgdir}/usr/bin/{bunzip2,bzcat,bzip2}
