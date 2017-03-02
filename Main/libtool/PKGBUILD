@@ -1,0 +1,32 @@
+# Maintainer: archetech trw2006@hotmail.com
+pkgname=libtool
+pkgver=2.4.6
+pkgrel=1
+pkgdesc="A generic library support script"
+arch=('x86_64')
+url="http://www.gnu.org/software/libtool"
+license=('GPL')
+depends=( 'bash' 'binutils' 'sed' 'coreutils' 'diffutils' 'gawk' 'make' 'sed' 'texinfo'  'grep' 'texinfo' 'gcc')
+makedepends=('help2man')
+provides=('libltdl')
+conflicts=('libltdl')
+replaces=('libltdl')
+source=("ftp://ftp.gnu.org/pub/gnu/libtool/${pkgname}-${pkgver}.tar.xz")
+md5sums=('1bfb9b923f2c1339b4d2ce1807064aa5')
+
+
+build() {
+	cd "$pkgname-$pkgver"
+	./configure --prefix=/usr  
+	make
+}
+
+check() {
+	cd "$pkgname-$pkgver"
+	make check
+}
+
+package() {
+	cd "$pkgname-$pkgver"
+	make DESTDIR="${pkgdir}" install
+}

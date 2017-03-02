@@ -1,0 +1,36 @@
+# Maintainer: archetech trw2006@hotmail.com
+pkgname=gettext
+pkgver=0.19.8.1
+pkgrel=1
+pkgdesc="GNU Internationalization library" 
+arch=('x86_64')
+url="http://www.gnu.org/software/gettext"
+license=('GPL')
+depends=( 'bash' 'binutils' 'gawk' 'sed' 'coreutils' 'make' 
+'texinfo' 'grep' 'glibc' 'gcc')
+makedepends=('diffutils' 'perl' 'tcl')
+provides=()
+conflicts=()
+replaces=()
+source=("ftp://ftp.gnu.org/pub/gnu/gettext/${pkgname}-${pkgver}.tar.gz")
+md5sums=('97e034cf8ce5ba73a28ff6c3c0638092')
+
+
+build() {
+	cd "$pkgname-$pkgver"
+	./configure --prefix=/usr \
+	--disable-static  \
+	--docdir=/usr/share/doc/gettext-0.19.8.1
+	make
+}
+
+check() {
+	cd "$pkgname-$pkgver"
+	make check
+}
+
+package() {
+	cd "$pkgname-$pkgver"
+	make DESTDIR="${pkgdir}" install
+	chmod -v 0755 /usr/lib/preloadable_libintl.so
+}

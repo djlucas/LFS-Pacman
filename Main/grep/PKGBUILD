@@ -1,0 +1,28 @@
+# Maintainer: archetech trw2006@hotmail.com
+pkgname=grep
+pkgver=2.27
+pkgrel=1
+pkgdesc="A string search utility" 
+arch=('x86_64')
+url="http://www.gnu.org/software/grep/grep.html"
+license=('GPL3')
+depends=()
+source=("https://ftp.gnu.org/gnu/grep/${pkgname}-${pkgver}.tar.xz")        
+md5sums=('6138dd227c39d4a25f81eea76a44d4cb')
+
+
+build() {
+	cd "$pkgname-$pkgver"
+	./configure --prefix=/usr  --bindir=/bin
+	make
+}
+
+check() {
+	cd "$pkgname-$pkgver"
+	make check
+}
+
+package() {
+	cd "$pkgname-$pkgver"
+	make DESTDIR="${pkgdir}" install
+}

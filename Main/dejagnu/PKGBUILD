@@ -1,0 +1,32 @@
+# Maintainer: archetech trw2006@hotmail.com
+pkgname=dejagnu
+pkgver=1.6
+pkgrel=1
+pkgdesc="A framework for program testing"
+arch=('x86_64')
+url="http://www.gnu.org/software/dejagnu"
+license=('GPL')
+depends=( 'bash' 'expect' 'sed' 'coreutils' 'diffutils' 'make' 'grep' 'gcc')
+makedepends=()
+provides=()
+conflicts=()
+replaces=()
+source=("ftp://ftp.gnu.org/pub/gnu/dejagnu/${pkgname}-${pkgver}.tar.gz")
+md5sums=('1fdc2eb0d592c4f89d82d24dfdf02f0b')
+
+
+build() {
+	cd "$pkgname-$pkgver"
+	./configure --prefix=/usr  
+	make
+}
+
+check() {
+	cd "$pkgname-$pkgver"
+	make check
+}
+
+package() {
+	cd "$pkgname-$pkgver"
+	make DESTDIR="${pkgdir}" install
+}

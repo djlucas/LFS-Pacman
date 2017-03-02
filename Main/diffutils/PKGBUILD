@@ -1,0 +1,34 @@
+# Maintainer: archetech trw2006@hotmail.com
+pkgname=diffutils
+pkgver=3.5
+pkgrel=1
+pkgdesc="Shows difference between files or directories" 
+arch=('x86_64')
+url="http://www.gnu.org/software/diffutils"
+license=('GPL3')
+depends=( 'bash' 'binutils' 'gawk' 'sed' 'coreutils' 'make' 
+'texinfo' 'grep' 'glibc' 'gcc')
+makedepends=('diffutils' 'perl')
+provides=()
+conflicts=()
+replaces=()
+source=("ftp://ftp.gnu.org/pub/gnu/diffutils/${pkgname}-${pkgver}.tar.xz")
+md5sums=('569354697ff1cfc9a9de3781361015fa')
+
+
+build() {
+	cd "$pkgname-$pkgver"
+	sed -i 's:= @mkdir_p@:= /bin/mkdir -p:' po/Makefile.in.in
+	./configure --prefix=/usr 
+	make
+}
+
+check() {
+	cd "$pkgname-$pkgver"
+	make check
+}
+
+package() {
+	cd "$pkgname-$pkgver"
+	make DESTDIR="${pkgdir}" install
+}
