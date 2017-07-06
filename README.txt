@@ -54,26 +54,22 @@ Additionally, you'll need to install fakeroot and pacman...
 
 FAKEROOT:
 http://ftp.debian.org/debian/pool/main/f/fakeroot/fakeroot_1.21.orig.tar.gz
-http://www.linuxfromscratch.org/~dj/fakeroot-1.21-bootstrap-1.patch
 http://www.linuxfromscratch.org/~dj/fakeroot-1.21-dlerror-1.patch
 
-  patch -Np1 -i ../fakeroot-1.21-bootstrap-1.patch
-  patch -Np1 -i ../fakeroot-1.21-dlerror-1.patch
-  chmod 755 configure
-  ./configure --prefix=/usr  \
-              --disable-static \
-              --with-ipc=sysv
-  sed '/SUBDIRS/s@doc @@' -i Makefile
-  make
-  make install
+patch -Np1 -i ../fakeroot-1.21-dlerror-1.patch
+autoreconf -fi
+./configure --prefix=/usr  \
+            --disable-static \
+            --with-ipc=sysv
+sed '/SUBDIRS/s@doc @@' -i Makefile
+make
+make install
 
 ================================================================================
 
 PACMAN:
-https://sources.archlinux.org/other/pacman/pacman-5.0.1.tar.gz
-http://www.linuxfromscratch.org/~dj/pacman-5.0.1-roundup-1.patch
+https://sources.archlinux.org/other/pacman/pacman-5.0.2.tar.gz
 
-patch -Np1 -i ../pacman-5.0.1-roundup-1.patch
 ./configure --prefix=/usr \
             --sysconfdir=/etc \
             --localstatedir=/var \
@@ -85,7 +81,7 @@ make -C contrib
 make install
 make -C contrib install
 install -vDm644 contrib/PKGBUILD.vim \
-                /usr/share/vim/vimfiles/syntax/PKGBUILD.vim
+                /usr/share/vim/vim80/syntax/
 cat > /etc/pacman.conf << "EOF"
 #
 # GENERAL OPTIONS
@@ -124,7 +120,7 @@ CheckSpace
 # trusts (see pacman-key and its man page), as well as unsigned packages.
 SigLevel    = Required DatabaseOptional
 LocalFileSigLevel = Optional
-#RemoteFileSigLevel = Required
+#RemoteFileSigLevel = Optional
 
 # NOTE: You must run `pacman-key --init` before first using pacman; the local
 # keyring can then be populated with the keys of all official Arch Linux
