@@ -123,8 +123,7 @@ LocalFileSigLevel = Optional
 #RemoteFileSigLevel = Optional
 
 # NOTE: You must run `pacman-key --init` before first using pacman; the local
-# keyring can then be populated with the keys of all official Arch Linux
-# packagers with `pacman-key --populate archlinux`.
+# keyring can then be populated with the keys of all official packagers.
 
 #
 # REPOSITORIES
@@ -143,34 +142,15 @@ LocalFileSigLevel = Optional
 #
 # The header [repo-name] is crucial - it must be present and
 # uncommented to enable the repo.
-#
 
-# The testing repositories are disabled by default. To enable, uncomment the
-# repo name header and Include lines. You can add preferred servers immediately
-# after the header, and they will be used before the default mirrors.
-
-#[testing]
-#Include = /etc/pacman.d/mirrorlist
-
+# An example of a disabled remote package repository with multiple servers
+# available. To enable, uncomment the following lines. You can add preferred
+# servers immediately after the header and they will be used before the
+# default mirrors.
 #[core]
-#Include = /etc/pacman.d/mirrorlist
-
-#[extra]
-#Include = /etc/pacman.d/mirrorlist
-
-#[community-testing]
-#Include = /etc/pacman.d/mirrorlist
-
-#[community]
-#Include = /etc/pacman.d/mirrorlist
-
-# If you want to run 32 bit applications on your x86_64 system,
-# enable the multilib repositories as required here.
-
-#[multilib-testing]
-#Include = /etc/pacman.d/mirrorlist
-
-#[multilib]
+#SigLevel = Required
+#Server = ftp://ftp.example.com/foobar/$repo/os/$arch/
+# The file referenced here should contain a list of 'Server = ' lines.
 #Include = /etc/pacman.d/mirrorlist
 
 # An example of a custom package repository.  See the pacman manpage for
@@ -225,12 +205,11 @@ CARCH="x86_64"
 CHOST="x86_64-pc-linux-gnu"
 
 #-- Compiler and Linker Flags
-# -march (or -mcpu) builds exclusively for an architecture
-# -mtune optimizes for an architecture, but builds for whole processor family
-CPPFLAGS="-D_FORTIFY_SOURCE=2"
-CFLAGS="-march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong"
-CXXFLAGS="-march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong"
+CPPFLAGS=""
+CFLAGS="-march=x86-64 -mtune=generic -O2 -pipe"
+CXXFLAGS="-march=x86-64 -mtune=generic -O2 -pipe"
 LDFLAGS="-Wl,-O1,--sort-common,--as-needed,-z,relro"
+
 #-- Make Flags: change this for DistCC/SMP systems
 #MAKEFLAGS="-j2"
 #-- Debugging flags
