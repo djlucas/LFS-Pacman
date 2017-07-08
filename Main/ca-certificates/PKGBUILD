@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 pkgname=ca-certificates
-pkgver=20170119
-pkgrel=1
+pkgver=20170514
+pkgrel=$(date -u --iso | sed 's@-@@g')
 pkgdesc="The ca-certificates package containt utilities for working with certificates and contains the default BLFS Mozilla CAs."
 arch=('any')
 url="http://www.linuxfromscratch.org/blfs/view/stable/postlfs/cacerts.html"
@@ -22,5 +22,5 @@ package(){
   help2man -N "${pkgdir}/usr/sbin/make-ca.sh" \
            -o "${pkgdir}/usr/share/man/man1/make-ca.sh.1"
 }
-sha256sums=('8e35348f5f96108116a92f5c5755991c7da66e30bddcb4112dc3ddda851c6b2a'
+sha256sums=('c882ab8b5a67389fc556852bd44081d8b376e8bf44cd4c7afcbdac8e940a69c3'
             'SKIP')
