@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=bc
-pkgver=1.06.95
+pkgver=1.07.1
 pkgrel=1
 pkgdesc="The Bc package contains an arbitrary precision numeric processing language."
 arch=('i686' 'x86_64')
@@ -19,12 +19,21 @@ makedepends=('bash'
              'patch')
 depends=('readline')
 checkdepends=('gawk')
-source=("http://alpha.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.bz2"
-        "http://www.linuxfromscratch.org/patches/downloads/${pkgname}/${pkgname}-${pkgver}-memory_leak-1.patch")
+source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
 
 prepare(){
   cd "${pkgname}-${pkgver}"
-  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-memory_leak-1.patch"
+  cat > bc/fix-libmath_h << "EOF"
+#! /bin/bash
+sed -e '1   s/^/{"/' \
+    -e     's/$/",/' \
+    -e '2,$ s/^/"/'  \
+    -e   '$ d'       \
+    -i libmath.h
+
+sed -e '$ s/$/0}/' \
+    -i libmath.h
+EOF
 }
 
 build(){
@@ -54,5 +63,4 @@ package(){
   make DESTDIR="${pkgdir}" install
 }
 
-sha256sums=('7ee4abbcfac03d8a6e1a8a3440558a3d239d6b858585063e745c760957725ecc'
-            '9e9279f1c2c4b83f3dab9672563bb02087776f04bb43eec135af117e6d4f83fb')
+sha256sums=('62adfca89b0a1c0164c2cdca59ca210c1d44c3ffc46daf9931cf4942664cb02a')
