@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=automake
-pkgver=1.15
+pkgver=1.15.1
 pkgrel=1
 pkgdesc="The Automake package contains programs for generating Makefiles for use with Autoconf."
 arch=('any')
@@ -29,12 +29,6 @@ optdepends=('dejagnu: additional test suite coverage'
             'cscope: additional test suite coverage')
 source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz")
 
-prepare(){
-  cd ${srcdir}/${pkgname}-${pkgver}
-  # Fix warning with newer perl
-  sed -i 's:/\\\${:/\\\$\\{:' bin/automake.in
-}
-
 build(){
   cd "${pkgname}-${pkgver}"
   ./configure --prefix=/usr \
@@ -46,6 +40,8 @@ check(){
   cd "${pkgname}-${pkgver}"
   # skip faulty python test
   sed -i "/instmany-python.sh/d" Makefile.in
+  # skip tests that fail with new flex
+  #sed -i "s:./configure:LEXLIB=/usr/lib/libfl.a &:" t/lex-{clean,depend}-cxx.sh
   make -j4 check
 }
 
@@ -54,4 +50,4 @@ package(){
   make DESTDIR="${pkgdir}" install
 }
 
-sha256sums=('9908c75aabd49d13661d6dcb1bc382252d22cc77bf733a2d55e87f2aa2db8636')
+sha256sums=('af6ba39142220687c500f79b4aa2f181d9b24e4f8d8ec497cea4ba26c64bedaf')
