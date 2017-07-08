@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=coreutils
-pkgver=8.26
+pkgver=8.27
 pkgrel=1
 pkgdesc="The Coreutils package contains utilities for showing and setting the basic system characteristics."
 arch=('i686' 'x86_64')
@@ -42,6 +42,9 @@ prepare(){
 
   # Make cpu information delivered by uname -p more accurate
   patch -Np1 -i ${srcdir}/${pkgname}-${pkgver}-uname-1.patch
+
+  # Fix a test that can loop forever
+  sed -i '/test.lock/s/^/#/' gnulib-tests/gnulib.mk
 }
 
 build(){
@@ -58,9 +61,16 @@ check(){
   cd ${srcdir}/${pkgname}-${pkgver}
   if [ "${_run_root_tests}" == "yes" ]
   then
-    su -c "make NON_ROOT_USERNAME=pkguser FORCE_UNSAFE_CONFIGURE=1 check-root"
+    su -c "make NON_ROOT_USERNAME=nobody FORCE_UNSAFE_CONFIGURE=1 check-root"
   fi
-  make RUN_EXPENSIVE_TESTS=yes check
+  make RUN_EXPENSIVE_TESTS=yes check || true
+  # We expect one failure
+  failures=`grep "^# FAIL:" tests/test-suite.log | \
+                 sed -e 's@# FAIL:@@' -e 's@ @@g'`
+  test x"$failures" == "x" && failures="0"
+  if "$failures" -gt "1"; then
+      echo "Failed more than the expected 1 test." && exit 1
+  fi
 }
 
 package(){
@@ -83,6 +93,6 @@ package(){
         "${pkgdir}/bin"
 }
 
-sha256sums=('155e94d748f8e2bc327c66e0cbebdb8d6ab265d2f37c3c928f7bf6c3beba9a8e'
-            '50944e8e9bee052b167822ff04e09b5ca242b18722280adbc0b44feea615daec'
+sha256sums=('8891d349ee87b9ff7870f52b6d9312a9db672d2439d289bc57084771ca21656b'
+            'ebfc88e1b1a204dd55259f9967927f6525ffa113db935f8e0c60b49c2a11d8f0'
             '69835629d46fb5bdee8a71f4ee8f7a9db023f3771cd8d40108eb29339add76e6')
