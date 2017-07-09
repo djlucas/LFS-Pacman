@@ -3,8 +3,9 @@ pkgname=bison
 pkgver=3.0.4
 pkgrel=1
 pkgdesc="The Bison package contains a parser generator."
-arch=('i686' 'x86_64')
+arch=('x86_64')
 url="http://www.gnu.org/software/${pkgname}/"
+groups=('core')
 license=('GPL3')
 makedepends=('bash'
              'binutils'
@@ -22,7 +23,6 @@ depends=('bash'
 checkdepends=('diffutils'
               'findutils'
               'flex')
-groups=('core')
 source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz")
 
 build(){
