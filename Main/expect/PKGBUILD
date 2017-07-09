@@ -1,0 +1,35 @@
+# Maintainer: archetech trw2006@hotmail.com
+pkgname=expect
+pkgver=5.45
+pkgrel=1
+pkgdesc="Expect contains tools for automating interactive applications such as telnet, ftp, passwd, fsck, rlogin, tip, etc."
+arch=('x86_64')
+url="http://expect.sourceforge.net/"
+license=('GPL')
+depends=('tcl' 'gcc' 'glibc')
+optdepends=('tk')
+makedepends=('bash' 'coreutils' 'diffutils' 'grep' 'make' 'patch' 'sed' )
+source=("http://prdownloads.sourceforge.net/${pkgname}/${pkgname}${pkgver}.tar.gz")
+
+build() {
+  cd "${pkgname}${pkgver}"
+  ./configure --prefix=/usr           \
+              --with-tcl=/usr/lib     \
+              --enable-shared         \
+              --mandir=/usr/share/man \
+              --with-tclinclude=/usr/include &&
+  make
+}
+
+check() {
+  cd "${pkgname}${pkgver}"
+  make test
+}
+
+package() {
+  cd "${pkgname}${pkgver}"
+  make DESTDIR="${pkgdir}" install &&
+  ln -svf "${pkgname}${pkgver}/lib${pkgname}${pkgver}.so" "${pkgdir}/usr/lib"
+}
+
+sha256sums=('b28dca90428a3b30e650525cdc16255d76bb6ccd65d448be53e620d95d5cc040')
