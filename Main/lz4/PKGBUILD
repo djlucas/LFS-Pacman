@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=lz4
-pkgver=131
+pkgver=1.7.5
 pkgrel=1
 pkgdesc='Very fast lossless compression algorithm'
 arch=('i686' 'x86_64')
@@ -11,15 +11,15 @@ groups=('core')
 checkdepends=('diffutils')
 depends=('glibc'
          'gcc')
-source=("lz4-r131.tar.gz::https://github.com/Cyan4973/lz4/archive/r131.tar.gz")
+source=("lz4-${pkgver}.tar.gz::https://github.com/Cyan4973/lz4/archive/v${pkgver}.tar.gz")
 
 build() {
-  cd "${pkgname}-r${pkgver}"
+  cd "${pkgname}-${pkgver}"
   make PREFIX=/usr
 }
 
 check() {
-  cd "${pkgname}-r${pkgver}"
+  cd "${pkgname}-${pkgver}"
   programs/lz4 /etc/passwd passwd.lz4
   programs/lz4 -d passwd.lz4 passwd
   diff -q /etc/passwd passwd
@@ -27,8 +27,8 @@ check() {
 }
 
 package() {
-  cd "${pkgname}-r${pkgver}"
+  cd "${pkgname}-${pkgver}"
   make install PREFIX=/usr DESTDIR="${pkgdir}"
 }
 
-sha256sums=('9d4d00614d6b9dec3114b33d1224b6262b99ace24434c53487a0c8fd0b18cfed')
+sha256sums=('0190cacd63022ccb86f44fa5041dc6c3804407ad61550ca21c382827319e7e7e')
