@@ -6,27 +6,29 @@ pkgdesc="A framework for program testing"
 arch=('x86_64')
 url="http://www.gnu.org/software/dejagnu"
 license=('GPL')
-depends=( 'bash' 'expect' 'sed' 'coreutils' 'diffutils' 'make' 'grep' 'gcc')
-makedepends=()
-provides=()
-conflicts=()
-replaces=()
+depends=( 'expect')
+makedepends=('bash' 'coreutils' 'diffutils' 'gcc' 'grep' 'make' 'sed' )
 source=("ftp://ftp.gnu.org/pub/gnu/dejagnu/${pkgname}-${pkgver}.tar.gz")
-md5sums=('1fdc2eb0d592c4f89d82d24dfdf02f0b')
-
 
 build() {
-	cd "$pkgname-$pkgver"
-	./configure --prefix=/usr  
-	make
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=/usr
+  makeinfo --html --no-split -o doc/dejagnu.html doc/dejagnu.texi
+  makeinfo --plaintext       -o doc/dejagnu.txt  doc/dejagnu.texi 
+  make
 }
 
 check() {
-	cd "$pkgname-$pkgver"
-	make check
+  cd "$pkgname-$pkgver"
+  make check
 }
 
 package() {
-	cd "$pkgname-$pkgver"
-	make DESTDIR="${pkgdir}" install
+  cd "$pkgname-$pkgver"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  install -vm644  doc/dejagnu.{html,txt} \
+                  "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
 }
+
+sha256sums=('00b64a618e2b6b581b16eb9131ee80f721baa2669fa0cdee93c500d1a652d763')
