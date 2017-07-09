@@ -2,7 +2,7 @@
 # Maintainer:  DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=expat
-pkgver=2.2.0
+pkgver=2.2.1
 pkgrel=1
 pkgdesc='An XML parser library'
 arch=('i686' 'x86_64')
@@ -28,12 +28,13 @@ check() {
 package() {
   cd "${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
-  install -vdm755 "${pkgdir}/usr/share/doc/expat-2.2.0"
-  install -vm644 doc/*.{html,png,css} "${pkgdir}/usr/share/doc/expat-2.2.0"
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  install  -vm644 doc/*.{html,png,css} \
+                  "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
 
   # Install custom license
   install -vDm644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
 }
 
-sha256sums=('d9e50ff2d19b3538bd2127902a89987474e1a4db8e43a66a4d1a712ab9a504ff')
+sha256sums=('1868cadae4c82a018e361e2b2091de103cd820aaacb0d6cfa49bd2cd83978885')
 
