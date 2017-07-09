@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=dbus
-pkgver=1.10.14
+pkgver=1.10.20
 pkgrel=1
 pkgdesc="D-Bus supplies a message bus for IPC, both a system daemon and a per-user-login-session daemon."
 arch=('i686' 'x86_64')
@@ -44,10 +44,13 @@ build(){
   ./configure --prefix=/usr                                   \
               --sysconfdir=/etc                               \
               --localstatedir=/var                            \
+              --enable-user-session                           \
               --disable-static                                \
               ${_confargs}                                    \
               --docdir=/usr/share/doc/"${pkgname}-${pkgver}"  \
-              --with-console-auth-dir=/run/console
+              --with-console-auth-dir=/run/console            \
+              --with-system-pid-file=/run/dbus/pid            \
+              --with-system-socket=/run/dbus/system_bus_socket
   make
 }
 
@@ -62,4 +65,4 @@ package(){
   chmod -v 4750 "${pkgdir}/usr/libexec/dbus-daemon-launch-helper"
 }
 
-sha256sums=('23238f70353e38ce5ca183ebc9525c0d97ac00ef640ad29cf794782af6e6a083')
+sha256sums=('e574b9780b5425fde4d973bb596e7ea0f09e00fe2edd662da9016e976c460b48')
