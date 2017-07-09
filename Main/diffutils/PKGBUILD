@@ -5,6 +5,7 @@ pkgrel=1
 pkgdesc="Shows difference between files or directories" 
 arch=('x86_64')
 url="http://www.gnu.org/software/diffutils"
+groups=('core')
 license=('GPL3')
 depends=( 'glibc' 'gcc')
 makedepends=('bash' 'binutils' 'coreutils' 'gawk' 'grep' 'perl' 'sed' 'texinfo')

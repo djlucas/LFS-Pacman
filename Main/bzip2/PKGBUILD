@@ -6,7 +6,7 @@ pkgrel=1
 pkgdesc="The Bzip2 package contains programs for compressing and decompressing files. Compressing text files with bzip2 yields a much better compression percentage than with the traditional gzip."
 arch=('i686' 'x86_64')
 url="http://www.bzip.org/"
-groups=('base')
+groups=('core')
 license=('GPL')
 makedepends=('bash'
              'binutils'

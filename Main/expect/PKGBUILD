@@ -5,6 +5,7 @@ pkgrel=1
 pkgdesc="Expect contains tools for automating interactive applications such as telnet, ftp, passwd, fsck, rlogin, tip, etc."
 arch=('x86_64')
 url="http://expect.sourceforge.net/"
+groups=('core')
 license=('GPL')
 depends=('tcl' 'gcc' 'glibc')
 optdepends=('tk')

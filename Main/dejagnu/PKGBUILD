@@ -5,6 +5,7 @@ pkgrel=1
 pkgdesc="A framework for program testing"
 arch=('x86_64')
 url="http://www.gnu.org/software/dejagnu"
+groups=('core')
 license=('GPL')
 depends=( 'expect')
 makedepends=('bash' 'coreutils' 'diffutils' 'gcc' 'grep' 'make' 'sed' )
