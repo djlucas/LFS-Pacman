@@ -1,27 +1,18 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=openssl
-_ver=1.0.2k
+_ver=1.1.0f
 # use a pacman compatible version scheme
 pkgver=${_ver/[a-z]/.${_ver//[0-9.]/}}
 pkgrel=1
 pkgdesc='The Open Source toolkit for Secure Sockets Layer and Transport Layer Security'
-arch=('i686' 'x86_64')
+arch=('x86_64')
 url='https://www.openssl.org'
 license=('custom:BSD')
 groups=('core')
-makedepends=('bash'
-             'binutils'
-             'coreutils'
-             'gcc'
-             'glibc'
-             'make'
-             'sed')
-depends=('zlib'
-         'perl'
-         $(pacman -Q krb5 > /dev/null 2>&1 && echo 'krb5'))
-optdepends=('ca-certificates: provides certificate authority store'
-            'krb5: add GSSAPI support')
+makedepends=('bash' 'binutils' 'coreutils' 'gcc' 'glibc' 'make' 'sed')
+depends=('zlib' 'perl')
+optdepends=('ca-certificates: provides certificate authority store')
 options=('!makeflags')
 backup=('etc/ssl/openssl.cnf')
 _confargs=""
@@ -29,30 +20,30 @@ _krb5="0"
 source=("https://www.${pkgname}.org/source/${pkgname}-${_ver}.tar.gz")
 
 build() {
-  # Handle optional deps
   cd "${pkgname}-${_ver}"
   ./config --prefix=/usr         \
            --openssldir=/etc/ssl \
            --libdir=lib          \
            shared                \
            zlib-dynamic
-  make depend
   make
-  sed -i 's# libcrypto.a##;s# libssl.a##' Makefile
+  sed -i 's# libcrypto.a##;s# libssl.a##;/INSTALL_LIBS/s#libcrypto.a##' Makefile
+
 }
 
 check() {
-  cd "${pkgname}-$_{ver}"
-  make -j1 test
+  cd "${pkgname}-${_ver}"
+  make test
 }
 
 package() {
   cd "${pkgname}-${_ver}"
-  make INSTALL_PREFIX="${pkgdir}" MANDIR=/usr/share/man MANSUFFIX=ssl install
-  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${_ver}"
+  make DESTDIR="${pkgdir}" MANSUFFIX=ssl install
+  mv -v "${pkgdir}/usr/share/doc/${pkgname}" \
+        "${pkgdir}/usr/share/doc/${pkgname}-${_ver}"
   cp -vfr doc/* "${pkgdir}/usr/share/doc/${pkgname}-${_ver}"
   install -vDm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }
 
-sha256sums=('6b3977c61f2aedf0f96367dcfb5c6e578cf37e7b8d913b4ecb6643c3cb88d8c0')
+sha256sums=('12f746f3f2493b2f39da7ecf63d7ee19c6ac9ec6a4fcd8c229da8a522cb12765')
 
