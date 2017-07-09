@@ -1,10 +1,10 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=lzo
-pkgver=2.09
+pkgver=2.10
 pkgrel=1
 pkgdesc="Portable lossless data compression library"
-arch=('i686' 'x86_64')
+arch=('x86_64')
 url="http://www.oberhumer.com/opensource/lzo"
 license=('GPL')
 depends=('glibc')
@@ -15,7 +15,7 @@ build() {
   ./configure --prefix=/usr    \
               --enable-shared  \
               --disable-static \
-              --docdir=/usr/share/doc/lzo-2.09
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}"
   make
   gcc ${CFLAGS} -fpic -Iinclude/lzo -o minilzo/minilzo.o -c minilzo/minilzo.c
   gcc ${LDFLAGS} -shared -o libminilzo.so.0 -Wl,-soname,libminilzo.so.0 \
@@ -37,5 +37,5 @@ package() {
   ln -s libminilzo.so.0 libminilzo.so
 }
 
-sha256sums=('f294a7ced313063c057c504257f437c8335c41bfeed23531ee4e6a2b87bcb34c')
+sha256sums=('c0f892943208266f9b6543b3ae308fab6284c5c90e627931446fb49b4221a072')
 
