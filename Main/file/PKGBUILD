@@ -1,31 +1,31 @@
 # Maintainer: archetech trw2006@hotmail.com
+
 pkgname=file
-pkgver=5.29
+pkgver=5.31
 pkgrel=1
 pkgdesc="File package contains a utility for identifying types of files"
 arch=('x86_64')
 url="http://www.darwinsys.com/file/"
+groups=('core')
 license=('custom')
-depends=('zlib')
-provides=('file')
-conflicts=('file')
-options=()
-source=("ftp://ftp.astron.com/pub/file/$pkgname-$pkgver.tar.gz")
-md5sums=('b7b57b36b577c9cede2f2d1342203302')
-
+depends=('glibc' 'zlib')
+makedepends=('bash' 'binutils' 'coreutils' 'diffutils' 'gawk' 'gcc' 'grep'
+             'make' 'sed')
+source=("ftp://ftp.astron.com/pub/file/${pkgname}-${pkgver}.tar.gz")
 
 build() {
-	cd "$pkgname-$pkgver"
-	./configure --prefix=/usr
-	make
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
 }
 
 check() {
-	cd "$pkgname-$pkgver"
-	make  check
+  cd "${pkgname}-${pkgver}"
+  make  check
 }
 
 package() {
-	cd "$pkgname-$pkgver"
-	make DESTDIR="${pkgdir}" install
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
 }
+sha256sums=('09c588dac9cff4baa054f51a36141793bcf64926edc909594111ceae60fce4ee')
