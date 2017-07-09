@@ -5,7 +5,7 @@ pkgrel=1
 pkgdesc="Skeleton directory layout and core /etc and /var/log files for initial install"
 arch=('any')
 license=('Creative Commons Attribution-NonCommercial-ShareAlike 4.0')
-groups=('lfs-base')
+groups=('core')
 source=('passwd'
         'group')
 backup=('etc/passwd'
