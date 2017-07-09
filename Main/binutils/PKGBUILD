@@ -49,9 +49,10 @@ build(){
 check(){
   cd ${srcdir}/${pkgname}-${pkgver}/build
   make LDFLAGS="" -k check 2>&1 | tee test.log || true
-  failures=`grep "failed" test.log | wc -l`
+  # one test fails and four error with new kenerl headers
+  failures=`grep "tests failed" test.log | cut -d " " -f 1`
   if test "${failures}" != "1"; then
-    echo "Unexpected test failure..." && exit 1
+    echo "Unexpected test failures..." && exit 1
   fi
 }
 
