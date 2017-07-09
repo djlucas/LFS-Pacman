@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=linux-api-headers
-pkgver=4.9.5
+pkgver=4.12
 pkgrel=1
 pkgdesc="The Linux API Headers expose the kernel's API for use by Glibc."
 arch=('i686' 'x86_64')
@@ -21,7 +21,7 @@ makedepends=('bash'
              'perl'
              'sed')
 depends=('rootfs')
-source=("http://ftp.kernel.org/pub/linux/kernel/v4.x/linux-${pkgver}.tar.xz")
+source=("https://www.kernel.org/pub/linux/kernel/v4.x/linux-${pkgver}.tar.xz")
 
 build(){
   cd ${srcdir}/linux-${pkgver}
@@ -36,4 +36,4 @@ package(){
   cp -rv dest/include/* ${pkgdir}/usr/include
 }
 
-sha256sums=('fcf5c43efcc9540815dae8f4d4f73c04dca9a6906c762cbee1242fdd908cf5a7')
+sha256sums=('a45c3becd4d08ce411c14628a949d08e2433d8cdeca92036c7013980e93858ab')
