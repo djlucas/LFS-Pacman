@@ -7,6 +7,7 @@ pkgdesc="The Binutils package contains a linker, an assembler, and other tools f
 arch=('i686' 'x86_64')
 url="http://www.gnu.org/software/${pkgname}/"
 license=('GPL')
+groups=('core')
 makedepends=('bash'
              'binutils'
              'coreutils'
@@ -22,6 +23,7 @@ makedepends=('bash'
 depends=('glibc'
          'zlib')
 source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.bz2")
+
 prepare(){
   cd ${srcdir}/${pkgname}-${pkgver}
   # Kill $CPP and $CPPFLAGS when testing header files (Thanks Arch Linux)
