@@ -1,0 +1,52 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=openssl-1.0
+_ver=1.0.2l
+# use a pacman compatible version scheme
+pkgver=${_ver/[a-z]/.${_ver//[0-9.]/}}
+pkgrel=1
+pkgdesc='The Open Source toolkit for Secure Sockets Layer and Transport Layer Security'
+arch=('x86_64')
+url='https://www.openssl.org'
+license=('custom:BSD')
+makedepends=('bash' 'binutils' 'coreutils' 'gcc' 'glibc' 'make' 'sed')
+depends=('zlib' 'perl')
+optdepends=('ca-certificates: provides certificate authority store')
+options=('!makeflags')
+source=("https://www.openssl.org/source/openssl-${_ver}.tar.gz"
+        "http://www.linuxfromscratch.org/patches/downloads/openssl/openssl-${_ver}-compat_versioned_symbols-1.patch")
+
+build() {
+  cd "openssl-${_ver}"
+  ./config --prefix=/usr            \
+           --openssldir=/etc/ssl    \
+           --libdir=lib/openssl-1.0 \
+           shared                   \
+           zlib-dynamic
+  make depend
+  make
+  sed -i 's# libcrypto.a##;s# libssl.a##' Makefile
+}
+
+package() {
+  cd "openssl-${_ver}"
+  make INSTALL_PREFIX=$PWD/Dest install_sw
+
+  install -vdm755 "${pkgdir}/usr/lib/openssl-1.0"
+  cp -Rv Dest/usr/lib/openssl-1.0/* "${pkgdir}/usr/lib/openssl-1.0"
+
+  mv -v  "${pkgdir}"/usr/lib/openssl-1.0/lib{crypto,ssl}.so.1.0.0 \
+         "${pkgdir}/usr/lib"
+  ln -sv ../libssl.so.1.0.0 "${pkgdir}/usr/lib/openssl-1.0"
+  ln -sv ../libcrypto.so.1.0.0 "${pkgdir}/usr/lib/openssl-1.0"
+
+  install -vdm755 "${pkgdir}/usr/include/openssl-1.0"
+  cp -Rv Dest/usr/include/openssl "${pkgdir}/usr/include/openssl-1.0"
+
+  sed 's@/include$@/include/openssl-1.0@' \
+      -i "${pkgdir}"/usr/lib/openssl-1.0/pkgconfig/*.pc
+}
+
+sha256sums=('ce07195b659e75f4e1db43552860070061f156a98bb37b672b101ba6e3ddf30c'
+            'e205d6aec9f1f07d830cfa9286321a89af0b2e9c3e1d1b966474ecab4f056bb2')
+
