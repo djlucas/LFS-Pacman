@@ -11,14 +11,12 @@ makedepends=('autoconf' 'automake' 'm4')
 depends=('gcc' 'glibc')
 options=('!strip' 'staticlibs')
 source=("http://ftp.debian.org/debian/pool/main/f/${pkgname}/${pkgname}_${pkgver}.orig.tar.gz"
-        "${pkgname}-${pkgver}-silence-dlerror-1.patch")
-sha256sums=('5d293c1b3604b2a9265d1811a9890c749887ef08aec55f3237d32bf35836171a'
-            '347f6496c93ed0d91dcb554db92602b50520a16308e3b8bc33822bd69966267b')
+        "http://www.linuxfromscratch.org/~dj/${pkgname}-${pkgver}-silence-dlerror-1.patch")
 
 build(){
   cd ${srcdir}/${pkgname}-${pkgver}
   patch -Np1 -i ${srcdir}/${pkgname}-${pkgver}-silence-dlerror-1.patch
-  ./bootstrap
+  autoreconf -fi
   ./configure --prefix=/usr  \
               --disable-static \
               --with-ipc=sysv
@@ -36,3 +34,5 @@ package(){
   make DESTDIR=${pkgdir} install
  }
 
+sha256sums=('5d293c1b3604b2a9265d1811a9890c749887ef08aec55f3237d32bf35836171a'
+            '347f6496c93ed0d91dcb554db92602b50520a16308e3b8bc33822bd69966267b')
