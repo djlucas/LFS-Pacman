@@ -9,7 +9,7 @@ pkgname=('gcc-debug'
          'gcc')
 pkgver=7.1.0
 _islver=0.18
-pkgrel=2
+pkgrel=3
 arch=('x86_64')
 url="http://gcc.gnu.org/"
 license=('GPL'
@@ -163,12 +163,13 @@ package_gcc-ada(){
   install -vdm755 ${pkgdir}/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}
   mv -v ${srcdir}/gcc-dest/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}/gnat1 \
         ${pkgdir}/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}
+  install -vdm755 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/plugin/include
+  mv -v ${srcdir}/gcc-dest/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/plugin/include/ada \
+        ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/plugin/include
   install -vdm755 ${pkgdir}/usr/bin
   mv -v ${srcdir}/gcc-dest/usr/bin/gnat* ${pkgdir}/usr/bin
   install -vdm755 ${pkgdir}/usr/share/info
   mv -v ${srcdir}/gcc-dest/usr/share/info/gnat* ${pkgdir}/usr/share/info
-  chown -v -R root:root \
-    ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/ada{lib,include}
   install -vdm755 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/adalib
   install -vm644 ${srcdir}/${pkgbase}-${pkgver}/build/gcc/ada/rts/*.ali \
                  ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/adalib
@@ -177,6 +178,8 @@ package_gcc-ada(){
                  ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/adainclude
   install -vm644 ${srcdir}/${pkgbase}-${pkgver}/build/gcc/ada/rts/*.ads \
                  ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/adainclude
+  chown -v -R root:root \
+    ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/ada{lib,include}
 }
 
 package_gcc-go(){
@@ -236,6 +239,10 @@ package_gcc-objc(){
   install -vdm755 ${pkgdir}/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}
   mv -v ${srcdir}/gcc-dest/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}/cc1obj{,plus} \
        ${pkgdir}/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}
+  install -vdm755 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/plugin/include
+  mv -v ${srcdir}/gcc-dest/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/plugin/include/objc \
+        ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/plugin/include
+
 }
 
 package_gcc(){
