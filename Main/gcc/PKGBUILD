@@ -1,14 +1,15 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgbase=gcc
-pkgname=('gcc-ada'
+pkgname=('gcc-debug'
+         'gcc-ada'
          'gcc-fortran'
          'gcc-go'
          'gcc-objc'
          'gcc')
 pkgver=7.1.0
 _islver=0.18
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="http://gcc.gnu.org/"
 license=('GPL'
@@ -40,8 +41,8 @@ checkdepends=('dejagnu'
               'inetutils')
 source=("http://ftp.gnu.org/gnu/${pkgbase}/${pkgbase}-${pkgver}/${pkgbase}-${pkgver}.tar.bz2"
         "http://isl.gforge.inria.fr/isl-${_islver}.tar.bz2"
-        "gnat-gpl-2016-x86_64-linux-bin.tar.gz::http://mirrors.cdn.adacore.com/art/5739cefdc7a447658e0b016b")
-noextract=("gnat-gpl-2016-x86_64-linux-bin.tar.gz")
+        "gnat-gpl-2017-x86_64-linux-bin.tar.gz::http://mirrors.cdn.adacore.com/art/591c6d80c7a447af2deed1d7")
+noextract=("gnat-gpl-2017-x86_64-linux-bin.tar.gz")
 
 # If you want to modify what is actually built for a local build, set these 0
 _build_ada=1
@@ -52,6 +53,8 @@ _build_objc=1
 
 _confargs=""
 _languages="c,c++,lto"
+
+_have_ada=$(pacman -Q gcc-ada > /dev/null 2>&1 && echo "1" || echo "0")
 
 prepare(){
   cd ${srcdir}/${pkgbase}-${pkgver}
@@ -72,14 +75,14 @@ prepare(){
   sed -i 's/\(install-data-am:\).*/\1/' libffi/include/Makefile.in
 
   if [[ "x${_build_ada}" == "x1" ]]; then
-    if [[ $(pacman -Q gcc-ada >/dev/null 2>&1) ]]; then
-      echo "gcc-ada is installed, not installing temporary Ada Core."
+    if [[ "${_have_ada}" == "1" ]]; then
+      echo "gcc-ada is installed, not installing temporary GNAT."
     else
       echo "gcc-ada is not installed, installing temporary Ada Core."
-          cd ${srcdir}
-          tar -xf gnat-gpl-2016-x86_64-linux-bin.tar.gz
-          cd ${srcdir}/gnat-gpl-2016-x86_64-linux-bin
-          make ins-all prefix=${srcdir}/gnat
+      cd ${srcdir}
+      tar -xf gnat-gpl-2017-x86_64-linux-bin.tar.gz
+      cd ${srcdir}/gnat-gpl-2017-x86_64-linux-bin
+      make ins-all prefix=${srcdir}/gnat 
       find ${srcdir}/gnat -name ld -exec mv -v {} {}.old \;
       find ${srcdir}/gnat -name as -exec mv -v {} {}.old \;
     fi
@@ -92,7 +95,8 @@ build(){
   # Handle options
   if [[ "x${_build_ada}" == "x1" ]]; then
     _languages="${_languages},ada"
-    if [[ $(pacman -Q gcc-ada >/dev/null 2>&1) ]]; then
+    # Only bootstrap if we don't already hava ada installed
+    if [[ "${_have_ada}" == "1" ]]; then
       _confargs="${_confargs} --disable-bootstrap"
     else
       export PATH=${srcdir}/gnat/bin:${PATH}
@@ -116,8 +120,9 @@ build(){
   CFLAGS=${CFLAGS/-pipe/}
   CXXFLAGS=${CXXFLAGS/-pipe/}
 
-  SED=sed ../configure                   \
+  ../configure                           \
        --prefix=/usr                     \
+       --libdir=/usr/lib                 \
        --disable-multilib                \
        --with-system-zlib                \
        ${_confargs}                      \
@@ -134,10 +139,23 @@ check(){
   ${srcdir}/${pkgbase}-${pkgver}/contrib/test_summary
 }
 
+package_gcc-debug(){
+  pkgdesc="The GCC package contains the GNU compiler collection (debug symbols only)"
+  depends=("gcc=${pkgver}-${pkgrel}")
+  options=(!strip)
+
+  install -vdm755 "${pkgdir}/usr/lib"
+  for _lib in "${srcdir}"/gcc-dest/usr/lib/*.so.[0-9].[0-9].{,[1-4]}[0-9]
+  do
+    _libbase=$(basename "${_lib}")
+    objcopy --only-keep-debug "${_lib}" "${pkgdir}/usr/lib/${_libbase}.dbg"
+  done
+}
+
 package_gcc-ada(){
   pkgdesc="The GCC package contains the GNU compiler collection (Ada front-end)"
   depends=("gcc=${pkgver}-${pkgrel}")
-  options=('!strip' '!staticlibs')
+  options=('staticlibs' '!emptydirs')
 
   install -vdm755 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}
   mv -v ${srcdir}/gcc-dest/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/ada* \
@@ -151,12 +169,20 @@ package_gcc-ada(){
   mv -v ${srcdir}/gcc-dest/usr/share/info/gnat* ${pkgdir}/usr/share/info
   chown -v -R root:root \
     ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/ada{lib,include}
+  install -vdm755 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/adalib
+  install -vm644 ${srcdir}/${pkgbase}-${pkgver}/build/gcc/ada/rts/*.ali \
+                 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/adalib
+  install -vdm755 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/adainclude
+  install -vm644 ${srcdir}/${pkgbase}-${pkgver}/build/gcc/ada/rts/*.adb \
+                 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/adainclude
+  install -vm644 ${srcdir}/${pkgbase}-${pkgver}/build/gcc/ada/rts/*.ads \
+                 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/adainclude
 }
 
 package_gcc-go(){
   pkgdesc="The GCC package contains the GNU compiler collection (Go front-end)"
   depends=("gcc=${pkgver}-${pkgrel}")
-  options=('!strip' '!staticlibs')
+  options=('!emptydirs')
 
   install -vdm755 ${pkgdir}/usr/lib
   mv -v ${srcdir}/gcc-dest/usr/lib/libgo.* ${pkgdir}/usr/lib
@@ -179,7 +205,7 @@ package_gcc-go(){
 package_gcc-fortran(){
   pkgdesc="The GCC package contains the GNU compiler collection (Fortran front-end)"
   depends=("gcc=${pkgver}-${pkgrel}")
-  options=('!strip' '!staticlibs')
+  options=('!emptydirs')
 
   install -vdm755 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}
   mv -v ${srcdir}/gcc-dest/usr/lib/libgfortran* ${pkgdir}/usr/lib
@@ -203,7 +229,7 @@ package_gcc-fortran(){
 package_gcc-objc(){
   pkgdesc="The GCC package contains the GNU compiler collection (Objective-C front-end)"
   depends=("gcc=${pkgver}-${pkgrel}")
-  options=('!strip' '!staticlibs')
+  options=('!emptydirs')
 
   install -vdm755 ${pkgdir}/usr/lib
   mv -v ${srcdir}/gcc-dest/usr/lib/libobjc* ${pkgdir}/usr/lib
@@ -215,7 +241,7 @@ package_gcc-objc(){
 package_gcc(){
   pkgdesc="The GCC package contains the GNU compiler collection (C and C++ front-ends)"
   depends=("glibc")
-  options=('!strip' '!staticlibs')
+  options=('staticlibs')
   groups=('core')
 
   install -vdm755 ${pkgdir}/usr/
@@ -234,4 +260,4 @@ package_gcc(){
 
 sha256sums=('8a8136c235f64c6fef69cac0d73a46a1a09bb250776a050aec8f9fc880bebc17'
             '6b8b0fd7f81d0a957beb3679c81bbb34ccc7568d5682844d8924424a0dadcb1b'
-            'd083c01e054d0aeda7c67967306cfa5a8df12268664f9098a2d9b331aa24dfe7')
+            'b942bcac20dea39748b39f8b624d9619f60a8dee2e8195dbe3829c835b0956e6')
