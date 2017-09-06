@@ -1,9 +1,11 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
-pkgname=glibc
-pkgverbase=2.25
-pkgext="adc7e06"
-pkgver="${pkgverbase}+${pkgext}"
+pkgbase=glibc
+pkgname=('glibc-debug'
+         'glibc')
+pkgver=2.26
+#pkgext="adc7e06"
+#pkgver="${pkgverbase}+${pkgext}"
 pkgrel=1
 pkgdesc="The Glibc package contains the main C library. This library provides the basic routines for allocating memory, searching directories, opening and closing files, reading and writing files, string handling, pattern matching, arithmetic, and so on."
 arch=('x86_64')
@@ -24,15 +26,8 @@ makedepends=('bash'
              'perl'
              'sed'
              'texinfo')
-depends=('rootfs')
-options=('!strip' 'staticlibs')
-backup=('etc/locale.gen'
-        'etc/nscd.conf'
-        'etc/ld.so.conf'
-        'etc/nsswitch.conf')
-source=(#"http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz"
-        "http://anduin.linuxfromscratch.org/~bdubbs/files/${pkgname}-${pkgext}.tar.xz"
-        "http://www.linuxfromscratch.org/patches/downloads/${pkgname}/${pkgname}-${pkgverbase}-fhs-1.patch"
+source=("https://ftp.gnu.org/gnu/${pkgbase}/${pkgbase}-${pkgver}.tar.xz"
+        "http://www.linuxfromscratch.org/patches/downloads/${pkgbase}/${pkgbase}-${pkgver}-fhs-1.patch"
         "locale.gen.txt"
         "locale-gen"
         "nsswitch.conf")
@@ -40,8 +35,9 @@ source=(#"http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz"
 prepare(){
   #srcdir is used internally
   test "z${sourcesdir}" == "z" && sourcesdir=${srcdir} && unset srcdir
-  cd ${sourcesdir}/${pkgname}-${pkgext}
-  patch -Np1 -i ${sourcesdir}/${pkgname}-${pkgverbase}-fhs-1.patch
+
+  cd ${sourcesdir}/${pkgbase}-${pkgver}
+  patch -Np1 -i ${sourcesdir}/${pkgbase}-${pkgver}-fhs-1.patch
   mkdir build
 }
 
@@ -53,23 +49,28 @@ build(){
   CFLAGS=${CFLAGS/-fstack-protector-strong/}
   CPPFLAGS=${CPPFLAGS/-D_FORTIFY_SOURCE=2/}
 
-  cd ${sourcesdir}/${pkgname}-${pkgext}/build
+  cd ${sourcesdir}/${pkgbase}-${pkgver}/build
 
-  ../configure                        \
-      --prefix=/usr                   \
-      --disable-werror                \
-      --enable-kernel=2.6.32          \
-      --enable-obsolete-rpc           \
-      --enable-add-ons                \
-      --enable-stack-protector=strong \
+  # In chroot, uncomment the following three lines to avoid invalid paths
+  # in debug symbols, however, you will also need to guard "make -k" to avoid
+  # an incorrect replacment of the real /usr/include/limits.h
+  # _gccver=$(gcc --version | grep -o "[0-9]\.[0-9]\.[0-9]")
+  # GCC_INCDIR="/usr/lib/gcc/${CARCH}/${_gccver}/include"
+  # CC="gcc -isystem $GCC_INCDIR -isystem /usr/include" \
+  ../configure                                        \
+      --prefix=/usr                                   \
+      --disable-werror                                \
+      --enable-kernel=3.2.0                           \
+      --enable-stack-protector=strong                 \
       libc_cv_slibdir=/lib
   make
 }
 
 check(){
-  #srcdir is used glibc makefile
+  #srcdir is used internally in the glibc makefile
   test "z${sourcesdir}" == "z" && sourcesdir=${srcdir} && unset srcdir
-  cd ${sourcesdir}/${pkgname}-${pkgext}/build
+
+  cd ${sourcesdir}/${pkgbase}-${pkgver}/build
   make -k check || true
 
   # Get test rusults together into one file
@@ -94,12 +95,45 @@ check(){
   # malloc/tst-malloc-usable and nptl/tst-cleanupx4 are known to fail in some
   # instances
 
-  # Just make sure number of tests is no more than the known 11 failures
+  # Just make sure number of tests is no more than the known 12 failures
   test x"${_FAILCOUNT}" != "x" || _FAILCOUNT="0"
-  test "${_FAILCOUNT}" -lt "12" || exit 1
+  test "${_FAILCOUNT}" -lt "13" || exit 1
 }
 
-package(){
+package_glibc-debug(){
+  pkgdesc="Contains debug symbols removed from the glibc-${pkgver}-${pkgrel} package."
+  depends=("glibc=${pkgver}-${pkgrel}")
+  options=(!strip)
+
+  #srcdir is used internally
+  test "z${sourcesdir}" == "z" && sourcesdir=${srcdir} && unset srcdir
+
+  # Install into temporary destination directory to generate debug symbols
+  cd ${sourcesdir}/${pkgbase}-${pkgver}/build
+  install -vdm755 "${sourcesdir}/glibc-dest/etc"
+  echo "include /etc/ld.so.conf.d/*.conf" > \
+       "${sourcesdir}/glibc-dest/etc/ld.so.conf"
+  install -vdm755 "${sourcesdir}/glibc-dest/etc/ld.so.conf.d"
+  make install_root="${sourcesdir}/glibc-dest" install
+  rm -f "${sourcesdir}/glibc-dest/etc/ld.so.cache"
+
+  install -vdm755 "${pkgdir}/usr/lib"
+  for _lib in "${sourcesdir}"/glibc-dest/lib/*.so
+  do
+    _libbase=$(basename "${_lib}")
+    objcopy --only-keep-debug "${_lib}" "${pkgdir}/usr/lib/${_libbase}.dbg"
+  done
+}
+
+package_glibc(){
+pkgdesc="The Glibc package contains the main C library. This library provides the basic routines for allocating memory, searching directories, opening and closing files, reading and writing files, string handling, pattern matching, arithmetic, and so on."
+depends=('rootfs')
+options=('staticlibs')
+backup=('etc/locale.gen'
+        'etc/nscd.conf'
+        'etc/ld.so.conf'
+        'etc/nsswitch.conf')
+
   #srcdir is used internally
   test "z${sourcesdir}" == "z" && sourcesdir=${srcdir} && unset srcdir
 
@@ -135,26 +169,22 @@ package(){
   echo "" >> ${pkgdir}/etc/locale.gen
   # Supply a list of all available locales
   sed -e '1,3d' -e 's|/| |g' -e 's|\\| |g' -e 's|^|#|g' \
-    ${sourcesdir}/${pkgname}-${pkgext}/localedata/SUPPORTED \
+    ${sourcesdir}/${pkgbase}-${pkgver}/localedata/SUPPORTED \
     >> ${pkgdir}/etc/locale.gen
 
   # install distributed files
   install -vdm755 ${pkgdir}/usr/lib/{locale,systemd/system,tmpfiles.d}
   install -vdm755 ${pkgdir}/var/cache/nscd
-  install -vm644 ${sourcesdir}/${pkgname}-${pkgext}/nscd/nscd.conf \
+  install -vm644 ${sourcesdir}/${pkgbase}-${pkgver}/nscd/nscd.conf \
                  ${pkgdir}/etc/nscd.conf
-  install -vm644 ${sourcesdir}/${pkgname}-${pkgext}/nscd/nscd.service \
+  install -vm644 ${sourcesdir}/${pkgbase}-${pkgver}/nscd/nscd.service \
                  ${pkgdir}/usr/lib/systemd/system
-  install -vm644 ${sourcesdir}/${pkgname}-${pkgext}/nscd/nscd.tmpfiles \
+  install -vm644 ${sourcesdir}/${pkgbase}-${pkgver}/nscd/nscd.tmpfiles \
                  ${pkgdir}/usr/lib/tmpfiles.d/nscd.conf
   install -vm644 ${sourcesdir}/nsswitch.conf ${pkgdir}/etc
 
-  # Finally do the installation
-  cd ${sourcesdir}/${pkgname}-${pkgext}/build
-  echo "include /etc/ld.so.conf.d/*.conf" >  ${pkgdir}/etc/ld.so.conf
-  install -vdm755 ${pkgdir}/etc/ld.so.conf.d
-  make install_root=${pkgdir} install
-  rm -f ${pkgdir}/etc/ld.so.cache
+  # Finally do the installation from the temporary destination
+  cp -Rv ${sourcesdir}/glibc-dest/* ${pkgdir}/
 
   # Remove unneeded static libs (a lot are actually required)
   rm ${pkgdir}/usr/lib/lib{anl,BrokenLocale,mvec,nsl,resolv,rt,util}.a
@@ -165,7 +195,7 @@ package(){
   ln -s ../lib/ld-linux-x86-64.so.2 "${pkgdir}/lib64/ld-lsb-x86-64.so.3"
 }
 
-sha256sums=('d8d1b50c981eeed60221799cafcd8b1a64b0af4336205dc522998e7b095f8d21'
+sha256sums=('e54e0a934cd2bc94429be79da5e9385898d2306b9eaf3c92d5a77af96190f6bd'
             '643552db030e2f2d7ffde4f558e0f5f83d3fabf34a2e0e56ebdb49750ac27b0d'
             'd42648cea552ba5353a32e264686e992263289d5cc86207314dffc54ab514981'
             '83f108f915863c7ed0338e2d3e8f2e071a531a090ef8f8b2eb3a956a3c4f04d7'
