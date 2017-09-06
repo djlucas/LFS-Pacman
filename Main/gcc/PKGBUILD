@@ -7,11 +7,11 @@ pkgname=('gcc-debug'
          'gcc-go'
          'gcc-objc'
          'gcc')
-pkgver=7.1.0
+pkgver=7.2.0
 _islver=0.18
 pkgrel=3
 arch=('x86_64')
-url="http://gcc.gnu.org/"
+url="https://gcc.gnu.org/"
 license=('GPL'
          'LGPL'
          'FDL'
@@ -39,7 +39,7 @@ makedepends=('bash'
              'texinfo')
 checkdepends=('dejagnu'
               'inetutils')
-source=("http://ftp.gnu.org/gnu/${pkgbase}/${pkgbase}-${pkgver}/${pkgbase}-${pkgver}.tar.bz2"
+source=("https://ftp.gnu.org/gnu/${pkgbase}/${pkgbase}-${pkgver}/${pkgbase}-${pkgver}.tar.xz"
         "http://isl.gforge.inria.fr/isl-${_islver}.tar.bz2"
         "gnat-gpl-2017-x86_64-linux-bin.tar.gz::http://mirrors.cdn.adacore.com/art/591c6d80c7a447af2deed1d7")
 noextract=("gnat-gpl-2017-x86_64-linux-bin.tar.gz")
@@ -54,7 +54,8 @@ _build_objc=1
 _confargs=""
 _languages="c,c++,lto"
 
-_have_ada=$(pacman -Q gcc-ada > /dev/null 2>&1 && echo "1" || echo "0")
+# For now, always rebuild ada
+#_have_ada=$(pacman -Q gcc-ada > /dev/null 2>&1 && echo "1" || echo "0")
 
 prepare(){
   cd ${srcdir}/${pkgbase}-${pkgver}
@@ -75,17 +76,17 @@ prepare(){
   sed -i 's/\(install-data-am:\).*/\1/' libffi/include/Makefile.in
 
   if [[ "x${_build_ada}" == "x1" ]]; then
-    if [[ "${_have_ada}" == "1" ]]; then
-      echo "gcc-ada is installed, not installing temporary GNAT."
-    else
-      echo "gcc-ada is not installed, installing temporary Ada Core."
+#    if [[ "${_have_ada}" == "1" ]]; then
+#      echo "gcc-ada is installed, not installing temporary GNAT."
+#    else
+#      echo "gcc-ada is not installed, installing temporary Ada Core."
       cd ${srcdir}
       tar -xf gnat-gpl-2017-x86_64-linux-bin.tar.gz
       cd ${srcdir}/gnat-gpl-2017-x86_64-linux-bin
       make ins-all prefix=${srcdir}/gnat 
       find ${srcdir}/gnat -name ld -exec mv -v {} {}.old \;
       find ${srcdir}/gnat -name as -exec mv -v {} {}.old \;
-    fi
+#    fi
   fi
 }
 
@@ -265,6 +266,6 @@ package_gcc(){
         ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/include{,-fixed}
 }
 
-sha256sums=('8a8136c235f64c6fef69cac0d73a46a1a09bb250776a050aec8f9fc880bebc17'
+sha256sums=('1cf7adf8ff4b5aa49041c8734bbcf1ad18cc4c94d0029aae0f4e48841088479a'
             '6b8b0fd7f81d0a957beb3679c81bbb34ccc7568d5682844d8924424a0dadcb1b'
             'b942bcac20dea39748b39f8b624d9619f60a8dee2e8195dbe3829c835b0956e6')
