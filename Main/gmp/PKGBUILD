@@ -1,0 +1,57 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=('gmp-debug'
+         'gmp')
+pkgbase=gmp
+pkgver=6.1.2
+pkgrel=1
+arch=('x86_64')
+url="http://gmplib.org/"
+license=('LGPL3' 'GPL')
+source=("https://gmplib.org/download/gmp/gmp-${pkgver}.tar.xz")
+
+build() {
+  cd "${pkgbase}-${pkgver}"
+
+  cp -v configfsf.guess config.guess
+  cp -v configfsf.sub   config.sub
+
+  ./configure --prefix=/usr    \
+              --enable-cxx     \
+              --disable-static \
+              --docdir="/usr/share/doc/${pkgbase}-${pkgver}"
+  make
+  make html
+  make DESTDIR="${srcdir}/gmp-dest" install
+  make DESTDIR="${srcdir}/gmp-dest" install-html
+
+}
+
+check() {
+  cd "${pkgbase}-${pkgver}"
+  make check
+}
+
+package_gmp-debug() {
+pkgdesc="Debugging symbols for the GMP package"
+depends=("gmp=${pkgver}-${pkgrel}")
+options=(!strip)
+
+  install -vdm755 "${pkgdir}/usr/lib"
+  for _lib in "${srcdir}"/gmp-dest/usr/lib/*.so.[0-9].[0-9].*
+  do
+    _libbase=$(basename "${_lib}")
+    objcopy --only-keep-debug "${_lib}" "${pkgdir}/usr/lib/${_libbase}.dbg"
+  done
+}
+
+package_gmp() {
+pkgdesc="The GMP package contains math libraries. These have useful functions for arbitrary precision arithmetic."
+depends=('bash'
+         'gcc')
+
+  cd "${pkgbase}-${pkgver}"
+  cp -Rv "${srcdir}"/gmp-dest/* "${pkgdir}/"
+}
+
+sha256sums=('87b565e89a9a684fe4ebeeddb8399dce2599f9c9049854ca8c0dfbdea0e21912')
