@@ -1,0 +1,42 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=tzdata
+_ver=2017b
+pkgver=${_ver/[a-z]/.${_ver//[0-9.]/}}
+pkgrel=1
+pkgdesc="The Time Zone Database (often called tz or zoneinfo) contains code and data that represent the history of local time for many representative locations around the globe."
+arch=('x86_64')
+url="http://www.iana.org/time-zones/"
+license=('GPL')
+groups=('core')
+options=(!strip)
+makedepends=('bash'
+             'coreutils'
+             'grep'
+             'make')
+depends=('glibc')
+source=("http://www.iana.org/time-zones/repository/releases/${pkgname}${_ver}.tar.gz")
+
+build(){
+  echo ""
+  # Do nothing
+}
+
+package(){
+  cd "${srcdir}"
+  ZONEINFO="${pkgdir}/usr/share/zoneinfo"
+  install -vdm755 "${ZONEINFO}"/{posix,right}
+
+  for tz in etcetera southamerica northamerica europe africa antarctica  \
+          asia australasia backward pacificnew systemv; do
+    /usr/sbin/zic -L /dev/null -d "${ZONEINFO}" -y "sh yearistype.sh" "${tz}"
+    /usr/sbin/zic -L /dev/null -d "${ZONEINFO}/posix" -y "sh yearistype.sh" "${tz}"
+    /usr/sbin/zic -L leapseconds -d "${ZONEINFO}/right" -y "sh yearistype.sh" "${tz}"
+  done
+
+  cp -v zone.tab zone1970.tab iso3166.tab "${ZONEINFO}"
+  /usr/sbin/zic -d "${ZONEINFO}" -p America/New_York
+  unset ZONEINFO
+}
+
+sha256sums=('f8242a522ea3496b0ce4ff4f2e75a049178da21001a08b8e666d8cbe07d18086')
