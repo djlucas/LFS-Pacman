@@ -9,16 +9,15 @@ url="https://sites.google.com/site/fullycapable/"
 license=('GPL3')
 groups=('core')
 source=("https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/${pkgname}-${pkgver}.tar.xz")
-depends=('attr'
-         'bash'
-         'binutils'
-         'coreutils'
-         'gcc'
-         'glibc'
-         'linux-pam'
-         'make'
-         'perl'
-         'sed')
+depends=('glibc' 'linux-pam')
+makedepends=('attr'
+             'bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make'
+             'perl'
+             'sed')
 backup=('etc/security/capability.conf')
 
 build() {
