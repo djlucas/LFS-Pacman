@@ -1,16 +1,24 @@
 # Maintainer: archetech trw2006@hotmail.com
 
 pkgname=file
-pkgver=5.31
+pkgver=5.32
 pkgrel=1
 pkgdesc="File package contains a utility for identifying types of files"
 arch=('x86_64')
 url="http://www.darwinsys.com/file/"
 groups=('core')
 license=('custom')
-depends=('glibc' 'zlib')
-makedepends=('bash' 'binutils' 'coreutils' 'diffutils' 'gawk' 'gcc' 'grep'
-             'make' 'sed')
+depends=('glibc'
+         'zlib')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gawk'
+             'gcc'
+             'grep'
+             'make'
+             'sed')
 source=("ftp://ftp.astron.com/pub/file/${pkgname}-${pkgver}.tar.gz")
 
 build() {
@@ -28,4 +36,4 @@ package() {
   cd "${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
 }
-sha256sums=('09c588dac9cff4baa054f51a36141793bcf64926edc909594111ceae60fce4ee')
+sha256sums=('8639dc4d1b21e232285cd483604afc4a6ee810710e00e579dbe9591681722b50')
