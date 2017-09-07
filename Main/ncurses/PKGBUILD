@@ -1,0 +1,96 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgbase=ncurses
+pkgname=('ncurses'
+         'ncurses-debug')
+pkgver=6.0
+pkgrel=1
+arch=('x86_64')
+url="http://www.gnu.org/software/${pkgbase}/"
+license=('GPL3')
+groups=('core')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gawk'
+             'gcc'
+             'grep'
+             'make'
+             'patch'
+             'sed')
+source=("https://ftp.gnu.org/gnu/${pkgbase}/${pkgbase}-${pkgver}.tar.gz")        
+
+build() {
+  cd "${pkgbase}-${pkgver}"
+  sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
+  ./configure --prefix=/usr           \
+              --mandir=/usr/share/man \
+              --with-shared           \
+              --without-debug         \
+              --without-normal        \
+              --enable-pc-files       \
+              --enable-widec
+  make
+  make DESTDIR="${srcdir}/${pkgbase}-dest/" install
+}
+
+# The testsuite can only be run after the package is installed
+#check() {
+#  cd "${pkgbase}-${pkgver}/tests"
+#  make test
+#}
+
+package_ncurses-debug() {
+  pkgdesc="The Ncurses package contains libraries for terminal-independent handling of character screens."
+  depends=('glibc')
+  options=(!strip)
+
+  install -vdm755 "${pkgdir}/usr/lib"
+  for _lib in "${srcdir}/${pkgbase}"-dest/usr/lib/*.so.[0-9].[0-9]
+  do
+    _libbase=$(basename "${_lib}")
+    objcopy --only-keep-debug "${_lib}" "${pkgdir}/usr/lib/${_libbase}.dbg"
+  done
+
+}
+
+package_ncurses() {
+  pkgdesc="The Ncurses package contains libraries for terminal-independent handling of character screens."
+  depends=("${pkgbase}"="${pkgver}-${pkgrel}")
+  groups=('core')
+
+  cd "${pkgbase}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/lib"
+  mv -v "${pkgdir}"/usr/lib/libncursesw.so.6* "${pkgdir}/lib"
+  ln -sfv ../../lib/$(readlink "${pkgdir}/usr/lib/libncursesw.so") \
+          "${pkgdir}/usr/lib/libncursesw.so"
+  install -vdm755 "${pkgdir}/usr/lib/pkgconfig"
+  for lib in ncurses form panel menu ; do
+    rm -vf "${pkgdir}/usr/lib/lib${lib}.so"
+    echo "INPUT(-l${lib}w)" > "${pkgdir}/usr/lib/lib${lib}.so"
+    ln -sfv "${lib}w.pc" "${pkgdir}/usr/lib/pkgconfig/${lib}.pc"
+  done
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgbase}-${pkgver}"
+  cp -v -R doc/* "${pkgdir}/usr/share/doc/${pkgbase}-${pkgver}"
+}
+
+#package_ncurses5-compat() {
+#  pkgdesc="The Ncurses package contains libraries for terminal-independent handling of character screens."
+#  depends=("${pkgbase}"="${pkgver}-${pkgrel}")
+#
+#  cd "${pkgbase}-${pkgver}"
+#  make distclean
+#  ./configure --prefix=/usr    \
+#              --with-shared    \
+#              --without-normal \
+#              --without-debug  \
+#              --without-cxx-binding \
+#              --with-abi-version=5 
+#  make sources libs
+#  install -vdm755 "${pkgdir}/usr/lib"
+#  install -vm755 lib/lib*.so.5* "${pkgdir}/usr/lib"
+#}
+
+sha256sums=('f551c24b30ce8bfb6e96d9f59b42fbea30fa3a6123384172f9e7284bcf647260')
