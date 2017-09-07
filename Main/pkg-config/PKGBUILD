@@ -1,0 +1,42 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=pkg-config
+pkgver=0.29.2
+pkgrel=1
+pkgdesc="The pkg-config package contains a tool for passing the include path and/or library paths to build tools during the configure and make file execution." 
+arch=('x86_64')
+url="http://www.freedesktop.org/wiki/Software/pkg-config"
+license=('GPL3')
+groups=('core')
+depends=('binutils'
+         'glibc')
+makedepends=('bash'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'grep'
+             'make'
+             'popt'
+             'sed')
+source=("https://${pkgname}.freedesktop.org/releases/${pkgname}-${pkgver}.tar.gz")        
+
+build() {
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr              \
+              --with-internal-glib       \
+              --disable-host-tool        \
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}"	
+  make
+}
+
+check() {
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('6fc69c01688c9458a57eb9a1664c9aba372ccda420a02bf4429fe610e7e7d591')
