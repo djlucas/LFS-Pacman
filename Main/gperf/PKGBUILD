@@ -8,7 +8,11 @@ arch=('x86_64')
 url="http://www.gnu.org/software/${pkgname}/"
 license=('GPL')
 groups=('core')
-makedepends=('bash' 'binutils' 'coreutils' 'gcc' 'glibc' 'make')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make')
 depends=('glibc')
 checkdepends=('diffutils' 'expect')
 source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
@@ -29,4 +33,5 @@ package(){
   cd "${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
 }
+
 sha256sums=('588546b945bba4b70b6a3a616e80b4ab466e3f33024a352fc2198112cdbb3ae2')
