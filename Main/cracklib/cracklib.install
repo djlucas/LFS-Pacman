@@ -1,0 +1,9 @@
+post_install(){
+  echo $(hostname) >>  /usr/share/dict/cracklib-extra-words
+  create-cracklib-dict /usr/share/dict/cracklib-words \
+                       /usr/share/dict/cracklib-extra-words
+}
+
+post_upgrade(){
+  post_install
+}

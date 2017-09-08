@@ -1,0 +1,51 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=cracklib
+pkgver=2.9.6
+pkgrel=1
+pkgdesc="The CrackLib package contains a library used to enforce strong passwords by comparing user selected passwords to words in chosen word lists." 
+arch=('x86_64')
+url="http://www.gnu.org/software/cracklib"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make')
+source=("https://github.com/${pkgname}/${pkgname}/releases/download/${pkgname}-${pkgver}/${pkgname}-${pkgver}.tar.gz"
+        "https://github.com/${pkgname}/${pkgname}/releases/download/${pkgname}-${pkgver}/${pkgname}-words-${pkgver}.gz")        
+install="cracklib.install"
+options=(!emptydirs)
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  sed -i '/skipping/d' util/packer.c
+  ./configure --prefix=/usr    \
+              --disable-static \
+              --with-default-dict=/lib/cracklib/pw_dict
+  make
+}
+
+# The package must be installed and configured to test it
+#check(){
+#  cd "${pkgname}-${pkgver}"
+#  make test
+#}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/lib"
+  mv -v "${pkgdir}"/usr/lib/libcrack.so.* "${pkgdir}/lib"
+  install -v -m644 -D "${srcdir}/${pkgname}-words-${pkgver}.gz" \
+                      "${pkgdir}/usr/share/dict/${pkgname}-words.gz"
+  gunzip -v "${pkgdir}/usr/share/dict/cracklib-words.gz"
+  ln -v -sf cracklib-words "${pkgdir}/usr/share/dict/words"
+  install -v -m755 -d "${pkgdir}/lib/cracklib"
+}
+
+sha256sums=('17cf76943de272fd579ed831a1fd85339b393f8d00bf9e0d17c91e972f583343'
+            '27973245225eeb9d0090e97f3dea4197dec99b64d9d3a791a60298f3b021824c')
