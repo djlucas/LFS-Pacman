@@ -1,7 +1,7 @@
 # Maintainer DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=licenses
-pkgver=20170709
+pkgver=20170908
 pkgrel=1
 pkgdesc="A package of standard licenses that can be referenced in a PKGBUILD file without the need to install the license as part of a package."
 arch=('any')
@@ -33,7 +33,7 @@ source=(apache-2.0.txt::http://www.apache.org/licenses/LICENSE-2.0.txt
         http://www.gnu.org/licenses/fdl-1.3.txt
         http://www.latex-project.org/lppl.txt
         mpl-1.1.txt::https://www.mozilla.org/media/MPL/1.1/index.0c5913925d40.txt
-        http://www.perlfoundation.org/attachment/legal/artistic-2_0.txt
+        artistic-2_0.txt::https://raw.githubusercontent.com/s-a/license/master/_licenses/artistic-2.0.txt
         php-3.0.txt::http://www.php.net/license/3_0.txt
         ruby-license.txt::http://www.ruby-lang.org/en/about/license.txt
         cc-by-nc-sa-2.0.txt
@@ -132,8 +132,8 @@ sha256sums=('cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30'
             '3fbaa451ae2ab9a8d2e1c18666d8f9f00c277ba424cc826046ab0b211ce5d3b2'
             'cd9832c492786274823efa8d026ba57f45b51fabf37fc67b85069e1ed0c062b7'
             'e1395cf689f1f17df97c563bf4a0872ab2100d0e97917437ba9ecc348299ae2a'
-            '52c60c0c34d1101b98427746fc66bd9e5b664a47ad6c4f3f444aefab48ee2577'
-            '0b1196db129e12fe9c6e0fe8a501d4a3c7f0f1c37f5882c92375385c1a823e7e'
+            '1d1974e33848589623f6a1982cd8b5586e169e8c96db373d956569dc77f4fa3d'
+            '9e094e56c726916f46537775a17fd68ad5665c3d9728f3f587b801eeaf51439f'
             '57c8ff33c9c0cfc3ef00e650a1cc910d7ee479a8bc509f6c9209a7c2a11399d6'
             '8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643'
             '8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903'
@@ -143,7 +143,7 @@ sha256sums=('cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30'
             '4748f03ed2dbcc14cde6ebc30799899c403e356a7465dc30fcf2b80c45fc0059'
             '5f05fcf6ef25a6c31bccd2df7c0c46b23107bbeb2ce5cdba74efb5cc357f4dbb'
             'f849fc26a7a99981611a3a370e83078deb617d12a45776d6c4cada4d338be469'
-            'f2e0707902c4cd92155bb081a6eb0d77ebab789eafb212659fa6f44fcdca531b'
+            '84c0953bbe90519d40bf94a5770c2677f3a239dae1fd7281115e9e4cf6643757'
             'be9019f00e94668a1c287b1697cd77523748903cfc2cc0b7bcdaacd78a3c5c7b'
             'f5eb1b2956d5f7a67b2e5722a3749bc2fe86f9c580f2e3f5a08519cf073b5864'
             'bca144d98e0c3602accd77afae806c2e3e0405525d08a444e3384cfc4891d5e6'
