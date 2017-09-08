@@ -1,0 +1,35 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=psmisc
+pkgver=23.1
+pkgrel=1
+pkgdesc="The Psmisc package contains programs for displaying information about running processes." 
+arch=('x86_64')
+url="http://www.gnu.org/software/psmisc"
+license=('GPL3')
+groups=('core')
+depends=('glibc'
+         'ncurses')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed')
+source=("https://sourceforge.net/projects/${pkgname}/files/${pkgname}/${pkgname}-${pkgver}.tar.xz")        
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+mv -v "${pkgdir}"/usr/bin/fuser   "${pkgdir}"/bin
+mv -v "${pkgdir}"/usr/bin/killall "${pkgdir}"/bin
+}
+sha256sums=('2e84d474cf75dfbe3ecdacfb797bbfab71a35c7c2639d1b9f6d5f18b2149ba30')
