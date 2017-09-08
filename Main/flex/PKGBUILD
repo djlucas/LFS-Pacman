@@ -1,0 +1,45 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=flex
+pkgver=2.6.4
+pkgrel=1
+pkgdesc="The Flex package contains a utility for generating programs that recognize patterns in text."
+arch=('x86_64')
+url="http://${pkgname}.sourceforge.net/"
+groups=('core')
+license=('GPL3')
+makedepends=('binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'help2man'
+             'make'
+             'patch'
+             'sed'
+             'texinfo')
+depends=('bash'
+         'glibc'
+         'm4')
+checkdepends=('diffutils'
+              'findutils')
+source=("https://github.com/westes/${pkgname}/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  sed -i "/math.h/a #include <malloc.h>" src/flexdef.h
+  ./configure --prefix=/usr \
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}"
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  ln -svf flex "${pkgdir}/usr/bin/lex"
+}
+sha256sums=('e87aae032bf07c26f85ac0ed3250998c37621d95f8bd748b31f15b33c45ee995')
