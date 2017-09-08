@@ -1,6 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
 pkgname=shadow
-pkgver=4.4
+pkgver=4.5
 pkgrel=1
 pkgdesc="The Shadow package contains programs for handling passwords in a secure way."
 arch=('i686' 'x86_64')
@@ -23,7 +24,8 @@ depends=('bash'
 optdepends=('skey: add S/Key support')
 source=("https://github.com/shadow-maint/${pkgname}/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.xz")
 groups=('core')
-backup=('etc/login.defs'
+backup=('etc/default/useradd'
+        'etc/login.defs'
         'etc/pam.d/login'
         'etc/pam.d/passwd'
         'etc/pam.d/su'
@@ -49,7 +51,6 @@ prepare(){
   sed -i -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD SHA512@' \
          -e 's@/var/spool/mail@/var/mail@' etc/login.defs
   sed -i 's/1000/999/' etc/useradd
-  sed '/snprintf/s@_msg,@_msg, 256,@' -i src/su.c
 }
 
 build(){
@@ -194,4 +195,4 @@ EOF
   done
 }
 
-sha256sums=('61a9a4041b552eab9a253788d589e3664cf9b903bdd1f1ca73ea8aac4a71f03c')
+sha256sums=('fc8c858381ad577a5c25ff5beb6ee60a34f8719c73e4e7c61e74188b4e54b741')
