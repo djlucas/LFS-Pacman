@@ -1,0 +1,26 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=iana-etc
+pkgver=2.30
+pkgrel=1
+pkgdesc="The Iana-Etc package provides data for network services and protocols."
+arch=('x86_64')
+url="http://freecode.com/projects/iana-etc"
+license=('GPL3')
+groups=('core')
+source=("http://anduin.linuxfromscratch.org/LFS/iana-etc-2.30.tar.bz2")
+depends=('coreutils' 'gawk')
+makedepends=('make')
+
+build() {
+  # Do nothing...
+  echo ""
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  make
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('b9a6874fb20012836efef75452ef2acae624022d680feeb1994d73facba3f20d')
