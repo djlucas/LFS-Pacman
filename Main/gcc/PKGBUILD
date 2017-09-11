@@ -1,8 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgbase=gcc
-pkgname=('gcc-debug'
-         'gcc-ada'
+pkgname=('gcc-ada'
          'gcc-fortran'
          'gcc-go'
          'gcc-objc'
@@ -138,19 +137,6 @@ check(){
   cd ${srcdir}/${pkgbase}-${pkgver}/build
   make -k check || true
   ${srcdir}/${pkgbase}-${pkgver}/contrib/test_summary
-}
-
-package_gcc-debug(){
-  pkgdesc="The GCC package contains the GNU compiler collection (debug symbols only)"
-  depends=("gcc=${pkgver}-${pkgrel}")
-  options=(!strip)
-
-  install -vdm755 "${pkgdir}/usr/lib"
-  for _lib in "${srcdir}"/gcc-dest/usr/lib/*.so.[0-9].[0-9].{,[1-4]}[0-9]
-  do
-    _libbase=$(basename "${_lib}")
-    objcopy --only-keep-debug "${_lib}" "${pkgdir}/usr/lib/${_libbase}.dbg"
-  done
 }
 
 package_gcc-ada(){
