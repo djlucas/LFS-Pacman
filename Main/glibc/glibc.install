@@ -1,0 +1,8 @@
+post_install(){
+  /usr/bin/locale-gen
+}
+
+post_upgrade(){
+  /usr/bin/locale-gen
+}
+
