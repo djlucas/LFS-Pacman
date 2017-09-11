@@ -1,0 +1,51 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=inetutils
+pkgver=1.9.4
+pkgrel=1
+pkgdesc="The Inetutils package contains programs for basic networking." 
+arch=('x86_64')
+url="http://www.gnu.org/software/inetutils"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'ncurses'
+             'patch'
+             'sed'
+             'texinfo'
+             'zlib')
+source=("https://ftp.gnu.org/gnu/inetutils/${pkgname}-${pkgver}.tar.xz")        
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --localstatedir=/var \
+              --disable-logger     \
+              --disable-whois      \
+              --disable-rcp        \
+              --disable-rexec      \
+              --disable-rlogin     \
+              --disable-rsh        \
+              --disable-servers
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -d -m755 "${pkgdir}"/{,s}bin
+  mv -v "${pkgdir}"/usr/bin/{hostname,ping,ping6,traceroute} "${pkgdir}/bin"
+  mv -v "${pkgdir}"/usr/bin/ifconfig "${pkgdir}/sbin"
+}
+sha256sums=('849d96f136effdef69548a940e3e0ec0624fc0c81265296987986a0dd36ded37')
