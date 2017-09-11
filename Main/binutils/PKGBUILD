@@ -1,14 +1,15 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
-pkgname=('binutils-debug'
-         'binutils')
-pkgbase=binutils
+pkgname=binutils
 pkgver=2.29
 pkgrel=1
 arch=('x86_64')
-url="http://www.gnu.org/software/${pkgbase}/"
+pkgdesc="The Binutils package contains a linker, an assembler, and other tools for handling object files."
+url="http://www.gnu.org/software/${pkgname}/"
 license=('GPL')
 groups=('core')
+depends=('glibc'
+         'zlib')
 makedepends=('bash'
              'binutils'
              'coreutils'
@@ -21,17 +22,17 @@ makedepends=('bash'
              'perl'
              'sed'
              'texinfo')
-source=("http://ftp.gnu.org/gnu/${pkgbase}/${pkgbase}-${pkgver}.tar.bz2")
+source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.bz2")
 
 prepare(){
-  cd ${srcdir}/${pkgbase}-${pkgver}
+  cd "${pkgname}-${pkgver}"
   # Kill $CPP and $CPPFLAGS when testing header files (Thanks Arch Linux)
   sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" libiberty/configure
   mkdir -v build
 }
 
 build(){ 
-  cd ${srcdir}/${pkgbase}-${pkgver}/build
+  cd "${pkgname}-${pkgver}/build"
   ../configure --prefix=/usr       \
                --enable-gold       \
                --enable-ld=default \
@@ -46,7 +47,7 @@ build(){
 }
 
 check(){
-  cd ${srcdir}/${pkgbase}-${pkgver}/build
+  cd "${pkgname}-${pkgver}/build"
   make LDFLAGS="" -k check 2>&1 | tee test.log || true
   # one test fails and four error with new kenerl headers
   failures=`grep "tests failed" test.log | cut -d " " -f 1`
@@ -55,30 +56,9 @@ check(){
   fi
 }
 
-package_binutils-debug(){
-  pkgdesc="Debugging symbols for buinutils."
-  depends=("binutils=${pkgver}-${pkgrel}")
-  options=(!strip)
-
-  # Install to staging location first...
-  cd ${srcdir}/${pkgbase}-${pkgver}/build
-  make prefix=${srcdir}/binutils-dest/usr \
-       tooldir=${srcdir}/binutils-dest/usr \
-       install
-
-  install -vdm755 "${pkgdir}/usr/lib"
-  for _lib in "${srcdir}"/binutils-dest/usr/lib/*.so
-  do
-    _libbase=$(basename "${_lib}")
-    objcopy --only-keep-debug "${_lib}" "${pkgdir}/usr/lib/${_libbase}.dbg"
-  done
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  make DESTDIR="${pkgdir}" tooldir=/usr install
 }
 
-package_binutils(){
-pkgdesc="The Binutils package contains a linker, an assembler, and other tools for handling object files."
-depends=('glibc'
-         'zlib')
-
-  cp -R ${srcdir}/binutils-dest/* ${pkgdir}/
-}
 sha256sums=('29a29549869039aad75fdf507ac30366da5ad0b974fbff4a8e7148dbf4f40ebf')
