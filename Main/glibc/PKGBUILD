@@ -1,8 +1,6 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
-pkgbase=glibc
-pkgname=('glibc-debug'
-         'glibc')
+pkgname=glibc
 pkgver=2.26
 #pkgext="adc7e06"
 #pkgver="${pkgverbase}+${pkgext}"
@@ -12,6 +10,7 @@ arch=('x86_64')
 url="http://www.gnu.org/software/libc/"
 groups=('core')
 license=('GPL')
+install='glibc.install'
 makedepends=('bash'
              'binutils'
              'coreutils'
@@ -26,8 +25,15 @@ makedepends=('bash'
              'perl'
              'sed'
              'texinfo')
-source=("https://ftp.gnu.org/gnu/${pkgbase}/${pkgbase}-${pkgver}.tar.xz"
-        "http://www.linuxfromscratch.org/patches/downloads/${pkgbase}/${pkgbase}-${pkgver}-fhs-1.patch"
+depends=('rootfs')
+options=('staticlibs')
+backup=('etc/ld.so.cache'
+        'etc/ld.so.conf'
+        'etc/locale.gen'
+        'etc/nscd.conf'
+        'etc/nsswitch.conf')
+source=("https://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz"
+        "http://www.linuxfromscratch.org/patches/downloads/${pkgname}/${pkgname}-${pkgver}-fhs-1.patch"
         "locale.gen.txt"
         "locale-gen"
         "nsswitch.conf")
@@ -36,20 +42,20 @@ prepare(){
   #srcdir is used internally
   test "z${sourcesdir}" == "z" && sourcesdir=${srcdir} && unset srcdir
 
-  cd ${sourcesdir}/${pkgbase}-${pkgver}
-  patch -Np1 -i ${sourcesdir}/${pkgbase}-${pkgver}-fhs-1.patch
+  cd "${sourcesdir}/${pkgname}-${pkgver}"
+  patch -Np1 -i "${sourcesdir}/${pkgname}-${pkgver}-fhs-1.patch"
   mkdir build
 }
 
 build(){
   #srcdir is used internally
-  test "z${sourcesdir}" == "z" && sourcesdir=${srcdir} && unset srcdir
+  test "z${sourcesdir}" == "z" && sourcesdir="${srcdir}" && unset srcdir
 
   # remove hardening options for building libraries - thanks Arch Linux!
   CFLAGS=${CFLAGS/-fstack-protector-strong/}
   CPPFLAGS=${CPPFLAGS/-D_FORTIFY_SOURCE=2/}
 
-  cd ${sourcesdir}/${pkgbase}-${pkgver}/build
+  cd "${sourcesdir}/${pkgname}-${pkgver}/build"
 
   # In chroot, uncomment the following three lines to avoid invalid paths
   # in debug symbols, however, you will also need to guard "make -k" to avoid
@@ -68,9 +74,9 @@ build(){
 
 check(){
   #srcdir is used internally in the glibc makefile
-  test "z${sourcesdir}" == "z" && sourcesdir=${srcdir} && unset srcdir
+  test "z${sourcesdir}" == "z" && sourcesdir="${srcdir}" && unset srcdir
 
-  cd ${sourcesdir}/${pkgbase}-${pkgver}/build
+  cd "${sourcesdir}/${pkgname}-${pkgver}/build"
   make -k check || true
 
   # Get test rusults together into one file
@@ -100,94 +106,75 @@ check(){
   test "${_FAILCOUNT}" -lt "13" || exit 1
 }
 
-package_glibc-debug(){
-  pkgdesc="Contains debug symbols removed from the glibc-${pkgver}-${pkgrel} package."
-  depends=("glibc=${pkgver}-${pkgrel}")
-  options=(!strip)
-
-  #srcdir is used internally
-  test "z${sourcesdir}" == "z" && sourcesdir=${srcdir} && unset srcdir
-
-  # Install into temporary destination directory to generate debug symbols
-  cd ${sourcesdir}/${pkgbase}-${pkgver}/build
-  install -vdm755 "${sourcesdir}/glibc-dest/etc"
-  echo "include /etc/ld.so.conf.d/*.conf" > \
-       "${sourcesdir}/glibc-dest/etc/ld.so.conf"
-  install -vdm755 "${sourcesdir}/glibc-dest/etc/ld.so.conf.d"
-  make install_root="${sourcesdir}/glibc-dest" install
-  rm -f "${sourcesdir}/glibc-dest/etc/ld.so.cache"
-
-  install -vdm755 "${pkgdir}/usr/lib"
-  for _lib in "${sourcesdir}"/glibc-dest/lib/*.so
-  do
-    _libbase=$(basename "${_lib}")
-    objcopy --only-keep-debug "${_lib}" "${pkgdir}/usr/lib/${_libbase}.dbg"
-  done
-}
-
-package_glibc(){
-pkgdesc="The Glibc package contains the main C library. This library provides the basic routines for allocating memory, searching directories, opening and closing files, reading and writing files, string handling, pattern matching, arithmetic, and so on."
-depends=('rootfs')
-options=('staticlibs')
-backup=('etc/locale.gen'
-        'etc/nscd.conf'
-        'etc/ld.so.conf'
-        'etc/nsswitch.conf')
+package(){
 
   #srcdir is used internally
   test "z${sourcesdir}" == "z" && sourcesdir=${srcdir} && unset srcdir
 
   # locale-gen taken from Arch Linux
   install -vdm755 "${pkgdir}/usr/bin"
-  install -vm755 ${sourcesdir}/locale-gen ${pkgdir}/usr/bin
-  install -vdm755 ${pkgdir}/etc
-  install -vm644 ${sourcesdir}/locale.gen.txt ${pkgdir}/etc/locale.gen
+  install -vm755 "${sourcesdir}/locale-gen" "${pkgdir}/usr/bin"
+  install -vdm755 "${pkgdir}/etc"
+  install -vm644 "${sourcesdir}/locale.gen.txt" "${pkgdir}/etc/locale.gen"
   # uncommet locales by default required for LFS testsuites
   echo "# These locales are requried for LFS testsuites, do not comment out" \
-       >> ${pkgdir}/etc/locale.gen
-  echo "cs_CZ.UTF-8 UTF-8" >> ${pkgdir}/etc/locale.gen
-  echo "de_DE ISO-8859-1" >> ${pkgdir}/etc/locale.gen
-  echo "de_DE@euro ISO-8859-15" >> ${pkgdir}/etc/locale.gen
-  echo "de_DE.UTF-8 UTF-8" >> ${pkgdir}/etc/locale.gen
-  echo "en_GB.UTF-8 UTF-8" >> ${pkgdir}/etc/locale.gen
-  echo "en_HK ISO-8859-1" >> ${pkgdir}/etc/locale.gen
-  echo "en_PH ISO-8859-1" >> ${pkgdir}/etc/locale.gen
-  echo "en_US ISO-8859-1" >> ${pkgdir}/etc/locale.gen
-  echo "en_US.UTF-8 UTF-8" >> ${pkgdir}/etc/locale.gen
-  echo "es_MX ISO-8859-1" >> ${pkgdir}/etc/locale.gen
-  echo "fa_IR UTF-8" >> ${pkgdir}/etc/locale.gen
-  echo "fr_FR ISO-8859-1" >> ${pkgdir}/etc/locale.gen
-  echo "fr_FR@euro ISO-8859-15" >> ${pkgdir}/etc/locale.gen
-  echo "fr_FR.UTF-8 UTF-8" >> ${pkgdir}/etc/locale.gen
-  echo "it_IT ISO-8859-1" >> ${pkgdir}/etc/locale.gen
-  echo "it_IT.UTF-8 UTF-8" >> ${pkgdir}/etc/locale.gen
-  echo "ja_JP EUC-JP" >> ${pkgdir}/etc/locale.gen
-  echo "ru_RU.KOI8-R KOI8-R" >> ${pkgdir}/etc/locale.gen
-  echo "ru_RU.UTF-8 UTF-8" >> ${pkgdir}/etc/locale.gen
-  echo "tr_TR.UTF-8 UTF-8" >> ${pkgdir}/etc/locale.gen
-  echo "zh_CN.GB18030 GB18030" >> ${pkgdir}/etc/locale.gen
-  echo "" >> ${pkgdir}/etc/locale.gen
+       >> "${pkgdir}/etc/locale.gen"
+  echo "cs_CZ.UTF-8 UTF-8" >> "${pkgdir}/etc/locale.gen"
+  echo "de_DE ISO-8859-1" >> "${pkgdir}/etc/locale.gen"
+  echo "de_DE@euro ISO-8859-15" >> "${pkgdir}/etc/locale.gen"
+  echo "de_DE.UTF-8 UTF-8" >> "${pkgdir}/etc/locale.gen"
+  echo "en_GB.UTF-8 UTF-8" >> "${pkgdir}/etc/locale.gen"
+  echo "en_HK ISO-8859-1" >> "${pkgdir}/etc/locale.gen"
+  echo "en_PH ISO-8859-1" >> "${pkgdir}/etc/locale.gen"
+  echo "en_US ISO-8859-1" >> "${pkgdir}/etc/locale.gen"
+  echo "en_US.UTF-8 UTF-8" >> "${pkgdir}/etc/locale.gen"
+  echo "es_MX ISO-8859-1" >> "${pkgdir}/etc/locale.gen"
+  echo "fa_IR UTF-8" >> "${pkgdir}/etc/locale.gen"
+  echo "fr_FR ISO-8859-1" >> "${pkgdir}/etc/locale.gen"
+  echo "fr_FR@euro ISO-8859-15" >> "${pkgdir}/etc/locale.gen"
+  echo "fr_FR.UTF-8 UTF-8" >> "${pkgdir}/etc/locale.gen"
+  echo "it_IT ISO-8859-1" >> "${pkgdir}/etc/locale.gen"
+  echo "it_IT.UTF-8 UTF-8" >> "${pkgdir}/etc/locale.gen"
+  echo "ja_JP EUC-JP" >> "${pkgdir}/etc/locale.gen"
+  echo "ru_RU.KOI8-R KOI8-R" >> "${pkgdir}/etc/locale.gen"
+  echo "ru_RU.UTF-8 UTF-8" >> "${pkgdir}/etc/locale.gen"
+  echo "tr_TR.UTF-8 UTF-8" >> "${pkgdir}/etc/locale.gen"
+  echo "zh_CN.GB18030 GB18030" >> "${pkgdir}/etc/locale.gen"
+  echo "" >> "${pkgdir}/etc/locale.gen"
   # Supply a list of all available locales
   sed -e '1,3d' -e 's|/| |g' -e 's|\\| |g' -e 's|^|#|g' \
-    ${sourcesdir}/${pkgbase}-${pkgver}/localedata/SUPPORTED \
-    >> ${pkgdir}/etc/locale.gen
+    ${sourcesdir}/${pkgname}-${pkgver}/localedata/SUPPORTED \
+    >> "${pkgdir}/etc/locale.gen"
 
   # install distributed files
   install -vdm755 ${pkgdir}/usr/lib/{locale,systemd/system,tmpfiles.d}
   install -vdm755 ${pkgdir}/var/cache/nscd
-  install -vm644 ${sourcesdir}/${pkgbase}-${pkgver}/nscd/nscd.conf \
+  install -vm644 ${sourcesdir}/${pkgname}-${pkgver}/nscd/nscd.conf \
                  ${pkgdir}/etc/nscd.conf
-  install -vm644 ${sourcesdir}/${pkgbase}-${pkgver}/nscd/nscd.service \
+  install -vm644 ${sourcesdir}/${pkgname}-${pkgver}/nscd/nscd.service \
                  ${pkgdir}/usr/lib/systemd/system
-  install -vm644 ${sourcesdir}/${pkgbase}-${pkgver}/nscd/nscd.tmpfiles \
+  install -vm644 ${sourcesdir}/${pkgname}-${pkgver}/nscd/nscd.tmpfiles \
                  ${pkgdir}/usr/lib/tmpfiles.d/nscd.conf
   install -vm644 ${sourcesdir}/nsswitch.conf ${pkgdir}/etc
 
+  # Create ld.so.conf
+  cat >> "${pkgdir}/etc/ld.so.conf" << "EOF"
+# Begin /etc/ld.so.conf
+/usr/local/lib
+/opt/lib
+
+# Add an include directory
+include /etc/ld.so.conf.d/*.conf
+
+EOF
+  install -vdm755 "${pkgdir}/etc/ld.so.conf.d"
+
   # Finally do the installation from the temporary destination
-  cp -Rv ${sourcesdir}/glibc-dest/* ${pkgdir}/
+  cd "${sourcesdir}/${pkgname}-${pkgver}/build"  
+  make DESTDIR="${pkgdir}" install
 
   # Remove unneeded static libs (a lot are actually required)
-  rm ${pkgdir}/usr/lib/lib{anl,BrokenLocale,mvec,nsl,resolv,rt,util}.a
+  rm "${pkgdir}"/usr/lib/lib{anl,BrokenLocale,mvec,nsl,resolv,rt,util}.a
 
   # Install compatibility and lsb symlinks for x86_64
   install -vdm755 "${pkgdir}/lib64"
