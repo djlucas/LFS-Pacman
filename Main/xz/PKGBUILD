@@ -1,0 +1,46 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=xz
+pkgver=5.2.3
+pkgrel=1
+pkgdesc="The Xz package contains programs for compressing and decompressing files. It provides capabilities for the lzma and the newer xz compression formats. Compressing text files with xz yields a better compression percentage than with the traditional gzip or bzip2 commands." 
+arch=('x86_64')
+url="http://tukaani.org/xz"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'xz'
+             'texinfo')
+source=("http://tukaani.org/xz/${pkgname}-${pkgver}.tar.xz")        
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr    \
+              --disable-static \
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}"
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/bin"
+  install -vdm755 "${pkgdir}/lib"
+  mv -v "${pkgdir}"/usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} "${pkgdir}/bin"
+  mv -v "${pkgdir}"/usr/lib/liblzma.so.* "${pkgdir}/lib"
+  ln -svf ../../lib/$(readlink "${pkgdir}/usr/lib/liblzma.so") \
+                               "${pkgdir}/usr/lib/liblzma.so"
+}
+sha256sums=('7876096b053ad598c31f6df35f7de5cd9ff2ba3162e5a5554e4fc198447e0347')
