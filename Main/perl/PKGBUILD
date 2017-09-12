@@ -1,0 +1,48 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=perl
+pkgver=5.26.0
+pkgrel=1
+pkgdesc="The Perl package contains the Practical Extraction and Report Language." 
+arch=('x86_64')
+url="http://www.perl.org/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'perl'
+             'texinfo')
+source=("http://www.cpan.org/src/5.0/${pkgname}-${pkgver}.tar.xz")        
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  export BUILD_ZLIB=False
+  export BUILD_BZIP2=0
+  sh Configure -des -Dprefix=/usr                 \
+                    -Dvendorprefix=/usr           \
+                    -Dman1dir=/usr/share/man/man1 \
+                    -Dman3dir=/usr/share/man/man3 \
+                    -Dpager="/usr/bin/less -isR"  \
+                    -Duseshrplib                  \
+                    -Dusethreads
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make -k check || true
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  export BUILD_ZLIB=False
+  export BUILD_BZIP2=0
+  make DESTDIR="${pkgdir}" install
+}
+sha256sums=('9bf2e3d0d72aad77865c3bdbc20d3b576d769c5c255c4ceb30fdb9335266bf55')
