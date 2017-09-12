@@ -1,0 +1,34 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=XML-Parser
+pkgver=2.44
+pkgrel=1
+pkgdesc="The XML::Parser module is a Perl interface to James Clark's XML parser, Expat." 
+arch=('x86_64')
+url="https://github.com/chorny/XML-Parser"
+license=('GPL' 'PerlArtistic')
+groups=('core')
+depends=('glibc' 'perl' 'expat')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make')
+source=("http://cpan.metacpan.org/authors/id/T/TO/TODDR/${pkgname}-${pkgver}.tar.gz")        
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  perl Makefile.PL
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make test
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+sha256sums=('1ae9d07ee9c35326b3d9aad56eae71a6730a73a116b9fe9e8a4758b7cc033216')
