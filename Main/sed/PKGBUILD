@@ -1,0 +1,42 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=sed
+pkgver=4.4
+pkgrel=1
+pkgdesc="The Sed package contains a stream editor." 
+arch=('x86_64')
+url="http://www.gnu.org/software/sed"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'texinfo')
+source=("https://ftp.gnu.org/gnu/sed/${pkgname}-${pkgver}.tar.xz")        
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  sed 's/testsuite.panic-tests.sh//' -i Makefile.in
+  ./configure --prefix=/usr  --bindir=/bin
+  make
+  make html
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -d -m755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  install -m644 doc/sed.html "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+}
+sha256sums=('cbd6ebc5aaf080ed60d0162d7f6aeae58211a1ee9ba9bb25623daa6cd942683b')
