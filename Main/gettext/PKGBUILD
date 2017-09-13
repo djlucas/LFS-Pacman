@@ -3,15 +3,25 @@
 pkgname=gettext
 pkgver=0.19.8.1
 pkgrel=1
-pkgdesc="GNU Internationalization library" 
+pkgdesc="The Gettext package contains utilities for internationalization and localization. These allow programs to be compiled with NLS (Native Language Support), enabling them to output messages in the user's native language."
 arch=('x86_64')
-url="http://www.gnu.org/software/gettext"
+url="http://www.gnu.org/software/${pkgname}/"
 groups=('core')
 license=('GPL')
-depends=('glibc' 'gcc')
-makedepends=('bash' 'binutils' 'coreutils' 'diffutils' 'gawk' 'grep' 'make'
-             'perl' 'sed' 'tcl' 'texinfo')
-source=("ftp://ftp.gnu.org/pub/gnu/gettext/${pkgname}-${pkgver}.tar.gz")
+depends=('glibc'
+         'gcc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gawk'
+             'grep'
+             'make'
+             'perl'
+             'sed'
+             'tcl'
+             'texinfo')
+source=("ftp://ftp.gnu.org/pub/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
 
 prepare() {
   cd "${pkgname}-${pkgver}"
@@ -22,9 +32,9 @@ prepare() {
 
 build() {
   cd "${pkgname}-${pkgver}"
-  ./configure --prefix=/usr \
-  --disable-static  \
-  --docdir="/usr/share/doc/${pkgname}-${pkgver}"
+  ./configure --prefix=/usr     \
+              --disable-static  \
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}"
   make
 }
 
