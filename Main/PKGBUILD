@@ -1,0 +1,52 @@
+# Maintainer: archetech trw2006@hotmail.com
+
+pkgname=gettext
+pkgver=0.19.8.1
+pkgrel=1
+pkgdesc="The Gettext package contains utilities for internationalization and localization. These allow programs to be compiled with NLS (Native Language Support), enabling them to output messages in the user's native language."
+arch=('x86_64')
+url="http://www.gnu.org/software/${pkgname}/"
+groups=('core')
+license=('GPL')
+depends=('glibc'
+         'gcc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gawk'
+             'grep'
+             'make'
+             'perl'
+             'sed'
+             'tcl'
+             'texinfo')
+source=("ftp://ftp.gnu.org/pub/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+
+prepare() {
+  cd "${pkgname}-${pkgver}"
+  # Fix two tests that loop forever on some hardware/kernel combos
+  sed -i '/^TESTS =/d' gettext-runtime/tests/Makefile.in
+  sed -i 's/test-lock..EXEEXT.//' gettext-tools/gnulib-tests/Makefile.in
+}
+
+build() {
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr     \
+              --disable-static  \
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}"
+  make
+}
+
+check() {
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  chmod -v 0755 "${pkgdir}/usr/lib/preloadable_libintl.so"
+}
+
+sha256sums=('ff942af0e438ced4a8b0ea4b0b6e0d6d657157c5e2364de57baa279c1c125c43')
