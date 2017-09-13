@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=linux-api-headers
-pkgver=4.13
+pkgver=4.13.1
 pkgrel=1
 pkgdesc="The Linux API Headers expose the kernel's API for use by Glibc."
 arch=('i686' 'x86_64')
@@ -36,4 +36,4 @@ package(){
   cp -rv dest/include/* ${pkgdir}/usr/include
 }
 
-sha256sums=('2db3d6066c3ad93eb25b973a3d2951e022a7e975ee2fa7cbe5bddf84d9a49a2c')
+sha256sums=('decee7a2de34aea921fce3e7934f520790fe43176de29bd9718a84419ca6e1ce')
