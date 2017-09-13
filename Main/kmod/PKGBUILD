@@ -46,5 +46,6 @@ package(){
   for target in depmod insmod lsmod modinfo modprobe rmmod; do
     ln -sfv ../bin/kmod "${pkgdir}/sbin/${target}"
   done
+  ln -sfv kmod "${pkgdir}/bin/lsmod"
 }
 sha256sums=('610b8d1df172acc39a4fdf1eaa47a57b04873c82f32152e7a62e29b6ff9cb397')
