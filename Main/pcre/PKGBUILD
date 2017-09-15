@@ -1,0 +1,49 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=pcre
+pkgver=8.41
+pkgrel=1
+pkgdesc="The PCRE package contains Perl Compatible Regular Expression libraries. These are useful for implementing regular expression pattern matching using the same syntax and semantics as Perl 5." 
+arch=('x86_64')
+url="https://sourceforge.net/projects/pcre/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'texinfo')
+source=("https://downloads.sourceforge.net/${pkgname}/${pkgname}-${pkgver}.tar.bz2")        
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr                     \
+            --docdir=/usr/share/doc/pcre-8.41 \
+            --enable-unicode-properties       \
+            --enable-pcre16                   \
+            --enable-pcre32                   \
+            --enable-pcregrep-libz            \
+            --enable-pcregrep-libbz2          \
+            --enable-pcretest-libreadline     \
+            --disable-static
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/lib"
+  mv -v "${pkgdir}"/usr/lib/libpcre.so.* "${pkgdir}/lib"
+  ln -sfv ../../lib/$(readlink "${pkgdir}/usr/lib/libpcre.so") \
+          "${pkgdir}/usr/lib/libpcre.so"
+}
+sha256sums=('e62c7eac5ae7c0e7286db61ff82912e1c0b7a0c13706616e94a7dd729321b530')
