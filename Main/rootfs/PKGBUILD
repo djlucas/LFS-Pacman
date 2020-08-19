@@ -496,8 +496,8 @@ if [ -d "$HOME/bin" ] ; then
   pathprepend $HOME/bin
 fi
 
-# Set up user specific i18n variables
-#export LANG=<ll>_<CC>.<charmap><@modifiers>
+# Set up user specific i18n variables - default to en_US.UTF-8
+export LANG=en_US.UTF-8
 
 # End ~/.profile
 EOF
@@ -517,8 +517,8 @@ if [ -f "/etc/bashrc" ] ; then
   source /etc/bashrc
 fi
 
-# Set up user specific i18n variables
-#export LANG=<ll>_<CC>.<charmap><@modifiers>
+# Set up user specific i18n variables - default to en_US.UTF-8
+export LANG=en_US.UTF-8
 
 # End ~/.bashrc
 EOF
