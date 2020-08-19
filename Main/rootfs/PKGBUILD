@@ -6,47 +6,534 @@ pkgdesc="Skeleton directory layout and core /etc and /var/log files for initial 
 arch=('any')
 license=('Creative Commons Attribution-NonCommercial-ShareAlike 4.0')
 groups=('core')
-source=('passwd'
-        'group')
-backup=('etc/passwd'
+backup=('etc/bashrc'
+        'etc/dircolors'
+        'etc/fstab'
         'etc/group'
+        'etc/hosts'
+        'etc/inputrc'
+        'etc/ld.so.conf'
+        'etc/passwd'
+        'etc/profile'
+        'etc/profile.d/bash_completion.sh'
+        'etc/profile.d/dircolors.sh'
+        'etc/profile.d/extrapaths.sh'
+        'etc/profile.d/readline.sh'
+        'etc/profile.d/umask.sh'
+        'etc/profile.d/i18n.sh'
+        'etc/skel/.bash_logout'
+        'etc/skel/.bash_profile'
+        'etc/skel/.bashrc'
+        'etc/skel/.profile'
+        'etc/shells'
+        'root/.bash_logout'
+        'root/.bash_profile'
+        'root/.bashrc'
+        'root/.profile'
         'var/log/btmp'
+        'var/log/faillog'
         'var/log/lastlog'
         'var/log/wtmp')
-
 package(){
-  #6.2
+  # 4.2
+  install -vdm755 ${pkgdir}/{bin,etc,lib{,64},sbin,usr,var}
+  # 7.3
   install -vdm755 ${pkgdir}/{dev,proc,run,sys}
+  # 7.3.1
   mknod -m 666 ${pkgdir}/dev/console c 5 1
   mknod -m 666 ${pkgdir}/dev/null c 1 3
-  chmod -v 1777 ${pkgdir}/run
-  chmod -v 555 ${pkgdir}/{proc,sys}
-  #6.5
-  install -vdm755 ${pkgdir}/{bin,boot,etc/{opt,sysconfig},home,lib/firmware,mnt,opt}
-  install -vdm755 ${pkgdir}/{media/{floppy,cdrom},sbin,srv,var}
-  install -vdm750 ${pkgdir}/root
-  install -vdm1777 ${pkgdir}/tmp ${pkgdir}/var/tmp
+  # 7.5
+  install -vdm755 ${pkgdir}/{boot,home,mnt,opt,srv}
+  install -vdm755 ${pkgdir}/etc/{opt,sysconfig}
+  install -vdm755 ${pkgdir}/lib/firmware
+  install -vdm755 ${pkgdir}/media/{floppy,cdrom}
   install -vdm755 ${pkgdir}/usr/{,local/}{bin,include,lib,sbin,src}
   install -vdm755 ${pkgdir}/usr/{,local/}share/{color,dict,doc,info,locale,man}
   install -vdm755 ${pkgdir}/usr/{,local/}share/{misc,terminfo,zoneinfo}
-  install -vdm755 ${pkgdir}/usr/libexec
   install -vdm755 ${pkgdir}/usr/{,local/}share/man/man{1..8}
-  case $CARCH in
-    x86_64) install -vdm755 ${pkgdir}/lib64
-    ;;
-  esac
-  install -vdm755 ${pkgdir}/var/{log,mail,spool}
-  ln -sv ../run ${pkgdir}/var/run
-  ln -sv ../run/lock ${pkgdir}/var/lock
-  install -vdm755 ${pkgdir}/var/{opt,cache,lib/{color,misc,locate},local}
-  #6.6
+  install -vdm755 ${pkgdir}/var/{cache,local,log,mail,opt,spool}
+  install -vdm755 ${pkgdir}/var/lib/{color,misc,locate}
+  install -vdm750 ${pkgdir}/root
+  install -vdm1777 ${pkgdir}{,/var}/tmp
+  ln -sfv /run ${pkgdir}/var/run
+  ln -sfv /run/lock ${pkgdir}/var/lock
+  # 7.6
   ln -sv /proc/self/mounts ${pkgdir}/etc/mtab
-  install -vm644 ${srcdir}/passwd ${pkgdir}/etc/passwd
-  install -vm644 ${srcdir}/group ${pkgdir}/etc/group
+  cat > ${pkgdir}/etc/passwd << "EOF"
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/dev/null:/bin/false
+daemon:x:6:6:Daemon User:/dev/null:/bin/false
+messagebus:x:18:18:D-Bus Message Daemon User:/var/run/dbus:/bin/false
+nobody:x:99:99:Unprivileged User:/dev/null:/bin/false
+EOF
+  cat > ${pkgdir}/etc/group << "EOF"
+root:x:0:
+bin:x:1:daemon
+sys:x:2:
+kmem:x:3:
+tape:x:4:
+tty:x:5:
+daemon:x:6:
+floppy:x:7:
+disk:x:8:
+lp:x:9:
+dialout:x:10:
+audio:x:11:
+video:x:12:
+utmp:x:13:
+usb:x:14:
+cdrom:x:15:
+adm:x:16:
+messagebus:x:18:
+input:x:24:
+mail:x:34:
+kvm:x:61:
+wheel:x:97:
+nogroup:x:99:
+users:x:999:
+EOF
   touch ${pkgdir}/var/log/{btmp,lastlog,faillog,wtmp}
-  chgrp -v 13 ${pkgdir}/var/log/lastlog
+  chgrp -v 12   ${pkgdir}/var/log/lastlog
   chmod -v 664  ${pkgdir}/var/log/lastlog
   chmod -v 600  ${pkgdir}/var/log/btmp
+  # 7.6 and 9.5.4
+  cat > ${pkgdir}/etc/hosts << "EOF"
+# Begin /etc/hosts
+
+# IPv4
+127.0.0.1 localhost.localdomain localhost
+# Populate the follwoing lines after installation
+#127.0.1.1 <FQDN> <HOSTNAME>
+#<192.168.1.1> <FQDN> <HOSTNAME> [alias1] [alias2 ...]
+
+# IPv6
+::1       localhost ip6-localhost ip6-loopback
+ff02::1   ip6-allnodes
+ff02::2   ip6-allrouters
+
+# End /etc/hosts
+EOF
+  #8.8.2.3
+  install -vdm755 ${pkgdir}/etc/ld.so.conf.d/
+  cat > ${pkgdir}/etc/ld.so.conf << "EOF"
+# Begin /etc/ld.so.conf
+
+/usr/local/lib
+/opt/lib
+
+# Add an include directory
+include /etc/ld.so.conf.d/*.conf
+
+# End /etc/ld.so.conf
+EOF
+  #9.8
+  cat > ${pkgdir}/etc/inputrc << "EOF"
+# Begin /etc/inputrc
+# Modified by Chris Lynn <roryo@roryo.dynup.net>
+
+# Allow the command prompt to wrap to the next line
+set horizontal-scroll-mode Off
+
+# Enable 8bit input
+set meta-flag On
+set input-meta On
+
+# Turns off 8th bit stripping
+set convert-meta Off
+
+# Keep the 8th bit for display
+set output-meta On
+
+# none, visible or audible
+set bell-style none
+
+# All of the following map the escape sequence of the value
+# contained in the 1st argument to the readline specific functions
+"\eOd": backward-word
+"\eOc": forward-word
+
+# for linux console
+"\e[1~": beginning-of-line
+"\e[4~": end-of-line
+"\e[5~": beginning-of-history
+"\e[6~": end-of-history
+"\e[3~": delete-char
+"\e[2~": quoted-insert
+
+# for xterm
+"\eOH": beginning-of-line
+"\eOF": end-of-line
+
+# for Konsole
+"\e[H": beginning-of-line
+"\e[F": end-of-line
+
+# End /etc/inputrc
+EOF
+  #9.9
+  cat > ${pkgdir}/etc/shells << "EOF"
+# Begin /etc/shells
+
+/bin/sh
+/bin/bash
+
+# End /etc/shells
+EOF
+  #10.2
+  cat > ${pkgdir}/etc/fstab << "EOF"
+# Begin /etc/fstab
+
+# file system  mount-point  type     options             dump  fsck
+#                                                              order
+
+/dev/<xxx>     /            <fff>    defaults            1     1
+/dev/<yyy>     swap         swap     pri=1               0     0
+proc           /proc        proc     nosuid,noexec,nodev 0     0
+sysfs          /sys         sysfs    nosuid,noexec,nodev 0     0
+devpts         /dev/pts     devpts   gid=5,mode=620      0     0
+tmpfs          /run         tmpfs    defaults            0     0
+devtmpfs       /dev         devtmpfs mode=0755,nosuid    0     0
+
+# End /etc/fstab
+EOF
+  #BLFS postlfs/skel.html
+  install -vdm0700 ${pkgdir}/etc/skel
+  #BLFS postlfs/profile.html
+  cat > ${pkgdir}/etc/profile << "EOF"
+# Begin /etc/profile
+# Written for Beyond Linux From Scratch
+# by James Robertson <jameswrobertson@earthlink.net>
+# modifications by Dagmar d'Surreal <rivyqntzne@pbzpnfg.arg>
+
+# System wide environment variables and startup programs.
+
+# System wide aliases and functions should go in /etc/bashrc.  Personal
+# environment variables and startup programs should go into
+# ~/.bash_profile.  Personal aliases and functions should go into
+# ~/.bashrc.
+
+# Functions to help us manage paths.  Second argument is the name of the
+# path variable to be modified (default: PATH)
+pathremove () {
+        local IFS=':'
+        local NEWPATH
+        local DIR
+        local PATHVARIABLE=${2:-PATH}
+        for DIR in ${!PATHVARIABLE} ; do
+                if [ "$DIR" != "$1" ] ; then
+                  NEWPATH=${NEWPATH:+$NEWPATH:}$DIR
+                fi
+        done
+        export $PATHVARIABLE="$NEWPATH"
 }
-sha256sums=('93e5d18aec29e9f0390600b8825d998defe584c4cb2495b27e3f2ed507b9a5a5'
-            '4a35cd4cccb548923afc36b8085030f8cc7782ced95236f7637782d89f7c28b8')
+
+pathprepend () {
+        pathremove $1 $2
+        local PATHVARIABLE=${2:-PATH}
+        export $PATHVARIABLE="$1${!PATHVARIABLE:+:${!PATHVARIABLE}}"
+}
+
+pathappend () {
+        pathremove $1 $2
+        local PATHVARIABLE=${2:-PATH}
+        export $PATHVARIABLE="${!PATHVARIABLE:+${!PATHVARIABLE}:}$1"
+}
+
+export -f pathremove pathprepend pathappend
+
+# Set the initial path
+export PATH=/bin:/usr/bin
+
+if [ $EUID -eq 0 ] ; then
+        pathappend /sbin:/usr/sbin
+        unset HISTFILE
+fi
+
+# Setup some environment variables.
+export HISTSIZE=1000
+export HISTIGNORE="&:[bf]g:exit"
+
+# Set some defaults for graphical systems
+export XDG_DATA_DIRS=${XDG_DATA_DIRS:-/usr/share/}
+export XDG_CONFIG_DIRS=${XDG_CONFIG_DIRS:-/etc/xdg/}
+export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/tmp/xdg-$USER}
+
+# Setup different prompt colors for local/remote and root/non-root users
+NORMAL="\[\e[0m\]"
+RED="\[\e[1;31m\]"
+GREEN="\[\e[1;32m\]"
+YELLOW="\[\e[1;33m\]"
+MAGENTA="\[\e[1;35m\]"
+CYAN="\[\e[1;36m\]"
+
+# Set local prompt color
+if [[ $EUID == 0 ]] ; then
+  if [[ $TERM == "screen" ]] ; then
+    PS1="$RED\u [ $NORMAL\w$RED ] (screen)# $NORMAL"
+  else
+    PS1="$RED\u [ $NORMAL\w$RED ]# $NORMAL"
+  fi
+else
+  if [[ $TERM == "screen" ]] ; then
+    PS1="$YELLOW\w [ $NORMAL\w$YELLOW] (screen)\$ $NORMAL"
+  else
+    PS1="$GREEN\u [ $NORMAL\w$GREEN ]\$ $NORMAL"
+  fi
+fi
+
+# Set remote prompt
+if [[ "$SSH_CLIENT" != "" ]] ; then
+  if [[ $EUID == 0 ]] ; then
+    if [[ $TERM == "screen" ]] ; then
+      PS1="$MAGENTA\u@\h [ $NORMAL\w$MAGENTA ] (screen)# $NORMAL"
+    else
+      PS1="$MAGENTA\u@\h [ $NORMAL\w$MAGENTA ]# $NORMAL"
+    fi
+  else
+    if [[ $TERM == "screen" ]] ; then
+      PS1="$CYAN\u@\h [ $NORMAL\w$CYAN ] (screen)\$ $NORMAL"
+    else
+      PS1="$CYAN\u@\h [ $NORMAL\w$CYAN ]\$ $NORMAL"
+    fi
+  fi
+fi
+
+for script in /etc/profile.d/*.sh ; do
+        if [ -r $script ] ; then
+                . $script
+        fi
+done
+
+unset script RED GREEN MAGENTA YELLOW CYAN NORMAL
+
+# End /etc/profile
+EOF
+  install -vdm755 ${pkgdir}/etc/profile.d
+  cat > ${pkgdir}/etc/profile.d/bash_completion.sh << "EOF"
+# Begin /etc/profile.d/bash_completion.sh
+# Import bash completion scripts
+
+# If the bash-completion package is installed, use its configuration instead
+if [ -f /usr/share/bash-completion/bash_completion ]; then
+
+  # Check for interactive bash and that we haven't already been sourced.
+  if [ -n "${BASH_VERSION-}" -a -n "${PS1-}" -a -z "${BASH_COMPLETION_VERSINFO-}" ]; then
+
+    # Check for recent enough version of bash.
+    if [ ${BASH_VERSINFO[0]} -gt 4 ] || \
+       [ ${BASH_VERSINFO[0]} -eq 4 -a ${BASH_VERSINFO[1]} -ge 1 ]; then
+       [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/bash_completion" ] && \
+            . "${XDG_CONFIG_HOME:-$HOME/.config}/bash_completion"
+       if shopt -q progcomp && [ -r /usr/share/bash-completion/bash_completion ]; then
+          # Source completion code.
+          . /usr/share/bash-completion/bash_completion
+       fi
+    fi
+  fi
+
+else
+
+  # bash-completions are not installed, use only bash completion directory
+  if shopt -q progcomp; then
+    for script in /etc/bash_completion.d/* ; do
+      if [ -r $script ] ; then
+        . $script
+      fi
+    done
+  fi
+fi
+
+# End /etc/profile.d/bash_completion.sh
+EOF
+  install -vdm755 ${pkgdir}/etc/bash_completion.d
+  cat > ${pkgdir}/etc/profile.d/dircolors.sh << "EOF"
+# Setup for /bin/ls and /bin/grep to support color, the alias is in /etc/bashrc.
+if [ -f "/etc/dircolors" ] ; then
+        eval $(dircolors -b /etc/dircolors)
+fi
+
+if [ -f "$HOME/.dircolors" ] ; then
+        eval $(dircolors -b $HOME/.dircolors)
+fi
+
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+EOF
+  cat > ${pkgdir}/etc/profile.d/extrapaths.sh << "EOF"
+if [ -d /usr/local/lib/pkgconfig ] ; then
+        pathappend /usr/local/lib/pkgconfig PKG_CONFIG_PATH
+fi
+if [ -d /usr/local/bin ]; then
+        pathprepend /usr/local/bin
+fi
+if [ -d /usr/local/sbin -a $EUID -eq 0 ]; then
+        pathprepend /usr/local/sbin
+fi
+
+# Set some defaults before other applications add to these paths.
+pathappend /usr/share/man  MANPATH
+pathappend /usr/share/info INFOPATH
+EOF
+  cat > ${pkgdir}/etc/profile.d/readline.sh << "EOF"
+# Setup the INPUTRC environment variable.
+if [ -z "$INPUTRC" -a ! -f "$HOME/.inputrc" ] ; then
+        INPUTRC=/etc/inputrc
+fi
+export INPUTRC
+EOF
+  cat > ${pkgdir}/etc/profile.d/umask.sh << "EOF"
+# By default, the umask should be set.
+if [ "$(id -gn)" = "$(id -un)" -a $EUID -gt 99 ] ; then
+  umask 002
+else
+  umask 022
+fi
+EOF
+  cat > ${pkgdir}/etc/profile.d/i18n.sh << "EOF"
+# Set up i18n variables - default to en_US.UTF-8
+export LANG=en_US.UTF-8
+EOF
+  cat > ${pkgdir}/etc/bashrc << "EOF"
+# Begin /etc/bashrc
+# Written for Beyond Linux From Scratch
+# by James Robertson <jameswrobertson@earthlink.net>
+# updated by Bruce Dubbs <bdubbs@linuxfromscratch.org>
+
+# System wide aliases and functions.
+
+# System wide environment variables and startup programs should go into
+# /etc/profile.  Personal environment variables and startup programs
+# should go into ~/.bash_profile.  Personal aliases and functions should
+# go into ~/.bashrc
+
+# Provides colored /bin/ls and /bin/grep commands.  Used in conjunction
+# with code in /etc/profile.
+
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+
+# Provides prompt for non-login shells, specifically shells started
+# in the X environment. [Review the LFS archive thread titled
+# PS1 Environment Variable for a great case study behind this script
+# addendum.]
+
+# Setup different prompt colors for local/remote and root/non-root users
+NORMAL="\[\e[0m\]"
+RED="\[\e[1;31m\]"
+GREEN="\[\e[1;32m\]"
+YELLOW="\[\e[1;33m\]"
+MAGENTA="\[\e[1;35m\]"
+CYAN="\[\e[1;36m\]"
+
+# Set local prompt color
+if [[ $EUID == 0 ]] ; then
+  if [[ $TERM == "screen" ]] ; then
+    PS1="$RED\u [ $NORMAL\w$RED ] (screen)# $NORMAL"
+  else
+    PS1="$RED\u [ $NORMAL\w$RED ]# $NORMAL"
+  fi
+else
+  if [[ $TERM == "screem" ]] ; then
+    PS1="$YELLOW\w [ $NORMAL\w$YELLOW] (screen)\$ $NORMAL"
+  else
+    PS1="$GREEN\u [ $NORMAL\w$GREEN ]\$ $NORMAL"
+  fi
+fi
+
+# Set remote prompt
+if [[ "$SSH_CLIENT" != "" ]] ; then
+  if [[ $EUID == 0 ]] ; then
+    if [[ $TERM == "screen" ]] ; then
+      PS1="$MAGENTA\u@\h [ $NORMAL\w$MAGENTA ] (screen)# $NORMAL"
+    else
+      PS1="$MAGENTA\u@\h [ $NORMAL\w$MAGENTA ]# $NORMAL"
+    fi
+  else
+    if [[ $TERM == "screen" ]] ; then
+      PS1="$CYAN\u@\h [ $NORMAL\w$CYAN ] (screen)\$ $NORMAL"
+    else
+      PS1="$CYAN\u@\h [ $NORMAL\w$CYAN ]\$ $NORMAL"
+    fi
+  fi
+fi
+
+unset RED GREEN MAGENTA YELLOW CYAN NORMAL
+
+# End /etc/bashrc
+EOF
+  cat > ${pkgdir}/etc/skel/.bash_profile << "EOF"
+# Begin ~/.bash_profile
+# Written for Beyond Linux From Scratch
+# by James Robertson <jameswrobertson@earthlink.net>
+# updated by Bruce Dubbs <bdubbs@linuxfromscratch.org>
+
+# Personal environment variables and startup programs.
+
+# Personal aliases and functions should go in ~/.bashrc.  System wide
+# environment variables and startup programs are in /etc/profile.
+# System wide aliases and functions are in /etc/bashrc.
+
+if [ -f "$HOME/.bashrc" ] ; then
+  source $HOME/.bashrc
+fi
+
+if [ -d "$HOME/bin" ] ; then
+  pathprepend $HOME/bin
+fi
+
+# Having . in the PATH is dangerous
+#if [ $EUID -gt 99 ]; then
+#  pathappend .
+#fi
+
+# End ~/.bash_profile
+EOF
+  cat > ${pkgdir}/etc/skel/.profile << "EOF"
+# Begin ~/.profile
+# Personal environment variables and startup programs.
+
+if [ -d "$HOME/bin" ] ; then
+  pathprepend $HOME/bin
+fi
+
+# Set up user specific i18n variables
+#export LANG=<ll>_<CC>.<charmap><@modifiers>
+
+# End ~/.profile
+EOF
+  cat > ${pkgdir}/etc/skel/.bashrc << "EOF"
+# Begin ~/.bashrc
+# Written for Beyond Linux From Scratch
+# by James Robertson <jameswrobertson@earthlink.net>
+
+# Personal aliases and functions.
+
+# Personal environment variables and startup programs should go in
+# ~/.bash_profile.  System wide environment variables and startup
+# programs are in /etc/profile.  System wide aliases and functions are
+# in /etc/bashrc.
+
+if [ -f "/etc/bashrc" ] ; then
+  source /etc/bashrc
+fi
+
+# Set up user specific i18n variables
+#export LANG=<ll>_<CC>.<charmap><@modifiers>
+
+# End ~/.bashrc
+EOF
+  cat > ${pkgdir}/etc/skel/.bash_logout << "EOF"
+# Begin ~/.bash_logout
+# Written for Beyond Linux From Scratch
+# by James Robertson <jameswrobertson@earthlink.net>
+
+# Personal items to perform on logout.
+
+# End ~/.bash_logout
+EOF
+  dircolors -p > ${pkgdir}/etc/dircolors
+  cp ${pkgdir}/etc/skel/.bash_profile ${pkgdir}/root
+  cp ${pkgdir}/etc/skel/.profile ${pkgdir}/root
+  cp ${pkgdir}/etc/skel/.bashrc ${pkgdir}/root
+  cp ${pkgdir}/etc/skel/.bash_logou ${pkgdir}/root
+}
