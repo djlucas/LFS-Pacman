@@ -496,8 +496,8 @@ if [ -d "$HOME/bin" ] ; then
   pathprepend $HOME/bin
 fi
 
-# Set up user specific i18n variables - default to en_US.UTF-8
-export LANG=en_US.UTF-8
+# Set up user specific i18n variables
+#export LANG=<ll>_<CC>.<charmap><@modifiers>
 
 # End ~/.profile
 EOF
@@ -517,8 +517,8 @@ if [ -f "/etc/bashrc" ] ; then
   source /etc/bashrc
 fi
 
-# Set up user specific i18n variables - default to en_US.UTF-8
-export LANG=en_US.UTF-8
+# Set up user specific i18n variables
+#export LANG=<ll>_<CC>.<charmap><@modifiers>
 
 # End ~/.bashrc
 EOF
@@ -535,5 +535,9 @@ EOF
   cp ${pkgdir}/etc/skel/.bash_profile ${pkgdir}/root
   cp ${pkgdir}/etc/skel/.profile ${pkgdir}/root
   cp ${pkgdir}/etc/skel/.bashrc ${pkgdir}/root
-  cp ${pkgdir}/etc/skel/.bash_logou ${pkgdir}/root
+  cp ${pkgdir}/etc/skel/.bash_logout ${pkgdir}/root
+  # Post LFS fixes:
+  chmod 0555 ${pkgdir}/proc
+  chmod 1777 ${pkgdir}/run
+  chmod 0555 ${pkgdir}/sys
 }
