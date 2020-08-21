@@ -1,9 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=glibc
-pkgver=2.26
-#pkgext="adc7e06"
-#pkgver="${pkgverbase}+${pkgext}"
+pkgver=2.32
 pkgrel=1
 pkgdesc="The Glibc package contains the main C library. This library provides the basic routines for allocating memory, searching directories, opening and closing files, reading and writing files, string handling, pattern matching, arithmetic, and so on."
 arch=('x86_64')
@@ -26,17 +24,21 @@ makedepends=('bash'
              'sed'
              'texinfo')
 depends=('rootfs')
-options=('staticlibs')
+#options=(!debug
+#         !strip
+#         staticlibs)
+# Don't use !strip for deug builds
+options=(debug
+         strip
+         staticlibs)
 backup=('etc/ld.so.cache'
-        'etc/ld.so.conf'
         'etc/locale.gen'
         'etc/nscd.conf'
         'etc/nsswitch.conf')
 source=("https://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz"
         "http://www.linuxfromscratch.org/patches/downloads/${pkgname}/${pkgname}-${pkgver}-fhs-1.patch"
         "locale.gen.txt"
-        "locale-gen"
-        "nsswitch.conf")
+        "locale-gen")
 
 prepare(){
   #srcdir is used internally
@@ -57,16 +59,10 @@ build(){
 
   cd "${sourcesdir}/${pkgname}-${pkgver}/build"
 
-  # In chroot, uncomment the following three lines to avoid invalid paths
-  # in debug symbols, however, you will also need to guard "make -k" to avoid
-  # an incorrect replacment of the real /usr/include/limits.h
-  # _gccver=$(gcc --version | grep -o "[0-9]\.[0-9]\.[0-9]")
-  # GCC_INCDIR="/usr/lib/gcc/${CARCH}/${_gccver}/include"
-  # CC="gcc -isystem $GCC_INCDIR -isystem /usr/include" \
   ../configure                                        \
       --prefix=/usr                                   \
       --disable-werror                                \
-      --enable-kernel=3.2.0                           \
+      --enable-kernel=3.2                             \
       --enable-stack-protector=strong                 \
       libc_cv_slibdir=/lib
   make
@@ -85,25 +81,39 @@ check(){
     cat $file >> tests-summary
   done
   _FAILCOUNT=`grep -c "^FAIL" tests-summary`
-  #Number of failures is different based mostly on processor
-  # x86_64=6 on rebuild while using headers that match running kerenel
+  # Known failures in chroot:
+  #  elf/circleload1
+  #  elf/constload1
+  #  elf/dblload
+  #  elf/dblunload
+  #  elf/lateglobal
+  #  elf/reldep6
+  #  elf/resolvfail
+  #  elf/tst-audit4
+  #  elf/tst-audit5
+  #  elf/tst-audit6
+  #  elf/tst-audit7
+  #  elf/tst-global1
+  #  elf/tst-initfinilazyfail
+  #  elf/tst-latepthread
+  #  elf/circleload1
+  #  elf/constload1
+  #  elf/dblload
+  #  elf/dblunload
+  #  elf/lateglobal
+  #  elf/reldep6
+  #  elf/resolvfail
+  #  elf/tst-audit4
+  #  elf/tst-audit5
+  #  elf/tst-audit6
+  #  elf/tst-audit7
+  #  elf/tst-global1
+  #  elf/tst-initfinilazyfail
+  #  elf/tst-latepthread
 
-  # four math tests (math/test-double{,-vlen{2,4}} and math/test-idouble) are
-  # known to fail on completed system
-
-  # elf/tst-protected1{a,b} will alsways fail due to newer binutils
-
-  # posix/tst-getaddrinfo4 will always fail during bootstrap (no inetutils)
-
-  # tst/tst-cputimer1 and rt/tst-cpuclock2 will sometimes fail due to timing
-  # issues on some archs (more frequently in guest VMs, but not limited to)
-
-  # malloc/tst-malloc-usable and nptl/tst-cleanupx4 are known to fail in some
-  # instances
-
-  # Just make sure number of tests is no more than the known 12 failures
+  # Just make sure number of failures is no more than the known 28 failures
   test x"${_FAILCOUNT}" != "x" || _FAILCOUNT="0"
-  test "${_FAILCOUNT}" -lt "13" || exit 1
+  test "${_FAILCOUNT}" -lt "29" || exit 1
 }
 
 package(){
@@ -147,34 +157,56 @@ package(){
     >> "${pkgdir}/etc/locale.gen"
 
   # install distributed files
-  install -vdm755 ${pkgdir}/usr/lib/{locale,systemd/system,tmpfiles.d}
+  install -vdm755 ${pkgdir}/usr/lib/locale
   install -vdm755 ${pkgdir}/var/cache/nscd
   install -vm644 ${sourcesdir}/${pkgname}-${pkgver}/nscd/nscd.conf \
                  ${pkgdir}/etc/nscd.conf
-  install -vm644 ${sourcesdir}/${pkgname}-${pkgver}/nscd/nscd.service \
-                 ${pkgdir}/usr/lib/systemd/system
-  install -vm644 ${sourcesdir}/${pkgname}-${pkgver}/nscd/nscd.tmpfiles \
-                 ${pkgdir}/usr/lib/tmpfiles.d/nscd.conf
-  install -vm644 ${sourcesdir}/nsswitch.conf ${pkgdir}/etc
-
-  # Create ld.so.conf
-  cat >> "${pkgdir}/etc/ld.so.conf" << "EOF"
-# Begin /etc/ld.so.conf
-/usr/local/lib
-/opt/lib
-
-# Add an include directory
-include /etc/ld.so.conf.d/*.conf
-
-EOF
-  install -vdm755 "${pkgdir}/etc/ld.so.conf.d"
 
   # Finally do the installation from the temporary destination
   cd "${sourcesdir}/${pkgname}-${pkgver}/build"  
   make DESTDIR="${pkgdir}" install
 
-  # Remove unneeded static libs (a lot are actually required)
-  rm "${pkgdir}"/usr/lib/lib{anl,BrokenLocale,mvec,nsl,resolv,rt,util}.a
+  # If not a debug build, then we need to specify !strip and do it manually
+  if check_option 'debug' n; then
+    # Executables
+    find "$pkgdir"/usr/bin -type f -executable -exec strip $STRIP_BINARIES {} + 2> /dev/null || true
+    find "$pkgdir"/usr/sbin -type f -executable -exec strip $STRIP_BINARIES {} + 2> /dev/null || true
+    find "$pkgdir"/bin -type f -executable -exec strip $STRIP_BINARIES {} + 2> /dev/null || true
+    find "$pkgdir"/sbin -type f -executable -exec strip $STRIP_BINARIES {} + 2> /dev/null || true
+
+    # Libraries
+    find "$pkgdir"/usr/lib -name '*.a' -type f -exec strip $STRIP_STATIC {} + 2> /dev/null || true
+    find "$pkgdir"/lib -name '*.a' -type f -exec strip $STRIP_STATIC {} + 2> /dev/null || true
+    find "$pkgdir"/usr/lib \
+      -name '*.so' -type f -exec strip $STRIP_SHARED {} + 2> /dev/null || true
+
+    # Do not strip these four for gdb and valgrind useability, strip the rest
+    find "$pkgdir"/lib \
+      -not -name 'ld-*.so' \
+      -not -name 'libc-*.so' \
+      -not -name 'libpthread-*.so' \
+      -not -name 'libthread_db-*.so' \
+      -name '*.so' -type f -exec strip $STRIP_SHARED {} + 2> /dev/null || true
+  fi
+
+  # Create /etc/nsswitch.conf
+  cat > ${pkgdir}/etc/nsswitch.conf << "EOF"
+# Begin /etc/nsswitch.conf
+
+passwd: files
+group: files
+shadow: files
+
+hosts: files dns
+networks: files
+
+protocols: files
+services: files
+ethers: files
+rpc: files
+
+# End /etc/nsswitch.conf
+EOF
 
   # Install compatibility and lsb symlinks for x86_64
   install -vdm755 "${pkgdir}/lib64"
@@ -182,8 +214,7 @@ EOF
   ln -s ../lib/ld-linux-x86-64.so.2 "${pkgdir}/lib64/ld-lsb-x86-64.so.3"
 }
 
-sha256sums=('e54e0a934cd2bc94429be79da5e9385898d2306b9eaf3c92d5a77af96190f6bd'
+sha256sums=('1627ea54f5a1a8467032563393e0901077626dc66f37f10ee6363bb722222836'
             '643552db030e2f2d7ffde4f558e0f5f83d3fabf34a2e0e56ebdb49750ac27b0d'
             'd42648cea552ba5353a32e264686e992263289d5cc86207314dffc54ab514981'
-            '83f108f915863c7ed0338e2d3e8f2e071a531a090ef8f8b2eb3a956a3c4f04d7'
-            '100d9b725b1148614cd97dc385f47871a0675a3e89ea2d938f28ef98dc7720b1')
+            '83f108f915863c7ed0338e2d3e8f2e071a531a090ef8f8b2eb3a956a3c4f04d7')
