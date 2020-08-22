@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=binutils
-pkgver=2.29
+pkgver=2.35
 pkgrel=1
 arch=('x86_64')
 pkgdesc="The Binutils package contains a linker, an assembler, and other tools for handling object files."
@@ -22,12 +22,21 @@ makedepends=('bash'
              'perl'
              'sed'
              'texinfo')
-source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.bz2")
+source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz")
+options=(debug strip staticlibs)
 
 prepare(){
   cd "${pkgname}-${pkgver}"
+
+  # Turn off development mode (-Werror, gas run-time checks, date in sonames)
+  sed -i '/^development=/s/true/false/' bfd/development.sh
+
   # Kill $CPP and $CPPFLAGS when testing header files (Thanks Arch Linux)
   sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" libiberty/configure
+
+  # Kill off a broken test
+  sed -i '/@\tincremental_copy/d' gold/testsuite/Makefile.in
+
   mkdir -v build
 }
 
@@ -39,9 +48,9 @@ build(){
                --enable-plugins    \
                --enable-shared     \
                --disable-werror    \
-               --with-system-zlib
-  # Make sure build environment is sane before wasting time
-  make configure-host
+               --enable-64-bit-bfd \
+               --with-system-zlib  \
+               --enable-deterministic-archives
 
   make tooldir=/usr
 }
@@ -50,8 +59,9 @@ check(){
   cd "${pkgname}-${pkgver}/build"
   make LDFLAGS="" -k check 2>&1 | tee test.log || true
   # one test fails and four error with new kenerl headers
+  # nine fail if in chroot
   failures=`grep "tests failed" test.log | cut -d " " -f 1`
-  if test "${failures}" != "1"; then
+  if test "${failures}" -gt "9"; then
     echo "Unexpected test failures..." && exit 1
   fi
 }
@@ -61,4 +71,4 @@ package(){
   make DESTDIR="${pkgdir}" tooldir=/usr install
 }
 
-sha256sums=('29a29549869039aad75fdf507ac30366da5ad0b974fbff4a8e7148dbf4f40ebf')
+sha256sums=('1b11659fb49e20e18db460d44485f09442c8c56d5df165de9461eb09c8302f85')
