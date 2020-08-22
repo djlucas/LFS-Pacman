@@ -1,13 +1,14 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgbase=gcc
-pkgname=('gcc-ada'
-         'gcc-fortran'
-         'gcc-go'
-         'gcc-objc'
-         'gcc')
-pkgver=7.2.0
-_islver=0.18
+pkgname=(gcc-ada
+         gcc-d
+         gcc-fortran
+         gcc-go
+         gcc-objc
+         gcc)
+pkgver=10.2.0
+_islver=0.21
 pkgrel=3
 arch=('x86_64')
 url="https://gcc.gnu.org/"
@@ -26,7 +27,6 @@ makedepends=('bash'
              'glibc'
              'gmp'
              'grep'
-             'gtk2'
              'm4'
              'make'
              'mpc'
@@ -39,13 +39,13 @@ makedepends=('bash'
 checkdepends=('dejagnu'
               'inetutils')
 source=("https://ftp.gnu.org/gnu/${pkgbase}/${pkgbase}-${pkgver}/${pkgbase}-${pkgver}.tar.xz"
-        "http://isl.gforge.inria.fr/isl-${_islver}.tar.bz2"
-        "gnat-gpl-2017-x86_64-linux-bin.tar.gz::http://mirrors.cdn.adacore.com/art/591c6d80c7a447af2deed1d7")
-noextract=("gnat-gpl-2017-x86_64-linux-bin.tar.gz")
+        "http://isl.gforge.inria.fr/isl-${_islver}.tar.bz2")
+#options=(!strip !emptidirs staticlibs)
+options=(debug strip !emptydirs staticlibs)
 
 # If you want to modify what is actually built for a local build, set these 0
 _build_ada=1
-_build_cpp=1
+_build_d=1
 _build_fortran=1
 _build_go=1
 _build_objc=1
@@ -53,8 +53,8 @@ _build_objc=1
 _confargs=""
 _languages="c,c++,lto"
 
-# For now, always rebuild ada
-#_have_ada=$(pacman -Q gcc-ada > /dev/null 2>&1 && echo "1" || echo "0")
+# See if we have ada
+_have_ada=$(pacman -Q gcc-ada > /dev/null 2>&1 && echo "1" || echo "0")
 
 prepare(){
   cd ${srcdir}/${pkgbase}-${pkgver}
@@ -70,22 +70,19 @@ prepare(){
       -i.orig gcc/config/i386/t-linux64
   mkdir build
 
-  # Use system libffi
-  sed -i 's/\(install.*:\) install-.*recursive/\1/' libffi/Makefile.in
-  sed -i 's/\(install-data-am:\).*/\1/' libffi/include/Makefile.in
-
   if [[ "x${_build_ada}" == "x1" ]]; then
-#    if [[ "${_have_ada}" == "1" ]]; then
-#      echo "gcc-ada is installed, not installing temporary GNAT."
-#    else
-#      echo "gcc-ada is not installed, installing temporary Ada Core."
+    if [[ "x${_have_ada}" == "x0" ]]; then
       cd ${srcdir}
-      tar -xf gnat-gpl-2017-x86_64-linux-bin.tar.gz
-      cd ${srcdir}/gnat-gpl-2017-x86_64-linux-bin
-      make ins-all prefix=${srcdir}/gnat 
+      /usr/bin/curl -gqb "" -fLC - --retry 3 --retry-delay 3 -o gnat.tar.xz \
+          http://www.linuxfromscratch.org/~dj/gnat-community-2019-20190517-x86_64-linux-bin.tar.xz
+      gnat_md5sum="61fed3586ed369b980556f6f78c927c5"
+      if test "${gnat_md5sum}" != "$(/usr/bin/md5sum gnat.tar.xz | cut -d " " -f 1)"; then
+        echo "Error! Failure downloading GNAT."
+        exit 1
+      fi
       find ${srcdir}/gnat -name ld -exec mv -v {} {}.old \;
       find ${srcdir}/gnat -name as -exec mv -v {} {}.old \;
-#    fi
+    fi
   fi
 }
 
@@ -115,6 +112,10 @@ build(){
     _languages="${_languages},objc,obj-c++"
   fi
 
+  if [[ "x${_build_d}" == "x1" ]]; then
+    _languages="${_languages},d"
+  fi
+
   # using -pipe causes spurious test-suite failures
   # http://gcc.gnu.org/bugzilla/show_bug.cgi?id=48565
   CFLAGS=${CFLAGS/-pipe/}
@@ -142,21 +143,16 @@ check(){
 package_gcc-ada(){
   pkgdesc="The GCC package contains the GNU compiler collection (Ada front-end)"
   depends=("gcc=${pkgver}-${pkgrel}")
-  options=('staticlibs' '!emptydirs')
 
-  install -vdm755 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}
-  mv -v ${srcdir}/gcc-dest/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/ada* \
-        ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}
-  install -vdm755 ${pkgdir}/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}
-  mv -v ${srcdir}/gcc-dest/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}/gnat1 \
-        ${pkgdir}/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}
-  install -vdm755 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/plugin/include
-  mv -v ${srcdir}/gcc-dest/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/plugin/include/ada \
-        ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/plugin/include
   install -vdm755 ${pkgdir}/usr/bin
   mv -v ${srcdir}/gcc-dest/usr/bin/gnat* ${pkgdir}/usr/bin
-  install -vdm755 ${pkgdir}/usr/share/info
-  mv -v ${srcdir}/gcc-dest/usr/share/info/gnat* ${pkgdir}/usr/share/info
+
+  install -vdm755 \
+      ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/plugin/include
+  mv -v ${srcdir}/gcc-dest/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/ada* \
+        ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}
+  mv -v ${srcdir}/gcc-dest/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/plugin/include/ada \
+       ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/plugin/include
   install -vdm755 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/adalib
   install -vm644 ${srcdir}/${pkgbase}-${pkgver}/build/gcc/ada/rts/*.ali \
                  ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/adalib
@@ -165,37 +161,69 @@ package_gcc-ada(){
                  ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/adainclude
   install -vm644 ${srcdir}/${pkgbase}-${pkgver}/build/gcc/ada/rts/*.ads \
                  ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/adainclude
-  chown -v -R root:root \
-    ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/ada{lib,include}
+
+
+  install -vdm755 ${pkgdir}/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}
+  mv -v ${srcdir}/gcc-dest/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}/gnat1 \
+        ${pkgdir}/usr/libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}
+
+  install -vdm755 ${pkgdir}/usr/share/info
+  mv -v ${srcdir}/gcc-dest/usr/share/info/gnat* ${pkgdir}/usr/share/info
+}
+
+package_gcc-d(){
+  pkgdesc="The GCC package contains the GNU compiler collection (D front-end)"
+  depends=("gcc=${pkgver}-${pkgrel}")
+
+  install -vdm755 ${pkgdir}/usr/bin
+  mv -v ${srcdir}/gcc-dest/usr/bin/{,$CARCH-pc-linux-gnu-}gdc ${pkgdir}/usr/bin
+
+  install -vdm755 ${pkgdir}/usr/include/dlang
+  ln -sf /usr/lib/gcc/$CARCH-pc-linux/gnu/${pkgver}/include/d \
+        ${pkgdir}/usr/include/dlang/gdc
+
+  install -vdm755 ${pkgdir}/usr/share/{info,man/man1}
+  mv -v ${srcdir}/gcc-dest/usr/share/info/gdc.info ${pkgdir}/usr/share/info
+  mv -v ${srcdir}/gcc-dest/usr/share/man/man1/gdc.1 ${pkgdir}/usr/share/man/man1
+
+  install -vdm755 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/include
+  mv -v ${srcdir}/gcc-dest/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/include/d \
+        ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/include
+  install -vDm755 ${srcdir}/gcc-${pkgver}/build/gcc/d21 \
+        ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/
+  mv -v ${srcdir}/gcc-dest/usr/lib/libg{druntime,phobos}.* ${pkgdir}/usr/lib
 }
 
 package_gcc-go(){
   pkgdesc="The GCC package contains the GNU compiler collection (Go front-end)"
   depends=("gcc=${pkgver}-${pkgrel}")
-  options=('!emptydirs')
+
+  install -vdm755 ${pkgdir}/usr/bin
+  mv -v ${srcdir}/gcc-dest/usr/bin/{{,$CARCH-pc-linux-gnu-}gccgo,go{,fmt}} \
+        ${pkgdir}/usr/bin
 
   install -vdm755 ${pkgdir}/usr/lib
   mv -v ${srcdir}/gcc-dest/usr/lib/libgo.* ${pkgdir}/usr/lib
   mv -v ${srcdir}/gcc-dest/usr/lib/libgo{,lib}begin.a ${pkgdir}/usr/lib
-  install -vdm755 ${pkgdir}/usr/bin
-  mv -v ${srcdir}/gcc-dest/usr/bin/{{,$CARCH-pc-linux-gnu-}gccgo,go{,fmt}} \
-        ${pkgdir}/usr/bin
+  mv -v ${srcdir}/gcc-dest/usr/lib/go ${pkgdir}/usr/lib
+
   install -vdm755 ${pkgdir}/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}
   mv -v ${srcdir}/gcc-dest/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}/{cgo,go1} \
         ${pkgdir}/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}
-  install -vdm755 ${pkgdir}/usr/lib
-  mv -v ${srcdir}/gcc-dest/usr/lib/go ${pkgdir}/usr/lib
-  install -vdm755 ${pkgdir}/usr/share/man/man1
+
+  install -vdm755 ${pkgdir}/usr/share/{info,man/man1}
+  mv -v ${srcdir}/gcc-dest/usr/share/info/gccgo.info ${pkgdir}/usr/share/info
   mv -v ${srcdir}/gcc-dest/usr/share/man/man1/{gccgo,go,gofmt}.1 \
         ${pkgdir}/usr/share/man/man1
-  install -vdm755 ${pkgdir}/usr/share/info
-  mv -v ${srcdir}/gcc-dest/usr/share/info/gccgo.info ${pkgdir}/usr/share/info
 }
 
 package_gcc-fortran(){
   pkgdesc="The GCC package contains the GNU compiler collection (Fortran front-end)"
   depends=("gcc=${pkgver}-${pkgrel}")
-  options=('!emptydirs')
+
+  install -vdm755 ${pkgdir}/usr/bin
+  mv -v ${srcdir}/gcc-dest/usr/bin/{,$CARCH-pc-linux-gnu-}gfortran \
+        ${pkgdir}/usr/bin
 
   install -vdm755 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}
   mv -v ${srcdir}/gcc-dest/usr/lib/libgfortran* ${pkgdir}/usr/lib
@@ -203,55 +231,52 @@ package_gcc-fortran(){
         ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/
   mv -v ${srcdir}/gcc-dest/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/finclude \
         ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/
-  install -vdm755 ${pkgdir}/usr/bin
-  mv -v ${srcdir}/gcc-dest/usr/bin/{,$CARCH-pc-linux-gnu-}gfortran \
-        ${pkgdir}/usr/bin
+
   install -vdm755 ${pkgdir}/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}
   mv -v ${srcdir}/gcc-dest/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}/f951 \
         ${pkgdir}/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}
-  install -vdm755 ${pkgdir}/usr/share/man/man1
+
+  install -vdm755 ${pkgdir}/usr/share/{info,man/man1}
+  mv -v ${srcdir}/gcc-dest/usr/share/info/gfortran.info ${pkgdir}/usr/share/info
   mv -v ${srcdir}/gcc-dest/usr/share/man/man1/gfortran.1 \
         ${pkgdir}/usr/share/man/man1
-  install -vdm755 ${pkgdir}/usr/share/info
-  mv -v ${srcdir}/gcc-dest/usr/share/info/gfortran.info ${pkgdir}/usr/share/info
 }
 
 package_gcc-objc(){
   pkgdesc="The GCC package contains the GNU compiler collection (Objective-C front-end)"
   depends=("gcc=${pkgver}-${pkgrel}")
-  options=('!emptydirs')
 
   install -vdm755 ${pkgdir}/usr/lib
   mv -v ${srcdir}/gcc-dest/usr/lib/libobjc* ${pkgdir}/usr/lib
+
   install -vdm755 ${pkgdir}/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}
   mv -v ${srcdir}/gcc-dest/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}/cc1obj{,plus} \
        ${pkgdir}/usr/libexec/gcc/${CARCH}-pc-linux-gnu/${pkgver}
+
   install -vdm755 ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/plugin/include
   mv -v ${srcdir}/gcc-dest/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/plugin/include/objc \
         ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/plugin/include
-
 }
 
 package_gcc(){
   pkgdesc="The GCC package contains the GNU compiler collection (C and C++ front-ends)"
   depends=("glibc")
-  options=('staticlibs')
   groups=('core')
 
   install -vdm755 ${pkgdir}/usr/
   mv -v ${srcdir}/gcc-dest/usr/* ${pkgdir}/usr/
+
   install -vdm755 ${pkgdir}/usr/share/gdb/auto-load/usr/lib
   mv -v ${pkgdir}/usr/lib/*gdb.py ${pkgdir}/usr/share/gdb/auto-load/usr/lib
+
   install -vdm755 ${pkgdir}/lib
   ln -vsf ../usr/bin/cpp ${pkgdir}/lib
   ln -vsf gcc ${pkgdir}/usr/bin/cc
+
   install -vdm755 ${pkgdir}/usr/lib/bfd-plugins
   ln -sfv ../../libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}/liblto_plugin.so \
           ${pkgdir}/usr/lib/bfd-plugins
-  chown -R root:root \
-        ${pkgdir}/usr/lib/gcc/$CARCH-pc-linux-gnu/${pkgver}/include{,-fixed}
 }
 
-sha256sums=('1cf7adf8ff4b5aa49041c8734bbcf1ad18cc4c94d0029aae0f4e48841088479a'
-            '6b8b0fd7f81d0a957beb3679c81bbb34ccc7568d5682844d8924424a0dadcb1b'
-            'b942bcac20dea39748b39f8b624d9619f60a8dee2e8195dbe3829c835b0956e6')
+sha256sums=('b8dd4368bb9c7f0b98188317ee0254dd8cc99d1e3a18d0ff146c855fe16c1d8c'
+            'd18ca11f8ad1a39ab6d03d3dcb3365ab416720fcb65b42d69f34f51bf0a0e859')
