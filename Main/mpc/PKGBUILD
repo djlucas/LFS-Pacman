@@ -1,51 +1,35 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
-pkgname=('mpc-debug'
-         'mpc')
-pkgbase=mpc
-pkgver=1.0.3
+pkgname=mpc
+pkgver=1.1.0
 pkgrel=1
 arch=('x86_64')
 url="http://www.multiprecision.org/"
 license=('LGPL3')
-source=("http://www.multiprecision.org/${pkgbase}/download/${pkgbase}-${pkgver}.tar.gz")
+source=("https://ftp.gnu.org/gnu//${pkgname}/${pkgname}-${pkgver}.tar.gz")
+depends=(mpfr)
+options=(debug strip)
 
 build() {
-  cd "${pkgbase}-${pkgver}"
+  cd "${pkgname}-${pkgver}"
   ./configure --prefix=/usr        \
               --disable-static     \
-              --docdir="/usr/share/doc/${pkgbase}-${pkgver}"
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}"
   make
   make html
-  make DESTDIR="${srcdir}/mpc-dest" install
-  make DESTDIR="${srcdir}/mpc-dest" install-html
 
 }
 
 check() {
-  cd "${pkgbase}-${pkgver}"
+  cd "${pkgname}-${pkgver}"
   make check
 }
 
-package_mpc-debug() {
-pkgdesc="Debugging symbols for the MPC package"
-depends=("mpc=${pkgver}-${pkgrel}")
-options=(!strip)
-
-  install -vdm755 "${pkgdir}/usr/lib"
-  for _lib in "${srcdir}"/mpc-dest/usr/lib/*.so.[0-9].[0-9].*
-  do
-    _libbase=$(basename "${_lib}")
-    objcopy --only-keep-debug "${_lib}" "${pkgdir}/usr/lib/${_libbase}.dbg"
-  done
+package() {
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  make DESTDIR="${pkgdir}" install-html
 }
 
-package_mpc() {
-pkgdesc="The MPC package contains a library for the arithmetic of complex numbers with arbitrarily high precision and correct rounding of the result."
-depends=('gmp')
 
-  cd "${pkgbase}-${pkgver}"
-  cp -Rv "${srcdir}"/mpc-dest/* "${pkgdir}/"
-}
-
-sha256sums=('617decc6ea09889fb08ede330917a00b16809b8db88c29c31bfbb49cbf88ecc3')
+sha256sums=('6985c538143c1208dcb1ac42cedad6ff52e267b47e5f970183a3e75125b43c2e')
