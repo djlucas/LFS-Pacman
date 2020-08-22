@@ -1,0 +1,42 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgbase=elfutils
+pkgname=libelf
+pkgver=0.180
+pkgrel=1
+pkgdesc='Library to handle ELF object files and DWARF debugging information'
+arch=(x86_64)
+url='https://sourceware.org/elfutils/'
+license=(LGPL3 GPL GPL3)
+makedepends=(gcc zlib bzip2 xz sqlite libarchive curl)
+options=(debug strip staticlibs)
+source=(https://sourceware.org/elfutils/ftp/${pkgver}/elfutils-${pkgver}.tar.bz2)
+
+build() {
+  cd ${_pkgbase}-${pkgver}
+
+  ./configure --prefix=/usr \
+              --libdir=/lib \
+              --disable-debuginfod \
+              --enable-deterministic-archives
+
+  make
+}
+
+check() {
+  cd ${_pkgbase}-${pkgver}
+  make check 
+}
+
+package() {
+  pkgdesc='Libraries to handle ELF object files and DWARF debugging information'
+  depends=(gcc-libs zlib bzip2 xz curl)
+  options=(debug strip staticlibs)
+
+  cd ${_pkgbase}-${pkgver}
+  make DESTDIR=${pkgdir} -C libelf install
+  install -vdm755 ${pkgdir}/usr/lib/pkgconfig
+  install -vm644  config/libelf.pc ${pkgdir}/usr/lib/pkgconfig
+}
+
+sha256sums=('b827b6e35c59d188ba97d7cf148fa8dc6f5c68eb6c5981888dfdbb758c0b569d')
