@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=linux-api-headers
-pkgver=4.13.1
+pkgver=5.8.2
 pkgrel=1
 pkgdesc="The Linux API Headers expose the kernel's API for use by Glibc."
 arch=('i686' 'x86_64')
@@ -21,19 +21,21 @@ makedepends=('bash'
              'perl'
              'sed')
 depends=('rootfs')
-source=("https://www.kernel.org/pub/linux/kernel/v4.x/linux-${pkgver}.tar.xz")
+source=("https://www.kernel.org/pub/linux/kernel/v5.x/linux-${pkgver}.tar.xz")
+options=(!strip emptydirs)
 
 build(){
   cd ${srcdir}/linux-${pkgver}
   make mrproper
-  make INSTALL_HDR_PATH=dest headers_install
-  find dest/include \( -name .install -o -name ..install.cmd \) -delete
+  make headers
+  find usr/include -name '.*' -delete
+  rm usr/include/Makefile
 }
 
 package(){
-  install -vdm755 ${pkgdir}/usr/include/
+  install -vdm755 ${pkgdir}/usr
   cd ${srcdir}/linux-${pkgver}
-  cp -rv dest/include/* ${pkgdir}/usr/include
+  cp -rv usr/include ${pkgdir}/usr
 }
 
-sha256sums=('decee7a2de34aea921fce3e7934f520790fe43176de29bd9718a84419ca6e1ce')
+sha256sums=('dc9432f97f08b6a0e5f5e0aaf56025c37094acc343f42f65b2919e66f3acb2a1')
