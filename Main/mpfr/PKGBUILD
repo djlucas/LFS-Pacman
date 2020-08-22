@@ -1,52 +1,36 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
-pkgname=('mpfr-debug'
-         'mpfr')
-pkgbase=mpfr
-pkgver=3.1.5
+pkgname=mpfr
+pkgver=4.1.0
 pkgrel=1
 arch=('x86_64')
 url="http://www.mpfr.org/"
 license=('LGPL3')
-source=("http://www.mpfr.org/${pkgbase}-${pkgver}/${pkgbase}-${pkgver}.tar.xz")
+source=("http://www.mpfr.org/${pkgname}-${pkgver}/${pkgname}-${pkgver}.tar.xz")
+depends=(gmp)
+options=(debug strip)
 
 build() {
-  cd "${pkgbase}-${pkgver}"
+  cd "${pkgname}-${pkgver}"
   ./configure --prefix=/usr        \
               --disable-static     \
               --enable-thread-safe \
-              --docdir="/usr/share/doc/${pkgbase}-${pkgver}"
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}"
   make
   make html
-  make DESTDIR="${srcdir}/mpfr-dest" install
-  make DESTDIR="${srcdir}/mpfr-dest" install-html
-
 }
 
 check() {
-  cd "${pkgbase}-${pkgver}"
+  cd "${pkgname}-${pkgver}"
   make check
 }
 
-package_mpfr-debug() {
-pkgdesc="Debugging symbols for the MPFR package"
-depends=("mpfr=${pkgver}-${pkgrel}")
-options=(!strip)
-
-  install -vdm755 "${pkgdir}/usr/lib"
-  for _lib in "${srcdir}"/mpfr-dest/usr/lib/*.so.[0-9].[0-9].*
-  do
-    _libbase=$(basename "${_lib}")
-    objcopy --only-keep-debug "${_lib}" "${pkgdir}/usr/lib/${_libbase}.dbg"
-  done
-}
-
-package_mpfr() {
+package() {
 pkgdesc="The MPFR package contains functions for multiple precision math."
-depends=('gmp')
 
-  cd "${pkgbase}-${pkgver}"
-  cp -Rv "${srcdir}"/mpfr-dest/* "${pkgdir}/"
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  make DESTDIR="${pkgdir}" install-html
 }
 
-sha256sums=('015fde82b3979fbe5f83501986d328331ba8ddf008c1ff3da3c238f49ca062bc')
+sha256sums=('0c98a3f1732ff6ca4ea690552079da9c597872d30e96ec28414ee23c95558a7f')
