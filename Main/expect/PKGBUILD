@@ -1,6 +1,6 @@
 # Maintainer: archetech trw2006@hotmail.com
 pkgname=expect
-pkgver=5.45
+pkgver=5.45.4
 pkgrel=1
 pkgdesc="Expect contains tools for automating interactive applications such as telnet, ftp, passwd, fsck, rlogin, tip, etc."
 arch=('x86_64')
@@ -11,6 +11,7 @@ depends=('tcl' 'gcc' 'glibc')
 optdepends=('tk')
 makedepends=('bash' 'coreutils' 'diffutils' 'grep' 'make' 'patch' 'sed' )
 source=("http://prdownloads.sourceforge.net/${pkgname}/${pkgname}${pkgver}.tar.gz")
+options=(debug strip)
 
 build() {
   cd "${pkgname}${pkgver}"
@@ -33,4 +34,4 @@ package() {
   ln -svf "${pkgname}${pkgver}/lib${pkgname}${pkgver}.so" "${pkgdir}/usr/lib"
 }
 
-sha256sums=('b28dca90428a3b30e650525cdc16255d76bb6ccd65d448be53e620d95d5cc040')
+sha256sums=('49a7da83b0bdd9f46d04a04deec19c7767bb9a323e40c4781f89caf760b92c34')
