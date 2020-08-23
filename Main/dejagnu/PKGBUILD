@@ -1,6 +1,6 @@
 # Maintainer: archetech trw2006@hotmail.com
 pkgname=dejagnu
-pkgver=1.6
+pkgver=1.6.2
 pkgrel=1
 pkgdesc="A framework for program testing"
 arch=('x86_64')
@@ -16,7 +16,6 @@ build() {
   ./configure --prefix=/usr
   makeinfo --html --no-split -o doc/dejagnu.html doc/dejagnu.texi
   makeinfo --plaintext       -o doc/dejagnu.txt  doc/dejagnu.texi 
-  make
 }
 
 check() {
@@ -32,4 +31,4 @@ package() {
                   "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
 }
 
-sha256sums=('00b64a618e2b6b581b16eb9131ee80f721baa2669fa0cdee93c500d1a652d763')
+sha256sums=('0d0671e1b45189c5fc8ade4b3b01635fb9eeab45cf54f57db23e4c4c1a17d261')
