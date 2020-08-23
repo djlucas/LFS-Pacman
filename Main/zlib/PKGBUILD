@@ -16,6 +16,7 @@ makedepends=('bash'
              'sed')
 depends=('glibc')
 source=("http://www.zlib.net/${pkgname}-${pkgver}.tar.xz")
+options=(debug strip)
 
 build(){
   cd "${pkgname}-${pkgver}"
