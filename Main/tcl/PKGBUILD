@@ -1,0 +1,52 @@
+# Maintainer DJ Lucas <dj@lucasit.com>
+pkgname=tcl
+pkgver=8.6.10
+pkgrel=1
+pkgdesc="The Tcl scripting language"
+arch=('x86_64')
+url="http://tcl.sourceforge.net/"
+license=('custom')
+depends=('zlib')
+options=(debug strip 'staticlibs')
+source=(https://downloads.sourceforge.net/sourceforge/tcl/tcl${pkgver}-src.tar.gz)
+
+build() {
+  cd ${srcdir}/tcl${pkgver}
+  SRCDIR=$(pwd)
+  cd unix
+  ./configure --prefix=/usr           \
+              --mandir=/usr/share/man \
+              --enable-64bit
+
+  make
+
+  sed -e "s|$SRCDIR/unix|/usr/lib|" \
+      -e "s|$SRCDIR|/usr/include|"  \
+      -i tclConfig.sh
+
+  sed -e "s|$SRCDIR/unix/pkgs/tdbc1.1.1|/usr/lib/tdbc1.1.1|" \
+      -e "s|$SRCDIR/pkgs/tdbc1.1.1/generic|/usr/include|"    \
+      -e "s|$SRCDIR/pkgs/tdbc1.1.1/library|/usr/lib/tcl8.6|" \
+      -e "s|$SRCDIR/pkgs/tdbc1.1.1|/usr/include|"            \
+      -i pkgs/tdbc1.1.1/tdbcConfig.sh
+
+  sed -e "s|$SRCDIR/unix/pkgs/itcl4.2.0|/usr/lib/itcl4.2.0|" \
+      -e "s|$SRCDIR/pkgs/itcl4.2.0/generic|/usr/include|"    \
+      -e "s|$SRCDIR/pkgs/itcl4.2.0|/usr/include|"            \
+      -i pkgs/itcl4.2.0/itclConfig.sh
+}
+
+check() {
+  cd ${srcdir}/tcl${pkgver}/unix
+  make test
+}
+
+package() {
+  cd ${srcdir}/tcl${pkgver}/unix
+  make DESTDIR=${pkgdir} install
+  make DESTDIR=${pkgdir} install-private-headers
+  chmod -v u+w ${pkgdir}/usr/lib/libtcl8.6.so
+  ln -sfv tclsh8.6 ${pkgdir}/usr/bin/tclsh
+}
+
+sha256sums=('5196dbf6638e3df8d5c87b5815c8c2b758496eb6f0e41446596c9a4e638d87ed')
