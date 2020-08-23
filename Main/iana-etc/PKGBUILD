@@ -1,16 +1,18 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=iana-etc
-pkgver=2.30
+pkgver=4.0
 pkgrel=1
 pkgdesc="The Iana-Etc package provides data for network services and protocols."
 arch=('x86_64')
-url="http://freecode.com/projects/iana-etc"
-license=('GPL3')
+url="https://github.com/djlucas/iana-etc"
+license=('OSL3')
 groups=('core')
-source=("http://anduin.linuxfromscratch.org/LFS/iana-etc-2.30.tar.bz2")
-depends=('coreutils' 'gawk')
+source=("https://github.com/djlucas/${pkgname}/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.xz")
+depends=('coreutils' 'gawk' 'perl')
 makedepends=('make')
+backup=('etc/services'
+        'etc/protocols')
 
 build() {
   # Do nothing...
@@ -19,8 +21,29 @@ build() {
 
 package() {
   cd "${pkgname}-${pkgver}"
+  make get
   make
   make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/usr/libexec/iana-etc"
+  install -vm644 protocols.gawk "${pkgdir}/usr/libexec/iana-etc"
+  install -vm644 services.gawk "${pkgdir}/usr/libexec/iana-etc"
+  install -vm644 get.pl "${pkgdir}/usr/libexec/iana-etc"
+  install -vdm755 "${pkgdir}/usr/sbin"
+  cat > "${pkgdir}/usr/sbin/iana-update" << "EOF"
+#!/bin/bash
+
+TEMPDIR=`mktemp -d`
+cd ${TEMPDIR}
+perl /usr/libexec/iana-etc/get.pl protocol-numbers
+perl /usr/libexec/iana-etc/get.pl service-names-port-numbers
+awk -f /usr/libexec/iana-etc/protocols.gawk -F"[<>]" protocol-numbers.xml > protocols
+awk -f /usr/libexec/iana-etc/services.gawk -F"[<>]" service-names-port-numbers.xml > services
+mv /etc/protocols{,.old}
+mv /etc/services{,.old}
+install -vm644 protocols /etc
+install -vm644 services /etc
+EOF
+  chmod 755 "${pkgdir}/usr/sbin/iana-update"
 }
 
-sha256sums=('b9a6874fb20012836efef75452ef2acae624022d680feeb1994d73facba3f20d')
+sha256sums=('fc289ed209223e3e8b3e5dfe3ad2ddb1279bc31dd87583d5da7242ab6b495ab7')
