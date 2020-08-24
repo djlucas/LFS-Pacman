@@ -1,0 +1,36 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=zstd
+pkgver=1.4.5
+pkgrel=1
+pkgdesc="Zstandard is a real-time compression algorithm, providing high compression ratios. It offers a very wide range of compression / speed trade-offs, while being backed by a very fast decoder."
+arch=('x86_64')
+url="https://facebook.github.io/zstd/"
+groups=('core')
+license=('GPL')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make'
+             'xz')
+depends=('glibc'
+         'xz')
+source=("https://github.com/facebook/${pkgname}/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
+options=(debug strip)
+
+build(){
+  cd ${srcdir}/${pkgname}-${pkgver}
+  make
+}
+
+package(){
+  cd ${srcdir}/${pkgname}-${pkgver}
+  make prefix=${pkgdir}/usr install
+  install -vdm755 ${pkgdir}/lib
+  mv -v ${pkgdir}/usr/lib/libzstd.so.* ${pkgdir}/lib
+  ln -sfv ../../lib/$(readlink ${pkgdir}/usr/lib/libzstd.so) \
+          ${pkgdir}/usr/lib/libzstd.so
+}
+
+sha256sums=('98e91c7c6bf162bf90e4e70fdbc41a8188b9fa8de5ad840c401198014406ce9e')
