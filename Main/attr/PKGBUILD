@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=attr
-pkgver=2.4.47
+pkgver=2.4.48
 pkgrel=1
 pkgdesc="The attr package contains utilities to administer the extended attributes on filesystem objects."
 arch=('x86_64')
@@ -19,40 +19,31 @@ makedepends=('bash'
              'sed'
              'tar')
 depends=('glibc')
-source=("http://download.savannah.gnu.org/releases/${pkgname}/${pkgname}-${pkgver}.src.tar.gz")
-
-prepare(){
-  cd "${pkgname}-${pkgver}"
-
-  # Install into versioned doc directory
-  sed -i -e 's|/@pkg_name@|&-@pkg_version@|' include/builddefs.in
-
-  # Prevent installation of man pages
-  sed -i -e "/SUBDIRS/s|man[25]||g" man/Makefile
-}
+source=("http://download.savannah.gnu.org/releases/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+options=('debug' 'strip')
 
 build(){
   cd "${pkgname}-${pkgver}"
-  ./configure --prefix=/usr \
-              --disable-static
+  ./configure --prefix=/usr     \
+              --bindir=/bin     \
+              --disable-static  \
+              --sysconfdir=/etc \
+              --docdir=/usr/share/doc/${pkgname}-${pkgver}
   make
 }
 
 check(){
   cd "${pkgname}-${pkgver}"
-  make -j1 tests
-  # root-tests target must be run as root
-  # make -j1 root-tests
+  make check
 }
 
 package(){
   cd "${pkgname}-${pkgver}"
-  make DESTDIR="${pkgdir}" install install-dev install-lib
-  chmod -v 755 "${pkgdir}/usr/lib/libattr.so"
+  make DESTDIR="${pkgdir}" install
   install -vdm755 "${pkgdir}/lib"
-  mv -v "${pkgdir}"/usr/lib/libattr.so.* "${pkgdir}/lib"
+  mv -v ${pkgdir}/usr/lib/libattr.so.* ${pkgdir}/lib
   ln -sfv ../../lib/$(readlink "${pkgdir}/usr/lib/libattr.so") \
           "${pkgdir}/usr/lib/libattr.so"
 }
-sha256sums=('25772f653ac5b2e3ceeb89df50e4688891e21f723c460636548971652af0a859')
+sha256sums=('5ead72b358ec709ed00bbf7a9eaef1654baad937c001c044fe8b74c57f5324e7')
 
