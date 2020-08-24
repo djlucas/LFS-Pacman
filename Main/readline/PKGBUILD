@@ -1,6 +1,6 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 pkgname=readline
-pkgver=7.0
+pkgver=8.0
 pkgrel=1
 pkgdesc="The Readline package is a set of libraries that offers command-line editing and history capabilities."
 arch=('i686' 'x86_64')
@@ -19,7 +19,7 @@ makedepends=('bash'
              'texinfo')
 depends=('glibc'
          'ncurses')
-options=('!strip')
+options=('debug' 'strip')
 source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
 
 build(){
@@ -28,23 +28,25 @@ build(){
   sed -i '/{OLDSUFF}/c:' support/shlib-install
   ./configure --prefix=/usr    \
               --disable-static \
+              --with-curses    \
               --docdir="/usr/share/doc/${pkgname}-${pkgver}"
-  make SHLIB_LIBS=-lncurses
+  make SHLIB_LIBS="-lncursesw"
 }
 
 package(){
   cd "${pkgname}-${pkgver}"
-  make DESTDIR="${pkgdir}" SHLIB_LIBS=-lncurses install
+  make DESTDIR="${pkgdir}" SHLIB_LIBS="-lncursesw" install
   install -vdm755 "${pkgdir}/lib"
   mv -v "${pkgdir}"/usr/lib/lib{readline,history}.so.* "${pkgdir}/lib"
+  chmod -v u+w "${pkgdir}"/lib/lib{readline,history}.so.*
   ln -sfv ../../lib/$(readlink "${pkgdir}/usr/lib/libreadline.so") \
           "${pkgdir}/usr/lib/libreadline.so"
   ln -sfv ../../lib/$(readlink "${pkgdir}/usr/lib/libhistory.so") \
           "${pkgdir}/usr/lib/libhistory.so"
-  install -dm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
   install -vm644 doc/*.{ps,pdf,html,dvi} \
                  "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
 }
 
-sha256sums=('750d437185286f40a369e1e4f4764eda932b9459b5ec9a731628393dd3d32334')
+sha256sums=('e339f51971478d369f8a053a330a190781acb9864cf4c541060f12078948e461')
 
