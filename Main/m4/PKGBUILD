@@ -19,21 +19,28 @@ makedepends=('binutils'
              'sed'
              'texinfo')
 source=("https://ftp.gnu.org/gnu/m4/${pkgname}-${pkgver}.tar.xz")        
+options=(debug strip)
+
+prepare() {
+  cd "${pkgname}-${pkgver}"
+  sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c
+  echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h
+}
 
 build() {
-	cd "$pkgname-$pkgver"
-	./configure --prefix=/usr  --bindir=/bin
-	make
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
 }
 
 check() {
-	cd "$pkgname-$pkgver"
-	make check
+  cd "${pkgname}-${pkgver}"
+  make check
 }
 
 package() {
-	cd "$pkgname-$pkgver"
-	make DESTDIR="${pkgdir}" install
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
 }
 
 sha256sums=('f2c1e86ca0a404ff281631bdc8377638992744b175afb806e25871a24a934e07')
