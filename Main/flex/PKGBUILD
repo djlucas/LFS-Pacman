@@ -23,10 +23,10 @@ depends=('bash'
 checkdepends=('diffutils'
               'findutils')
 source=("https://github.com/westes/${pkgname}/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
+options=('debug' 'strip')
 
 build(){
   cd "${pkgname}-${pkgver}"
-  sed -i "/math.h/a #include <malloc.h>" src/flexdef.h
   ./configure --prefix=/usr \
               --docdir="/usr/share/doc/${pkgname}-${pkgver}"
   make
