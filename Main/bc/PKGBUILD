@@ -1,11 +1,11 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=bc
-pkgver=1.07.1
+pkgver=3.1.5
 pkgrel=1
 pkgdesc="The Bc package contains an arbitrary precision numeric processing language."
 arch=('x86_64')
-url="http://www.gnu.org/software/${pkgname}/"
+url="https://git.yzena.com/gavin/bc"
 license=('GPL')
 groups=('core')
 makedepends=('bash'
@@ -19,43 +19,20 @@ makedepends=('bash'
              'patch')
 depends=('readline')
 checkdepends=('gawk')
-source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
-
-prepare(){
-  cd "${pkgname}-${pkgver}"
-  cat > bc/fix-libmath_h << "EOF"
-#! /bin/bash
-sed -e '1   s/^/{"/' \
-    -e     's/$/",/' \
-    -e '2,$ s/^/"/'  \
-    -e   '$ d'       \
-    -i libmath.h
-
-sed -e '$ s/$/0}/' \
-    -i libmath.h
-EOF
-}
+source=("https://github.com/gavinhoward/${pkgname}/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.xz")
+options=(debug strip)
 
 build(){
   cd "${pkgname}-${pkgver}"
-  ./configure --prefix=/usr             \
-              --with-readline           \
-              --mandir=/usr/share/man   \
-              --infodir=/usr/share/info
+  CFLAGS=$(echo $CFLAGS | sed 's@-O[0-9,s]@@')
+  echo $CFLAGS
+  prefix=/usr CC=gcc CFLAGS+=" -std=c99" ./configure.sh -G -O3
   make
 }
 
 check(){
   cd "${pkgname}-${pkgver}"
-  echo "quit" | ./bc/bc -l Test/checklib.b 2>&1 | tee test.log || true
-  # This should have exactly 7 failurs or 10 failures - verify it
-  num_fails=`grep "failed" test.log | grep -vc "0$"`
-  if [ "${CARCH}" == "x86_64" ]
-  then
-    [ "${num_fails}" -eq "7" ] || exit 1
-  else
-    [ "${num_fails}" -eq "10" ] || exit 1
-  fi
+  make test
 }
 
 package(){
@@ -63,4 +40,4 @@ package(){
   make DESTDIR="${pkgdir}" install
 }
 
-sha256sums=('62adfca89b0a1c0164c2cdca59ca210c1d44c3ffc46daf9931cf4942664cb02a')
+sha256sums=('0493c1eb76e94ace7a00532824121ab901ac1bd3580a340ea5de92a7d9c1a19e')
