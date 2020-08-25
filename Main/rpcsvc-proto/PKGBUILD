@@ -1,0 +1,24 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org> 
+
+pkgname=rpcsvc-proto
+pkgver=1.4.2
+pkgrel=1
+pkgdesc="The rpcsvc-proto package contains the rcpsvc protocol files and headers, formerly included with glibc."
+arch=(x86_64)
+url='https://github.com/thkukuk/rpcsvc-proto'
+license=(BSD)
+depends=(glibc)
+source=("https://github.com/thkukuk/${pkgname}/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.xz")
+options=('debug' 'strip')
+
+build() {
+  cd ${pkgname}-${pkgver}
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make DESTDIR="$pkgdir" install
+}
+sha256sums=('678851b9f7ddf4410d2859c12016b65a6dd1a0728d478f18aeb54d165352f17c')
