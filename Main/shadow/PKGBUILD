@@ -1,11 +1,11 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=shadow
-pkgver=4.5
+pkgver=4.8.1
 pkgrel=1
 pkgdesc="The Shadow package contains programs for handling passwords in a secure way."
-arch=('i686' 'x86_64')
-url="http://pkg-shadow.alioth.debian.org/"
+arch=('x86_64')
+url="https://github.com/shadow-maint/"
 license=('GPL')
 makedepends=('bash'
              'binutils'
@@ -19,9 +19,7 @@ makedepends=('bash'
              'texinfo')
 depends=('bash'
          'acl'
-         'linux-pam'
-         $( pacman -Q skey && echo 'skey' ) )
-optdepends=('skey: add S/Key support')
+         'linux-pam')
 source=("https://github.com/shadow-maint/${pkgname}/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.xz")
 groups=('core')
 backup=('etc/default/useradd'
@@ -48,8 +46,8 @@ prepare(){
   find man -name Makefile.in -exec sed -i 's/groups\.1 / /' {} \;
   find man -name Makefile.in -exec sed -i 's/getspnam\.3 / /' {} \;
   find man -name Makefile.in -exec sed -i 's/passwd\.5 / /'   {} \;
-  sed -i -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD SHA512@' \
-         -e 's@/var/spool/mail@/var/mail@' etc/login.defs
+  sed -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD SHA512@' \
+      -e 's@/var/spool/mail@/var/mail@' -i etc/login.defs
   sed -i 's/1000/999/' etc/useradd
 }
 
@@ -63,10 +61,7 @@ build(){
 package(){
   cd "${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
-  mv -v "${pkgdir}/usr/bin/passwd" "${pkgdir}/bin"
   sed -i 's/yes/no/' ${pkgdir}/etc/default/useradd
-  rm -f "${pkgdir}/etc/limits"
-  rm -f "${pkgdir}/etc/login.access"
 
   for FUNCTION in FAIL_DELAY               \
                   FAILLOG_ENAB             \
@@ -89,7 +84,7 @@ package(){
   done
 
   # login
-cat > "${pkgdir}/etc/pam.d/login" << "EOF"
+  cat > "${pkgdir}/etc/pam.d/login" << "EOF"
 # Begin /etc/pam.d/login
 
 # Set failure delay before next prompt to 3 seconds
@@ -106,13 +101,13 @@ auth      requisite   pam_nologin.so
 # Additional group memberships - disabled by default
 #auth      optional    pam_group.so
 
-# include the default auth settings
+# include the system auth settings
 auth      include     system-auth
 
 # check access for the user
 account   required    pam_access.so
 
-# include the default account settings
+# include the system account settings
 account   include     system-account
 
 # Set default environment variables for the user
@@ -130,7 +125,7 @@ session   required    pam_limits.so
 # Check user's mail - Disabled by default
 #session   optional    pam_mail.so      standard quiet
 
-# include the default session and password settings
+# include the system session and password settings
 session   include     system-session
 password  include     system-password
 
@@ -138,7 +133,7 @@ password  include     system-password
 EOF
 
   # passwd
-cat > "${pkgdir}/etc/pam.d/passwd" << "EOF"
+  cat > "${pkgdir}/etc/pam.d/passwd" << "EOF"
 # Begin /etc/pam.d/passwd
 
 password  include     system-password
@@ -147,14 +142,23 @@ password  include     system-password
 EOF
 
   # su
-cat > "${pkgdir}/etc/pam.d/su" << "EOF"
+  cat > "${pkgdir}/etc/pam.d/su" << "EOF"
 # Begin /etc/pam.d/su
 
 # always allow root
 auth      sufficient  pam_rootok.so
+
+# Allow users in the wheel group to execute su without a password
+# disabled by default
+#auth      sufficient  pam_wheel.so trust use_uid
+
+# include system auth settings
 auth      include     system-auth
 
-# include the default account settings
+# limit su to users in the wheel group
+auth      required    pam_wheel.so use_uid
+
+# include the system account settings
 account   include     system-account
 
 # Set default environment variables for the service user
@@ -167,13 +171,13 @@ session   include     system-session
 EOF
 
   # chage
-cat > "${pkgdir}/etc/pam.d/chage" << "EOF"
+  cat > "${pkgdir}/etc/pam.d/chage" << "EOF"
 # Begin /etc/pam.d/chage
 
 # always allow root
 auth      sufficient  pam_rootok.so
 
-# include system defaults for auth account and session
+# include system auth, account, and session settings
 auth      include     system-auth
 account   include     system-account
 session   include     system-session
@@ -195,4 +199,4 @@ EOF
   done
 }
 
-sha256sums=('fc8c858381ad577a5c25ff5beb6ee60a34f8719c73e4e7c61e74188b4e54b741')
+sha256sums=('a3ad4630bdc41372f02a647278a8c3514844295d36eefe68ece6c3a641c1ae62')
