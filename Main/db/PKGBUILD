@@ -1,0 +1,40 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=db
+pkgver=5.3.28
+pkgrel=1
+pkgdesc="The Berkeley DB package contains programs and utilities used by many other applications for database related functions."
+arch=('x86_64')
+url="https://www.oracle.com/technology/software/products/berkeley-db/index.html"
+license=('custom')
+depends=('gcc'
+         'bash')
+source=(https://download.oracle.com/berkeley-db/db-${pkgver}.tar.gz)
+options=('debug' strip)
+
+prepare() {
+  cd ${pkgname}-${pkgver}
+  sed -i 's/\(__atomic_compare_exchange\)/\1_db/' src/dbinc/atomic.h 
+}
+
+build() {
+  cd "${srcdir}"/${pkgname}-${pkgver}/build_unix
+  ../dist/configure --prefix=/usr      \
+                    --enable-compat185 \
+                    --enable-dbm       \
+                    --disable-static   \
+                    --enable-cxx
+  make
+}
+
+package() {
+  cd "${srcdir}"/${pkgname}-${pkgver}/build_unix
+  make DESTDIR="${pkgdir}" docdir="/usr/share/doc/db-${pkgver}" install
+  chown -v -R root:root                      \
+    "${pkgdir}"/usr/bin/db_*                 \
+    "${pkgdir}"/usr/include/db{,_185,_cxx}.h \
+    "${pkgdir}"/usr/lib/libdb*.{so,la}       \
+    "${pkgdir}/usr/share/doc/db-${pkgver}"
+}
+
+sha256sums=('e0a992d740709892e81f9d93f06daf305cf73fb81b545afe72478043172c3628')
