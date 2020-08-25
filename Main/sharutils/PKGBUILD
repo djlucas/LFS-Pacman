@@ -1,0 +1,36 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=sharutils
+pkgver=4.15.2
+pkgrel=1
+pkgdesc="The Sharutils package contains utilities that can create 'shell' archives."
+url='https://www.gnu.org/software/sharutils/'
+license=('GPL')
+arch=('x86_64')
+depends=('perl'
+         'gettext'
+         'texinfo')
+source=("https://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz")
+options=(debug strip)
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  sed -i 's/BUFSIZ/rw_base_size/' src/unshar.c
+  sed -i '/program_name/s/^/extern /' src/*opts.h
+  sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c
+  echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h
+}
+
+build() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	CFLAGS+=' -fcommon' # https://wiki.gentoo.org/wiki/Gcc_10_porting_notes/fno_common
+	./configure --prefix=/usr
+	make
+}
+
+package() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('2b05cff7de5d7b646dc1669bc36c35fdac02ac6ae4b6c19cb3340d87ec553a9a')
