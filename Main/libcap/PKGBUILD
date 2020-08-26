@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=libcap
-pkgver=2.25
+pkgver=2.42
 pkgrel=1
 pkgdesc="The Libcap package implements the user-space interfaces to the POSIX 1003.1e capabilities available in Linux kernels. These capabilities are a partitioning of the all powerful root privilege into a set of distinct privileges."
 arch=('x86_64')
@@ -23,9 +23,6 @@ backup=('etc/security/capability.conf')
 build() {
   cd "${pkgname}-${pkgver}"
   sed -i '/install.*STALIBNAME/d' libcap/Makefile
-  sed -e '/GPERF_OUTPUT/s/-include/-include stddef.h -include/' \
-      -e '/__cap_lookup_name/s/unsigned int/register size_t/' \
-      -i.bak libcap/Makefile
   make
   make -C pam_cap
 }
@@ -39,4 +36,4 @@ package() {
   install -v -m644 pam_cap/capability.conf "${pkgdir}/etc/security"
 }
 
-sha256sums=('693c8ac51e983ee678205571ef272439d83afe62dd8e424ea14ad9790bc35162')
+sha256sums=('3605a9cb60076547ea9f64989e0ba576da9508e4653e8dc40ae54c0d6f443dfd')
