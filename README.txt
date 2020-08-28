@@ -1,4 +1,4 @@
-LFS-systemd-Pacman
+LFS-Pacman
 ==========
 This is simply my idea of the perfect Linux distro. I'm keeping it here for me, 
 but feel free to take what you like should you happen to stumble upon it. I've 
