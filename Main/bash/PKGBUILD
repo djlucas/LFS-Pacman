@@ -1,7 +1,9 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=bash
-pkgver=4.4
+pkgbver=5.0
+patchver=018
+pkgver="${pkgbver}.${patchver}"
 pkgrel=1
 pkgdesc="The Bash package contains the Bourne-Again SHell."
 arch=('x86_64')
@@ -23,31 +25,36 @@ depends=('glibc'
          'readline'
          'gettext')
 _confargs=""
-source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz"
-        "http://www.linuxfromscratch.org/patches/downloads/${pkgname}/${pkgname}-${pkgver}-upstream_fixes-1.patch")
+source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgbver}.tar.gz"
+        "http://www.linuxfromscratch.org/~dj/${pkgname}-${pkgbver}-upstream_fixes-${patchver}.patch")
+options=('debug' 'strip')
 
-build(){
-  cd "${pkgname}-${pkgver}"
-  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-upstream_fixes-1.patch"
+prepare() {
+  cd "${pkgname}-${pkgbver}"
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgbver}-upstream_fixes-${patchver}.patch"
+}
+
+build() {
+  cd "${pkgname}-${pkgbver}"
   ./configure --prefix=/usr                                \
-              --docdir=/usr/share/doc/${pkgname}-${pkgver} \
+              --docdir=/usr/share/doc/${pkgname}-${pkgbver} \
               --without-bash-malloc                        \
               --with-installed-readline
   make
 }
 
-check(){
-  cd "${pkgname}-${pkgver}"
+check() {
+  cd "${pkgname}-${pkgbver}"
   make tests
 }
 
-package(){
+package() {
   # Setup for LFS /usr merge filesystem layout
-  cd "${pkgname}-${pkgver}"
+  cd "${pkgname}-${pkgbver}"
   make DESTDIR="${pkgdir}" install
   install -vdm755 "${pkgdir}/bin"
   mv -vf "${pkgdir}/usr/bin/bash" "${pkgdir}/bin"
 }
 
-sha256sums=('d86b3392c1202e8ff5a423b302e6284db7f8f435ea9f39b5b1b20fd3ac36dfcb'
-            '8f6f68a25a4f16ffeae3f24a0c3e69af2dbcff6f2c4fb805cd4e18fd96f06016')
+sha256sums=('b4a80f2ac66170b2913efbfb9f2594f1f76c7b1afd11f799e22035d63077fb4d'
+            '7d24bf3d02977e7767a1269b7c6d189226e640470a7e3d9d70f819f5ba03d503')
