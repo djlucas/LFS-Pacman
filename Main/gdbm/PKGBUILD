@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=gdbm
-pkgver=1.13
+pkgver=1.18.1
 pkgrel=1
 pkgdesc="The GDBM package contains the GNU Database Manager. It is a library of database functions that use extensible hashing and work similar to the standard UNIX dbm. The library provides primitives for storing key/data pairs, searching and retrieving the data by its key and deleting a key along with its data." 
 arch=('x86_64')
@@ -18,8 +18,14 @@ makedepends=('bash'
              'make'
              'sed')
 source=("https://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+options=('debug' 'strip')
 
-build(){
+prepare() {
+  cd "${pkgname}-${pkgver}"
+  sed -r -i '/^char.*parseopt_program_(doc|args)/d' src/parseopt.c
+}
+
+build() {
   cd "${pkgname}-${pkgver}"
   ./configure --prefix=/usr \
               --disable-static \
@@ -27,14 +33,14 @@ build(){
   make
 }
 
-check(){
+check() {
   cd "${pkgname}-${pkgver}"
   make check
 }
 
-package(){
+package() {
   cd "${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
 }
 
-sha256sums=('9d252cbd7d793f7b12bcceaddda98d257c14f4d1890d851c386c37207000a253')
+sha256sums=('86e613527e5dba544e73208f42b78b7c022d4fa5a6d5498bf18c8d6f745b91dc')
