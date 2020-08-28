@@ -1,7 +1,7 @@
 # Maintainer: archetech trw2006@hotmail.com
 
 pkgname=gettext
-pkgver=0.19.8.1
+pkgver=0.21
 pkgrel=1
 pkgdesc="The Gettext package contains utilities for internationalization and localization. These allow programs to be compiled with NLS (Native Language Support), enabling them to output messages in the user's native language."
 arch=('x86_64')
@@ -22,6 +22,7 @@ makedepends=('bash'
              'tcl'
              'texinfo')
 source=("ftp://ftp.gnu.org/pub/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+options=('debug' 'strip')
 
 prepare() {
   cd "${pkgname}-${pkgver}"
@@ -49,4 +50,4 @@ package() {
   chmod -v 0755 "${pkgdir}/usr/lib/preloadable_libintl.so"
 }
 
-sha256sums=('ff942af0e438ced4a8b0ea4b0b6e0d6d657157c5e2364de57baa279c1c125c43')
+sha256sums=('c77d0da3102aec9c07f43671e60611ebff89a996ef159497ce8e59d075786b12')
