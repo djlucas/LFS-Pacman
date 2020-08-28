@@ -21,6 +21,7 @@ makedepends=('bash'
              'texinfo'
              'zlib')
 source=("https://ftp.gnu.org/gnu/inetutils/${pkgname}-${pkgver}.tar.xz")        
+options=('debug' 'strip')
 
 build(){
   cd "${pkgname}-${pkgver}"
