@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=psmisc
-pkgver=23.1
+pkgver=23.3
 pkgrel=1
 pkgdesc="The Psmisc package contains programs for displaying information about running processes." 
 arch=('x86_64')
@@ -19,6 +19,7 @@ makedepends=('bash'
              'make'
              'sed')
 source=("https://sourceforge.net/projects/${pkgname}/files/${pkgname}/${pkgname}-${pkgver}.tar.xz")        
+options=('debug' 'strip')
 
 build(){
   cd "${pkgname}-${pkgver}"
@@ -33,4 +34,4 @@ package(){
   mv -v "${pkgdir}"/usr/bin/fuser   "${pkgdir}"/bin/
   mv -v "${pkgdir}"/usr/bin/killall "${pkgdir}"/bin/
 }
-sha256sums=('2e84d474cf75dfbe3ecdacfb797bbfab71a35c7c2639d1b9f6d5f18b2149ba30')
+sha256sums=('41750e1a5abf7ed2647b094f58127c73dbce6876f77ba4e0a7e0995ae5c7279a')
