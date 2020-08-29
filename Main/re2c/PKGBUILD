@@ -1,0 +1,30 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=re2c
+pkgver=2.0.3
+pkgrel=1
+arch=(x86_64)
+depends=(gcc)
+pkgdesc='A tool for generating C-based recognizers from regular expressions'
+url='https://re2c.org'
+license=('public domain')
+source=(re2c-$pkgver.tar.gz::https://github.com/skvadrik/re2c/archive/$pkgver.tar.gz)
+options=('debug' 'strip')
+
+build() {
+  cd ${pkgname}-${pkgver}
+  ./autogen.sh
+  ./configure --prefix=/usr --enable-golang
+  make
+}
+
+check() {
+  cd ${pkgname}-${pkgver}
+  make tests
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" install
+}
+sha256sums=('f131b3d5b618454caa5f2ddcc8288b797c78781056a40c2899c832493827c003')
