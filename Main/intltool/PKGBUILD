@@ -1,0 +1,35 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=intltool
+pkgver=0.51.0
+pkgrel=1
+pkgdesc="The Intltool is an internationalization tool used for extracting translatable strings from source files."
+arch=('any')
+url="https://launchpad.net/intltool"
+license=('GPL')
+depends=('perl-xml-parser')
+source=(https://launchpad.net/intltool/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz)
+options=('debug' 'strip')
+
+prepare() {
+  cd ${pkgname}-${pkgver}
+  sed -i 's:\\\${:\\\$\\{:' intltool-update.in
+}
+
+build() {
+  cd ${pkgname}-${pkgver}
+  ./configure --prefix=/usr
+  make
+}
+
+check() {
+  cd ${pkgname}-${pkgver}
+  make check
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" install
+  install -D -m644 doc/I18N-HOWTO "${pkgdir}/usr/share/doc/${pkgname}/I18N-HOWTO"
+}
+sha256sums=('67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd')
