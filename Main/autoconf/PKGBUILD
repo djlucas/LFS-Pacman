@@ -22,6 +22,12 @@ depends=('gawk'
          'diffutils'
          'bash')
 source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz")
+options=('debug' 'strip')
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  sed -i '361 s/{/\\{/' bin/autoscan.in
+}
 
 build(){
   cd "${pkgname}-${pkgver}"
