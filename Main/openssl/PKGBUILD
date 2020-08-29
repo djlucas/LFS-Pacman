@@ -1,22 +1,27 @@
-# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=openssl
-_ver=1.1.0f
+_ver=1.1.1g
 # use a pacman compatible version scheme
 pkgver=${_ver/[a-z]/.${_ver//[0-9.]/}}
 pkgrel=1
-pkgdesc='The Open Source toolkit for Secure Sockets Layer and Transport Layer Security'
+pkgdesc="The OpenSSL package contains management tools and libraries relating to cryptography. These are useful for providing cryptographic functions to other packages, such as OpenSSH, email applications, and web browsers (for accessing HTTPS sites)."
 arch=('x86_64')
 url='https://www.openssl.org'
 license=('custom:BSD')
 groups=('core')
-makedepends=('bash' 'binutils' 'coreutils' 'gcc' 'glibc' 'make' 'sed')
-depends=('zlib' 'perl')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'glibc'
+             'make'
+             'sed')
+depends=('zlib'
+         'perl')
 optdepends=('ca-certificates: provides certificate authority store')
-options=('!makeflags')
+options=('debug' 'strip')
 backup=('etc/ssl/openssl.cnf')
-_confargs=""
-_krb5="0"
 source=("https://www.${pkgname}.org/source/${pkgname}-${_ver}.tar.gz")
 
 build() {
@@ -27,8 +32,6 @@ build() {
            shared                \
            zlib-dynamic
   make
-  sed -i 's# libcrypto.a##;s# libssl.a##;/INSTALL_LIBS/s#libcrypto.a##' Makefile
-
 }
 
 check() {
@@ -38,12 +41,12 @@ check() {
 
 package() {
   cd "${pkgname}-${_ver}"
+  sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
   make DESTDIR="${pkgdir}" MANSUFFIX=ssl install
   mv -v "${pkgdir}/usr/share/doc/${pkgname}" \
         "${pkgdir}/usr/share/doc/${pkgname}-${_ver}"
   cp -vfr doc/* "${pkgdir}/usr/share/doc/${pkgname}-${_ver}"
-  install -vDm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }
 
-sha256sums=('12f746f3f2493b2f39da7ecf63d7ee19c6ac9ec6a4fcd8c229da8a522cb12765')
+sha256sums=('ddb04774f1e32f0c49751e21b67216ac87852ceb056b75209af2443400636d46')
 
