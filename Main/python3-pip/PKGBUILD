@@ -1,0 +1,31 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname="python3-pip"
+pkgver=20.2.2
+pkgrel=1
+pkgdesc="The PyPA recommended tool for installing Python packages"
+url="https://pip.pypa.io/"
+arch=('any')
+license=('MIT')
+depends=('python3-setuptools')
+source=("pip-${pkgver}.tar.gz::https://github.com/pypa/pip/archive/${pkgver}.tar.gz")
+options=('debug' 'strip')
+
+build() {
+  cd "pip-${pkgver}"
+  python3 setup.py build
+}
+
+package() {
+  cd "pip-${pkgver}"
+  python3 setup.py install --prefix=/usr --root="${pkgdir}"
+  ln -sfv pip3.8 "${pkgdir}/usr/bin/pip3"
+  ln -sfv pip3.8 "${pkgdir}/usr/bin/pip"
+
+  PYTHONPATH="${pkgdir}"/usr/lib/python3.8/site-packages "${pkgdir}"/usr/bin/pip completion --bash \
+    | install -Dm644 /dev/stdin "${pkgdir}"/usr/share/bash-completion/completions/pip
+  PYTHONPATH="${pkgdir}"/usr/lib/python3.8/site-packages "${pkgdir}"/usr/bin/pip completion --fish \
+    | install -Dm644 /dev/stdin "{$pkgdir}"/usr/share/fish/vendor_completions.d/pip.fish
+}
+
+sha256sums=('31e4089275c151db5b986db27c2cb6c0033543d69565ab4f5e1387de721202cd')
