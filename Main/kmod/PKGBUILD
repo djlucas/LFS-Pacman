@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=kmod
-pkgver=24
+pkgver=27
 pkgrel=1
 pkgdesc="The Kmod package contains libraries and utilities for loading kernel modules." 
 arch=('x86_64')
@@ -22,6 +22,7 @@ makedepends=('bash'
              'xz'
              'zlib')
 source=("https://www.kernel.org/pub/linux/utils/kernel/${pkgname}/${pkgname}-${pkgver}.tar.xz")        
+options=('debug' 'strip')
 
 build(){
   cd "${pkgname}-${pkgver}"
@@ -48,4 +49,4 @@ package(){
   done
   ln -sfv kmod "${pkgdir}/bin/lsmod"
 }
-sha256sums=('610b8d1df172acc39a4fdf1eaa47a57b04873c82f32152e7a62e29b6ff9cb397')
+sha256sums=('c1d3fbf16ca24b95f334c1de1b46f17bbe5a10b0e81e72668bdc922ebffbbc0c')
