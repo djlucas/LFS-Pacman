@@ -1,0 +1,43 @@
+# Maintainer: archetech trw2006@hotmail.com
+pkgname=gawk
+pkgver=5.1.0
+pkgrel=1
+pkgdesc="The Gawk package contains programs for manipulating text files." 
+arch=('x86_64')
+url="http://www.gnu.org/software/gawk"
+groups=('core')
+license=('GPL3')
+depends=( 'glibc'
+          'gcc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gettext'
+             'gmp'
+             'grep'
+             'make'
+             'mpfr'
+             'patch'
+             'readline'
+             'sed'
+             'texinfo')
+checkdepends=('diffutils')
+source=("ftp://ftp.gnu.org/pub/gnu/gawk/${pkgname}-${pkgver}.tar.xz")
+
+build() {
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr 
+  make
+}
+
+check() {
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('cf5fea4ac5665fd5171af4716baab2effc76306a9572988d5ba1078f196382bd')
