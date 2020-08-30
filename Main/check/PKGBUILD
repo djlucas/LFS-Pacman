@@ -1,6 +1,6 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 pkgname=check
-pkgver=0.11.0
+pkgver=0.15.2
 pkgrel=1
 pkgdesc="Check is a unit testing framework for C."
 arch=('x86_64')
@@ -14,6 +14,8 @@ makedepends=('gcc'
              'sed'
              'texinfo')
 source=("https://github.com/libcheck/${pkgname}/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.gz")
+options=('debug' 'strip')
+
 build(){
   cd ${pkgname}-${pkgver}
   ./configure --prefix=/usr --disable-static
@@ -30,4 +32,4 @@ package(){
   make DESTDIR=${pkgdir} docdir=/usr/share/doc/${pkgname}-${pkgver} install
 }
 
-sha256sums=('24f7a48aae6b74755bcbe964ce8bc7240f6ced2141f8d9cf480bc3b3de0d5616')
+sha256sums=('a8de4e0bacfb4d76dd1c618ded263523b53b85d92a146d8835eb1a52932fa20a')
