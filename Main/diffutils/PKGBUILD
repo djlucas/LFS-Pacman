@@ -1,6 +1,6 @@
 # Maintainer: archetech trw2006@hotmail.com
 pkgname=diffutils
-pkgver=3.6
+pkgver=3.7
 pkgrel=1
 pkgdesc="Shows difference between files or directories" 
 arch=('x86_64')
@@ -27,4 +27,4 @@ package() {
   make DESTDIR="${pkgdir}" install
 }
 
-sha256sums=('d621e8bdd4b573918c8145f7ae61817d1be9deb4c8d2328a65cea8e11d783bd6')
+sha256sums=('b3a7a6221c3dc916085f0d205abf6b8e1ba443d4dd965118da364a1dc1cb3a26')
