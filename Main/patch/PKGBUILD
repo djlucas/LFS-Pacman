@@ -1,0 +1,36 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=patch
+pkgver=2.7.6
+pkgrel=1
+pkgdesc="The Patch package contains a program for modifying or creating files by applying a “patch” file typically created by the diff program." 
+arch=('x86_64')
+url="https://savannah.gnu.org/projects/patch/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'grep'
+             'make'
+             'sed')
+source=("https://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('ac610bda97abe0d9f6b7c963255a11dcb196c25e337c61f94e4778d632f1d8fd')
