@@ -1,0 +1,73 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=ninja
+pkgver=1.10.1
+pkgrel=1
+pkgdesc="Ninja is a small build system with a focus on speed."
+arch=('x86_64')
+url="https://ninja-build.org/"
+license=('Apache')
+depends=('gcc'
+         $(pacman -Q re2c >/dev/null 2>&1 && echo 're2c')
+         $(pacman -Q bash >/dev/null 2>&1 && echo 'bash')
+         $(pacman -Q vim >/dev/null 2>&1 && echo 'vim')
+         $(pacman -Q emacs >/dev/null 2>&1 && echo 'emacs')
+         $(pacman -Q zsh >/dev/null 2>&1 && echo 'zsh'))
+makedepends=('python3')
+optdepends=($(pacman -Q re2c >/dev/null 2>&1 || echo 're2c')
+            $(pacman -Q bash >/dev/null 2>&1 || echo 'bash')
+            $(pacman -Q vim >/dev/null 2>&1 || echo 'vim')
+            $(pacman -Q emacs >/dev/null 2>&1 || echo 'emacs')
+            $(pacman -Q zsh >/dev/null 2>&1 || echo 'zsh'))
+source=("${pkgname}-${pkgver}.tar.gz::https://github.com/martine/${pkgname}/archive/v${pkgver}.tar.gz")
+options=('debug' 'strip')
+if $(pacamn -Q zsh > /dev/null); then 
+  vimfilesdir="/usr/share/vim/vim$(vim --version | grep -m1 -o "[0-9]\.[0-9]")"
+fi
+
+prepare() {
+  cd ${pkgname}-${pkgver}
+  sed -i '/int Guess/a \
+    int   j = 0;\
+    char* jobs = getenv( "NINJAJOBS" );\
+    if ( jobs != NULL ) j = atoi( jobs );\
+    if ( j > 0 ) return j;' \
+    src/ninja.cc
+}
+
+build() {
+  cd ${pkgname}-${pkgver}
+  python3 configure.py --bootstrap
+}
+
+check() {
+  cd ${pkgname}-${pkgver}
+  ./ninja ninja_test
+  ./ninja_test --gtest_filter=-SubprocessTest.SetWithLots
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+
+  install -vdm755 "${pkgdir}/usr/bin"
+  install -m755 -D ninja "${pkgdir}/usr/bin/ninja"
+
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  install -m644 -D doc/manual.asciidoc "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/manual.asciidoc"
+
+  if $(pacman -Q emacs > /dev/null); then
+    install -m644 -D misc/ninja-mode.el "${pkgdir}/usr/share/emacs/site-lisp/ninja-mode.el"
+    install -m644 -D misc/ninja-mode.elc "${pkgdir}/usr/share/emacs/site-lisp/ninja-mode.elc"
+  fi
+
+  if $(pacman -Q vim > /dev/null); then
+    install -m644 -D misc/ninja.vim "${pkgdir}/${vimfilesdir}/syntax/ninja.vim"
+  fi
+  if $(pacman -Q bash > /dev/null); then
+    install -m644 -D misc/bash-completion "${pkgdir}/usr/share/bash-completion/completions/ninja"
+  fi
+  if $(pacamn -Q zsh > /dev/null); then
+    install -m644 -D misc/zsh-completion "${pkgdir}/usr/share/zsh/site-functions/_ninja"
+  fi
+}
+sha256sums=('a6b6f7ac360d4aabd54e299cc1d8fa7b234cd81b9401693da21221c62569a23e')
