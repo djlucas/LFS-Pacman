@@ -1,0 +1,55 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=eudev
+pkgver=3.2.9
+pkgrel=1
+pkgdesc="The Eudev package contains programs for dynamic creation of device nodes." 
+arch=('x86_64')
+url="https://dev.gentoo.org/~blueness/${pkgname}/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'grep'
+             'gzip'
+             'make'
+             'sed'
+             'texinfo'
+             'util-linux')
+source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+options=('emptydirs')
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr           \
+              --bindir=/sbin          \
+              --sbindir=/sbin         \
+              --libdir=/usr/lib       \
+              --sysconfdir=/etc       \
+              --libexecdir=/lib       \
+              --with-rootprefix=      \
+              --with-rootlibdir=/lib  \
+              --enable-manpages       \
+              --disable-static
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  if test -d /lib/udev/rules.d -a -d /etc/udev/rules.d; then
+    make check
+  fi
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  install -vdm755 "${pkgdir}/lib/udev/rules.d"
+  install -vdm755 "${pkgdir}/etc/udev/rules.d"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('89618619084a19e1451d373c43f141b469c9fd09767973d73dd268b92074d4fc')
