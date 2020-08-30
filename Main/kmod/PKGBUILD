@@ -21,7 +21,9 @@ makedepends=('bash'
              'sed'
              'xz'
              'zlib')
-source=("https://www.kernel.org/pub/linux/utils/kernel/${pkgname}/${pkgname}-${pkgver}.tar.xz")        
+source=("https://www.kernel.org/pub/linux/utils/kernel/${pkgname}/${pkgname}-${pkgver}.tar.xz"
+        "depmod.hook"
+        "depmod.script") 
 
 build(){
   cd "${pkgname}-${pkgver}"
@@ -34,11 +36,6 @@ build(){
   make
 }
 
-#check(){
-#  cd "${pkgname}-${pkgver}"
-#  make check
-#}
-
 package(){
   cd "${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
@@ -47,5 +44,12 @@ package(){
     ln -sfv ../bin/kmod "${pkgdir}/sbin/${target}"
   done
   ln -sfv kmod "${pkgdir}/bin/lsmod"
+  # Install pacman hooks for module handling
+  install -vdm755 "${pkgdir}"/usr/share/libalpm/{hooks,scripts}
+  install -vm644 "${srcdir}/depmod.hook" "${pkgdir}/usr/share/libalpm/hooks"
+  install -vm755 "${srcdir}/depmod.script" \
+                 "${pkgdir}/usr/share/libalpm/scripts/depmod"
 }
-sha256sums=('c1d3fbf16ca24b95f334c1de1b46f17bbe5a10b0e81e72668bdc922ebffbbc0c')
+sha256sums=('c1d3fbf16ca24b95f334c1de1b46f17bbe5a10b0e81e72668bdc922ebffbbc0c'
+            '125cf6f2eb7b5c80fb5b2e5f590eb49fd195ed877728cdd1fa46067a724b80d2'
+            '827c02e868777e8fcaa91fd519966ef5d30c8d30bad1b20eb56e01cbc9a2e43f')

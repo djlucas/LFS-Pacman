@@ -1,0 +1,13 @@
+[Trigger]
+Type = File
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Target = lib/modules/*/
+Target = !lib/modules/*/?*
+
+[Action]
+Description = Updating module dependencies...
+When = PostTransaction
+Exec = /usr/share/libalpm/scripts/depmod
+NeedsTargets
