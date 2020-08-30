@@ -1,0 +1,43 @@
+# Maintainer: archetech trw2006@hotmail.com
+pkgname=findutils
+pkgver=4.7.0
+pkgrel=1
+pkgdesc="The Findutils package contains programs to find files. These programs are provided to recursively search through a directory tree and to create, maintain, and search a database (often faster than the recursive find, but is unreliable if the database has not been recently updated)." 
+arch=('x86_64')
+url="http://www.gnu.org/software/findutils"
+groups=('core')
+license=('GPL3')
+depends=( 'glibc'
+          'gcc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'texinfo')
+checkdepends=('dejagnu' 'diffutils' 'expect')
+source=("ftp://ftp.gnu.org/pub/gnu/findutils/${pkgname}-${pkgver}.tar.xz")
+
+build() {
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr \
+              --localstatedir=/var/lib/locate 
+  make
+}
+
+check() {
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/bin"
+  mv -v "${pkgdir}/usr/bin/find" "${pkgdir}/bin"
+  sed 's|find:=${BINDIR}|find:=/bin|' -i "${pkgdir}/usr/bin/updatedb"
+}
+
+sha256sums=('c5fefbdf9858f7e4feb86f036e1247a54c79fc2d8e4b7064d5aaa1f47dfa789a')
