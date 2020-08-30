@@ -1,0 +1,50 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=tar
+pkgver=1.32
+pkgrel=1
+pkgdesc="The Tar package provides the ability to create tar archives as well as perform various other kinds of archive manipulation. Tar can be used on previously created archives to extract files, to store additional files, or to update or list files which were already stored." 
+arch=('x86_64')
+url="http://www.gnu.org/software/tar"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('acl'
+             'attr'
+             'bash'
+             'binutils'
+             'bison'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'inetutils'
+             'make'
+             'sed'
+             'texinfo')
+checkdepends=('autconf'
+              'diffutils'
+              'findutils'
+              'gawk'
+              'gzip')
+source=("https://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr  \
+              --bindir=/bin
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  make -C doc install-html docdir="${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+}
+
+sha256sums=('d0d3ae07f103323be809bc3eac0dcc386d52c5262499fe05511ac4788af1fdd8')
