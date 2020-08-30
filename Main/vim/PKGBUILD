@@ -1,0 +1,66 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname="vim"
+pkgver=8.2.1523
+shortver=82
+pkgrel=1
+pkgdesc="The Vim package contains a powerful text editor."
+url='https://www.vim.org'
+arch=('x86_64')
+license=('custom')
+backup=('etc/vimrc')
+makedepends=('glibc'
+             'libgcrypt'
+             'gawk'
+             'pcre'
+             'zlib'
+             'libffi')
+source=("https://github.com/${pkgname}/${pkgname}/archive/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
+options=('debug' 'strip')
+
+prepare() {
+  cd ${pkgname}-${pkgver}
+  # define the place for the global (g)vimrc file (set to /etc/vimrc)
+  echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
+}
+
+build() {
+  cd ${pkgname}-${pkgver}
+  ./configure --prefix=/usr 
+  make
+}
+
+check() {
+  cd ${pkgname}-${pkgver}
+  LANG=en_US.UTF-8 make -j1 test
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" install
+  ln -sfv "${pkgname}" "${pkgdir}/usr/bin/vi"
+  for L in "${pkgdir}"/usr/share/man/{,*/}man1/vim.1; do
+    ln -sfv "${pkgname}.1" $(dirname $L)/vi.1
+  done
+  install -vdm755 "${pkgdir}/usr/share/doc"
+  ln -sfv "../${pkgname}/${pkgname}${shortver}/doc" "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  install -vdm755 "${pkgdir}/etc"
+  cat > "${pkgdir}/etc/vimrc" << "EOF"
+" Begin /etc/vimrc
+
+" Ensure defaults are set before customizing settings, not after
+source $VIMRUNTIME/defaults.vim
+let skip_defaults_vim=1 
+
+set nocompatible
+set backspace=2
+set mouse=
+syntax on
+if (&term == "xterm") || (&term == "putty")
+  set background=dark
+endif
+
+" End /etc/vimrc
+EOF
+}
+sha256sums=('9b89d521b217959275d9d391edfc514682bf5242ff74251e67bb069f498bec56')
