@@ -1,0 +1,38 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=make
+pkgver=4.3
+pkgrel=1
+pkgdesc="The Make package contains a program for controlling the generation of executables and other non-source files of a package from source files." 
+arch=('x86_64')
+url="http://www.gnu.org/software/make"
+license=('GPL3')
+groups=('core')
+depends=('gcc'
+         'glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'grep'
+             'make'
+             'sed'
+             'texinfo')
+source=("https://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('e05fdde47c5f7ca45cb697e973894ff4f5d79e13b750ed57d7b66d8defc78e19')
