@@ -1,0 +1,23 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=linux-firmware
+pkgver=20200814
+pkgrel=1
+pkgdesc="The Linux-Firmware package contains propietary kernel "blobs" required for some specific hardware."
+arch=('x86_64')
+url="http://www.kernel.org/"
+groups=('core')
+license=('custom')
+makedepends=('bash'
+             'coreutils')
+depends=('rootfs')
+source=("http://www.linuxfromscratch.org/~dj/${pkgname}-${pkgver}.tar.xz")
+options=('!strip' '!debug')
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  install -vdm755 "${pkgdir}/lib/firmware"
+  cp -Rv * "${pkgdir}/lib/firmware"
+}
+
+sha256sums=('c01fd6b6cd492660aeb835984de8352f0111590ce1c4a56de5ea4b709ae23cf8')
