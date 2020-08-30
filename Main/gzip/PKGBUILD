@@ -1,0 +1,43 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=gzip
+pkgver=1.10
+pkgrel=1
+pkgdesc="The Gzip package contains programs for compressing and decompressing files." 
+arch=('x86_64')
+url="http://www.gnu.org/software/gzip"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'bison'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'grep'
+             'make'
+             'patch'
+             'sed'
+             'texinfo')
+source=("https://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/bin"
+  mv -v "${pkgdir}/usr/bin/gzip" "${pkgdir}/bin"
+}
+
+sha256sums=('8425ccac99872d544d4310305f915f5ea81e04d0f437ef1a230dc9d1c819d7c0')
