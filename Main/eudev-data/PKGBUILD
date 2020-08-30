@@ -1,0 +1,23 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=eudev-data
+pkgver=20171102
+pkgrel=1
+pkgdesc="The Eudev data package contains device creation data for the eudev package." 
+arch=('x86_64')
+url="http://www.linuxfromscratch.org/"
+license=('')
+groups=('core')
+depends=('eudev')
+makedepends=('bash'
+             'coreutils'
+             'make'
+             'tar'
+             'xz')
+source=("http://anduin.linuxfromscratch.org/LFS/udev-lfs-${pkgver}.tar.xz")
+
+package(){
+  make -f "udev-lfs-${pkgver}/Makefile.lfs" DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('ddb37540251b6eb95e2e60bb2675e40e32070272f9803cbdddac8f9d1c302e7c')
