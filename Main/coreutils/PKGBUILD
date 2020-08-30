@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=coreutils
-pkgver=8.27
+pkgver=8.32
 pkgrel=1
 pkgdesc="The Coreutils package contains utilities for showing and setting the basic system characteristics."
 arch=('x86_64')
@@ -31,7 +31,7 @@ checkdepends=('diffutils'
               'util-linux')
 source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz"
         "http://www.linuxfromscratch.org/patches/downloads/${pkgname}/${pkgname}-${pkgver}-i18n-1.patch"
-        "http://www.linuxfromscratch.org/patches/downloads/${pkgname}/${pkgname}-${pkgver}-uname-1.patch")
+        "http://www.linuxfromscratch.org/~dj/${pkgname}-${pkgver}-uname-1.patch")
 
 # Set to yes if you want to run the root tests
 _run_root_tests="no"
@@ -49,28 +49,17 @@ prepare(){
 
 build(){
   cd ${srcdir}/${pkgname}-${pkgver}
-  FORCE_UNSAFE_CONFIGURE=1 \
+  autoreconf -fiv
   ./configure       \
       --prefix=/usr \
       --enable-no-install-program=kill,uptime
-  FORCE_UNSAFE_CONFIGURE=1 make
+  make
 }
 
 # Don't run testsuite in chroot environment
 check(){
   cd ${srcdir}/${pkgname}-${pkgver}
-  if [ "${_run_root_tests}" == "yes" ]
-  then
-    su -c "make NON_ROOT_USERNAME=nobody FORCE_UNSAFE_CONFIGURE=1 check-root"
-  fi
   make RUN_EXPENSIVE_TESTS=yes check || true
-  # We expect one failure
-  failures=`grep "^# FAIL:" tests/test-suite.log | \
-                 sed -e 's@# FAIL:@@' -e 's@ @@g'`
-  test x"$failures" == "x" && failures="0"
-  if "$failures" -gt "1"; then
-      echo "Failed more than the expected 1 test." && exit 1
-  fi
 }
 
 package(){
@@ -93,6 +82,6 @@ package(){
         "${pkgdir}/bin"
 }
 
-sha256sums=('8891d349ee87b9ff7870f52b6d9312a9db672d2439d289bc57084771ca21656b'
-            'ebfc88e1b1a204dd55259f9967927f6525ffa113db935f8e0c60b49c2a11d8f0'
+sha256sums=('4458d8de7849df44ccab15e16b1548b285224dbba5f08fac070c1c0e0bcc4cfa'
+            'fc82a5c5b9694fc904b07ff9970628e3d36d77663324dc18e30a1ab7ff944bee'
             '69835629d46fb5bdee8a71f4ee8f7a9db023f3771cd8d40108eb29339add76e6')
