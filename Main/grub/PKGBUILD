@@ -1,0 +1,66 @@
+# Maintainer: archetech trw2006@hotmail.com
+pkgname=grub
+pkgver=2.04
+pkgrel=1
+pkgdesc="The GRUB package contains the GRand Unified Bootloader." 
+arch=('x86_64')
+url="http://www.gnu.org/software/grub"
+groups=('core')
+license=('GPL3')
+depends=( 'glibc'
+          'gcc'
+          'libgcrypt'
+          'ncurses')
+makedepends=('bash'
+             'binutils'
+             'bison'
+             'coreutils'
+             'diffutils'
+             'gettext'
+             'grep'
+             'make'
+             'patch'
+             'sed'
+             'texinfo'
+             'xz')
+backup=('boot/grub/grub.cfg')
+source=("ftp://ftp.gnu.org/pub/gnu/grub/${pkgname}-${pkgver}.tar.xz"
+        "https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/grub/trunk/0003-10_linux-detect-archlinux-initramfs.patch")
+
+prepare() {
+  cd "${pkgname}-${pkgver}"
+  # Add fallback initramfs (thanks to Arch Linux)
+  patch -Np1 -i "${srcdir}/0003-10_linux-detect-archlinux-initramfs.patch"
+  sed 's@python@python3@g' -i autogen.sh
+}
+
+build() {
+  cd "${pkgname}-${pkgver}"
+
+  # Make sure our compiler flag are clean
+  CFLAGS=${CFLAGS/-fstack-protector-strong}
+  CFLAGS=${CFLAGS/-fno-plt}
+  CPPFLAGS="$CPPFLAGS -O2"
+
+  ./autogen.sh
+  ./configure --prefix=/usr          \
+              --sbindir=/sbin        \
+              --sysconfdir=/etc      \
+              --disable-efiemu       \
+              --disable-werror
+  make
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/usr/share/bash-completion/completions"
+  mv -v "${pkgdir}/etc/bash_completion.d/grub" \
+        "${pkgdir}/usr/share/bash-completion/completions"
+  # Create an empty grub.cfg
+  install -vdm755 "${pkgdir}/boot/grub"
+  touch "${pkgdir}/boot/grub/grub.cfg"
+}
+
+sha256sums=('e5292496995ad42dabe843a0192cf2a2c502e7ffcc7479398232b10a472df77d'
+            '171415ab075d1ac806f36c454feeb060f870416f24279b70104bba94bd6076d4')
