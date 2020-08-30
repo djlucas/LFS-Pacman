@@ -1,0 +1,38 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=less
+pkgver=551
+pkgrel=1
+pkgdesc="The Less package contains a text file viewer." 
+arch=('x86_64')
+url="http://www.greenwoodsoftware.com/less/"
+license=('GPL3')
+groups=('core')
+depends=('gcc'
+         'glibc'
+         'ncurses')
+makedepends=('bash'
+             'binutils'
+             'bison'
+             'coreutils'
+             'flex'
+             'gettext'
+             'make'
+             'pkg-config'
+             'sed'
+             'xz'
+             'zlib')
+source=("http://www.greenwoodsoftware.com/${pkgname}//${pkgname}-${pkgver}.tar.gz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr  --sysconfdir=/etc
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('ff165275859381a63f19135a8f1f6c5a194d53ec3187f94121ecd8ef0795fe3d')
