@@ -1,0 +1,46 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=procps-ng
+pkgver=3.3.16
+pkgrel=1
+pkgdesc="The Procps-ng package contains programs for monitoring processes." 
+arch=('x86_64')
+url="https://sourceforge.net/projects/procps-ng"
+license=('GPL3')
+groups=('core')
+depends=('gcc'
+         'glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'make'
+             'ncurses')
+checkdepends=('dejagnu')
+source=("https://sourceforge.net/projects//${pkgname}/files/Production/${pkgname}-${pkgver}.tar.xz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr     \
+              --exec-prefix=    \
+              --libdir=/usr/lib \
+              --disable-static  \
+              --disable-kill    \
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}"
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/lib"
+  mv -v "${pkgdir}"/usr/lib/libprocps.so.* "${pkgdir}/lib"
+  ln -sfv ../../lib/$(readlink "${pkgdir}/usr/lib/libprocps.so") \
+          "${pkgdir}/usr/lib/libprocps.so"
+}
+
+sha256sums=('925eacd65dedcf9c98eb94e8978bbfb63f5de37294cc1047d81462ed477a20af')
