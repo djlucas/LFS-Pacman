@@ -8,6 +8,7 @@ pkgdesc="Easily download, build, install, upgrade, and uninstall Python packages
 arch=('any')
 license=('PSF')
 url="https://pypi.org/project/setuptools/"
+groups=('core')
 depends=('python3')
 source=("${pkgnamed}-${pkgver}.tar.gz::https://github.com/pypa/setuptools/archive/v${pkgver}.tar.gz")
 

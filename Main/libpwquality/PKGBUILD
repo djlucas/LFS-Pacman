@@ -7,6 +7,7 @@ pkgdesc="The libpwquality package provides common functions for password quality
 arch=('x86_64')
 url="https://github.com/libpwquality/libpwquality"
 license=('GPL')
+groups=('core')
 depends=('cracklib'
          'linux-pam')
 makedepends=('python')

@@ -8,6 +8,7 @@ pkgdesc="The Vim package contains a powerful text editor."
 url='https://www.vim.org'
 arch=('x86_64')
 license=('custom')
+groups=('core')
 backup=('etc/vimrc')
 makedepends=('glibc'
              'libgcrypt'

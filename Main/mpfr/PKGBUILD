@@ -6,6 +6,7 @@ pkgrel=1
 arch=('x86_64')
 url="http://www.mpfr.org/"
 license=('LGPL3')
+groups=('core')
 source=("http://www.mpfr.org/${pkgname}-${pkgver}/${pkgname}-${pkgver}.tar.xz")
 depends=('gmp')
 

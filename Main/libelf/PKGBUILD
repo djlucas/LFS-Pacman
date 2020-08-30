@@ -9,6 +9,7 @@ arch=(x86_64)
 url='https://sourceware.org/elfutils/'
 license=(LGPL3 GPL GPL3)
 makedepends=(gcc zlib bzip2 xz sqlite libarchive curl)
+groups=('core')
 options=('staticlibs')
 source=(https://sourceware.org/elfutils/ftp/${pkgver}/elfutils-${pkgver}.tar.bz2)
 

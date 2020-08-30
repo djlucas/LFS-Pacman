@@ -7,6 +7,7 @@ pkgdesc="The Intltool is an internationalization tool used for extracting transl
 arch=('any')
 url="https://launchpad.net/intltool"
 license=('GPL')
+groupd=('core')
 depends=('perl-xml-parser')
 source=(https://launchpad.net/intltool/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz)
 

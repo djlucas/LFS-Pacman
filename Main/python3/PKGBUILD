@@ -7,6 +7,7 @@ pkgrel=1
 pkgdesc="The Python 3 package contains the Python development environment. It is useful for object-oriented programming, writing scripts, prototyping large programs, or developing entire applications."
 arch=('x86_64')
 license=('custom')
+groups=('core')
 url="https://www.python.org/"
 depends=('expat'
          'bzip2'

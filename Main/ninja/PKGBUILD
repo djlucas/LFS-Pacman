@@ -7,6 +7,7 @@ pkgdesc="Ninja is a small build system with a focus on speed."
 arch=('x86_64')
 url="https://ninja-build.org/"
 license=('Apache')
+groups=('core')
 depends=('gcc'
          $(pacman -Q re2c >/dev/null 2>&1 && echo 're2c')
          $(pacman -Q bash >/dev/null 2>&1 && echo 'bash')

@@ -7,6 +7,7 @@ pkgdesc='Portable foreign function interface library'
 arch=('x86_64')
 url='https://sourceware.org/libffi/'
 license=('MIT')
+groupd=('core')
 depends=('glibc')
 checkdepends=('dejagnu')
 source=(https://sourceware.org/pub/libffi/libffi-${pkgver}.tar.gz)

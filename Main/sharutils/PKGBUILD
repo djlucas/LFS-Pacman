@@ -6,6 +6,7 @@ pkgrel=1
 pkgdesc="The Sharutils package contains utilities that can create 'shell' archives."
 url='https://www.gnu.org/software/sharutils/'
 license=('GPL')
+groups=('core')
 arch=('x86_64')
 depends=('perl'
          'gettext'

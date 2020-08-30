@@ -3,10 +3,11 @@
 pkgname=re2c
 pkgver=2.0.3
 pkgrel=1
-arch=(x86_64)
-depends=(gcc)
+arch=('x86_64')
+depends=('gcc')
 pkgdesc='A tool for generating C-based recognizers from regular expressions'
 url='https://re2c.org'
+groups=('core')
 license=('public domain')
 source=(re2c-$pkgver.tar.gz::https://github.com/skvadrik/re2c/archive/$pkgver.tar.gz)
 

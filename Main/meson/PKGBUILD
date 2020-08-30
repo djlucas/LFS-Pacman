@@ -7,6 +7,7 @@ pkgdesc="Meson is an open source build system meant to be both extremely fast an
 url='https://mesonbuild.com/'
 arch=('any')
 license=('Apache')
+groups=('core')
 optdepends=('python3-setuptools'
             'ninja'
             $(pacman -Q bash >/dev/null 2>&1 && echo 'bash')

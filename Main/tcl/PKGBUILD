@@ -6,6 +6,7 @@ pkgdesc="The Tcl scripting language"
 arch=('x86_64')
 url="http://tcl.sourceforge.net/"
 license=('custom')
+groups=('core')
 depends=('zlib')
 options=('staticlibs')
 source=(https://downloads.sourceforge.net/sourceforge/tcl/tcl${pkgver}-src.tar.gz)

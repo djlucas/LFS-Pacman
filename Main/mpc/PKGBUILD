@@ -6,6 +6,7 @@ pkgrel=1
 arch=('x86_64')
 url="http://www.multiprecision.org/"
 license=('LGPL3')
+groups=('core')
 source=("https://ftp.gnu.org/gnu//${pkgname}/${pkgname}-${pkgver}.tar.gz")
 depends=('mpfr')
 
