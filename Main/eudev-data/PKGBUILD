@@ -15,6 +15,7 @@ makedepends=('bash'
              'tar'
              'xz')
 source=("http://anduin.linuxfromscratch.org/LFS/udev-lfs-${pkgver}.tar.xz")
+install="eudev-data.install"
 
 package(){
   make -f "udev-lfs-${pkgver}/Makefile.lfs" DESTDIR="${pkgdir}" install
