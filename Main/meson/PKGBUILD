@@ -1,0 +1,49 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=meson
+pkgver=0.55.1
+pkgrel=1
+pkgdesc="Meson is an open source build system meant to be both extremely fast and as user friendly as possible."
+url='https://mesonbuild.com/'
+arch=('any')
+license=('Apache')
+optdepends=('python3-setuptools'
+            'ninja'
+            $(pacman -Q bash >/dev/null 2>&1 && echo 'bash')
+            $(pacman -Q vim >/dev/null 2>&1 && echo 'vim')
+            $(pacman -Q emacs >/dev/null 2>&1 && echo 'emacs')
+            $(pacman -Q zsh >/dev/null 2>&1 && echo 'zsh'))
+optdepends=($(pacman -Q bash >/dev/null 2>&1 || echo 'bash')
+            $(pacman -Q vim >/dev/null 2>&1 || echo 'vim')
+            $(pacman -Q emacs >/dev/null 2>&1 || echo 'emacs')
+            $(pacman -Q zsh >/dev/null 2>&1 || echo 'zsh'))
+source=("https://github.com/mesonbuild/meson/releases/download/${pkgver}/meson-${pkgver}.tar.gz")
+options=('debug' 'strip')
+if $(pacman -Q vim > /dev/null 2>&1); then
+  vimfilesdir="/usr/share/vim/vim$(vim --version | grep -m1 -o "[0-9]\.[0-9]")"
+fi
+
+build() {
+  cd ${pkgname}-${pkgver}
+  python3 setup.py build
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  python3 setup.py install --root="${pkgdir}" --optimize=1 --skip-build
+
+  if $(pacman -Q vim > /dev/null); then
+  install -vdm755 "${pkgdir}/${vimfilesdir}"
+  cp -Rv data/syntax-highlighting/vim/*/ "${pkgdir}/${vimfilesdir}/"
+  fi
+  if $(pacman -Q bash > /dev/null); then
+    install -vDm644 data/shell-completions/bash/* "${pkgdir}/usr/share/bash-completion/completion"
+  fi
+  if $(pacman -Q emacs > /dev/null); then
+    install -vDm644 data/syntax-highlighting/emacs/* "${pkgdir}/usr/share/emacs/site-lisp"
+  fi
+  if $(pacman -Q zsh > /dev/null); then
+    install -vDm644 data/shell-completions/zsh/* "${pkgdir}/usr/share/zsh/site-functions"
+  fi
+}
+sha256sums=('3b5741f884e04928bdfa1947467ff06afa6c98e623c25cef75adf71ca39ce080')
