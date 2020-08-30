@@ -19,7 +19,6 @@ makedepends=('binutils'
              'sed'
              'texinfo')
 source=("https://ftp.gnu.org/gnu/m4/${pkgname}-${pkgver}.tar.xz")        
-options=(debug strip)
 
 prepare() {
   cd "${pkgname}-${pkgver}"

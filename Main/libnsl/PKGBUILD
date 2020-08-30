@@ -9,7 +9,6 @@ url='https://github.com/thkukuk/libnsl'
 license=('LGPL2.1')
 depends=(libtirpc)
 source=("https://github.com/thkukuk/${pkgname}/archive/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
-options=('debug' 'strip')
 
 build() {
   cd "${pkgname}-${pkgver}"

@@ -14,7 +14,6 @@ makedepends=('gcc'
              'sed'
              'texinfo')
 source=("https://github.com/libcheck/${pkgname}/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.gz")
-options=('debug' 'strip')
 
 build(){
   cd ${pkgname}-${pkgver}

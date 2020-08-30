@@ -27,7 +27,6 @@ depends=('glibc'
 _confargs=""
 source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgbver}.tar.gz"
         "http://www.linuxfromscratch.org/~dj/${pkgname}-${pkgbver}-upstream_fixes-${patchver}.patch")
-options=('debug' 'strip')
 
 prepare() {
   cd "${pkgname}-${pkgbver}"

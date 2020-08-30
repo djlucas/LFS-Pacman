@@ -19,7 +19,6 @@ makedepends=('bash'
              'sed'
              'texinfo')
 source=("https://ftp.gnu.org/gnu/sed/${pkgname}-${pkgver}.tar.xz")        
-options=('debug' 'strip')
 
 build(){
   cd "${pkgname}-${pkgver}"

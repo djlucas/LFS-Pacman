@@ -10,7 +10,6 @@ license=('MIT')
 depends=('glibc')
 checkdepends=('dejagnu')
 source=(https://sourceware.org/pub/libffi/libffi-${pkgver}.tar.gz)
-options=('debug' 'strip')
 
 build() {
   cd ${pkgname}-${pkgver}

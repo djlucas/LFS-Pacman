@@ -20,7 +20,6 @@ makedepends=('bash'
 depends=('readline')
 checkdepends=('gawk')
 source=("https://github.com/gavinhoward/${pkgname}/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.xz")
-options=(debug strip)
 
 build(){
   cd "${pkgname}-${pkgver}"

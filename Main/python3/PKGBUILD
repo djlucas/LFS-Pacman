@@ -32,7 +32,6 @@ optdepends=('valgrind'
             'xorg-server'
             'ttf-fonts')
 source=("https://www.python.org/ftp/python/${pkgver}/Python-${pkgver}.tar.xz")
-options=('debug' 'strip')
 _confargs=""
 
 build() {

@@ -9,7 +9,6 @@ url='https://github.com/thkukuk/rpcsvc-proto'
 license=(BSD)
 depends=(glibc)
 source=("https://github.com/thkukuk/${pkgname}/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.xz")
-options=('debug' 'strip')
 
 build() {
   cd ${pkgname}-${pkgver}

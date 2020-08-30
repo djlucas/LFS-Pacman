@@ -22,7 +22,6 @@ makedepends=('bash'
              'tcl'
              'texinfo')
 source=("ftp://ftp.gnu.org/pub/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
-options=('debug' 'strip')
 
 prepare() {
   cd "${pkgname}-${pkgver}"

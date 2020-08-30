@@ -46,8 +46,6 @@ optdepends=('axtls: use axtls instead of OpenSSL for SSL support'
             'samba: support SMB connections and use NTLM authentication'
             'stunnel: additional test suite coverage'
             'valgrind: additional test suite coverage')
-options=('strip'
-         'debug')
 _confargs=""
 source=("http://${pkgname}.haxx.se/download/${pkgname}-${pkgver}.lzma")
 

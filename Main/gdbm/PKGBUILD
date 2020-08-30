@@ -18,7 +18,6 @@ makedepends=('bash'
              'make'
              'sed')
 source=("https://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
-options=('debug' 'strip')
 
 prepare() {
   cd "${pkgname}-${pkgver}"

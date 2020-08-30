@@ -10,7 +10,6 @@ license=('BSD')
 depends=('rpcsvc-proto')
 backup=('etc/netconfig')
 source=(https://downloads.sourceforge.net/sourceforge/${pkgname}/${pkgname}-${pkgver}.tar.bz2)
-options=('debug' 'strip')
 
 build() {
   cd ${pkgname}-${pkgver}

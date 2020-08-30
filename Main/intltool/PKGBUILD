@@ -9,7 +9,6 @@ url="https://launchpad.net/intltool"
 license=('GPL')
 depends=('perl-xml-parser')
 source=(https://launchpad.net/intltool/trunk/${pkgver}/+download/${pkgname}-${pkgver}.tar.gz)
-options=('debug' 'strip')
 
 prepare() {
   cd ${pkgname}-${pkgver}

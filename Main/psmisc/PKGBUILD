@@ -19,7 +19,6 @@ makedepends=('bash'
              'make'
              'sed')
 source=("https://sourceforge.net/projects/${pkgname}/files/${pkgname}/${pkgname}-${pkgver}.tar.xz")        
-options=('debug' 'strip')
 
 build(){
   cd "${pkgname}-${pkgver}"

@@ -18,7 +18,6 @@ makedepends=('bash'
              'make'
              'texinfo')
 source=("https://downloads.sourceforge.net/${pkgname}/${pkgname}-${pkgver}.tar.bz2")        
-options=(debug strip)
 
 build(){
   cd "${pkgname}-${pkgver}"

@@ -12,7 +12,6 @@ depends=('cracklib'
 makedepends=('python')
 backup=('etc/security/pwquality.conf')
 source=("https://github.com/${pkgname}/${pkgname}/releases/download/${pkgname}-${pkgver}/${pkgname}-${pkgver}.tar.bz2")
-options=('debug' 'strip')
 
 build() {
   cd "${pkgname}-${pkgver}"

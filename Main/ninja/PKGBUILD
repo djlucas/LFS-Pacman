@@ -20,7 +20,6 @@ optdepends=($(pacman -Q re2c >/dev/null 2>&1 || echo 're2c')
             $(pacman -Q emacs >/dev/null 2>&1 || echo 'emacs')
             $(pacman -Q zsh >/dev/null 2>&1 || echo 'zsh'))
 source=("${pkgname}-${pkgver}.tar.gz::https://github.com/martine/${pkgname}/archive/v${pkgver}.tar.gz")
-options=('debug' 'strip')
 if $(pacamn -Q zsh > /dev/null); then 
   vimfilesdir="/usr/share/vim/vim$(vim --version | grep -m1 -o "[0-9]\.[0-9]")"
 fi

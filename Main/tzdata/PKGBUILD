@@ -9,7 +9,7 @@ arch=('x86_64')
 url="http://www.iana.org/time-zones/"
 license=('GPL')
 groups=('core')
-options=(!strip)
+options=('!debug' '!strip')
 makedepends=('bash'
              'coreutils'
              'grep'

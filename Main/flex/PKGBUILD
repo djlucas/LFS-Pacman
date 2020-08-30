@@ -23,7 +23,6 @@ depends=('bash'
 checkdepends=('diffutils'
               'findutils')
 source=("https://github.com/westes/${pkgname}/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
-options=('debug' 'strip')
 
 build(){
   cd "${pkgname}-${pkgver}"

@@ -19,8 +19,6 @@ checkdepends=('python2'
               'fakeroot')
 backup=('etc/pacman.conf'
         'etc/makepkg.conf')
-options=('strip'
-         'debug')
 source=("https://sources.archlinux.org/other/${pkgname}/${pkgname}-${pkgver}.tar.gz"
         "makepkg.conf.i686"
         "makepkg.conf.x86_64"

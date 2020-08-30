@@ -23,7 +23,7 @@ makedepends=('bash'
              'sed'
              'texinfo')
 source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz")
-options=(debug strip staticlibs)
+options=('staticlibs')
 
 prepare(){
   cd "${pkgname}-${pkgver}"

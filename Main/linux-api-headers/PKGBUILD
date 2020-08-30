@@ -22,7 +22,7 @@ makedepends=('bash'
              'sed')
 depends=('rootfs')
 source=("https://www.kernel.org/pub/linux/kernel/v5.x/linux-${pkgver}.tar.xz")
-options=(!strip emptydirs)
+options=('!debug' '!strip' 'emptydirs')
 
 build(){
   cd ${srcdir}/linux-${pkgver}

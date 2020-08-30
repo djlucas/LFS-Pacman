@@ -19,7 +19,6 @@ makedepends=('bash'
              'texinfo')
 depends=('glibc'
          'ncurses')
-options=('debug' 'strip')
 source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
 
 build(){

@@ -7,8 +7,7 @@ arch=('x86_64')
 url="http://www.mpfr.org/"
 license=('LGPL3')
 source=("http://www.mpfr.org/${pkgname}-${pkgver}/${pkgname}-${pkgver}.tar.xz")
-depends=(gmp)
-options=(debug strip)
+depends=('gmp')
 
 build() {
   cd "${pkgname}-${pkgver}"

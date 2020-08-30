@@ -20,7 +20,6 @@ makedepends=('bash'
 depends=('zlib'
          'perl')
 optdepends=('ca-certificates: provides certificate authority store')
-options=('debug' 'strip')
 backup=('etc/ssl/openssl.cnf')
 source=("https://www.${pkgname}.org/source/${pkgname}-${_ver}.tar.gz")
 

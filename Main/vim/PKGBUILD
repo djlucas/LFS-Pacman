@@ -16,7 +16,6 @@ makedepends=('glibc'
              'zlib'
              'libffi')
 source=("https://github.com/${pkgname}/${pkgname}/archive/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
-options=('debug' 'strip')
 
 prepare() {
   cd ${pkgname}-${pkgver}

@@ -6,6 +6,7 @@ pkgrel=1
 arch=('x86_64')
 url="http://gmplib.org/"
 license=('LGPL3' 'GPL')
+groups=('core')
 source=("https://gmplib.org/download/gmp/gmp-${pkgver}.tar.xz")
 
 build() {

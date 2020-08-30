@@ -28,9 +28,7 @@ depends=('rootfs')
 #         !strip
 #         staticlibs)
 # Don't use !strip for deug builds
-options=(debug
-         strip
-         staticlibs)
+options=('staticlibs')
 backup=('etc/ld.so.cache'
         'etc/locale.gen'
         'etc/nscd.conf'

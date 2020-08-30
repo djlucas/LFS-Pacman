@@ -41,7 +41,7 @@ checkdepends=('dejagnu'
 source=("https://ftp.gnu.org/gnu/${pkgbase}/${pkgbase}-${pkgver}/${pkgbase}-${pkgver}.tar.xz"
         "http://isl.gforge.inria.fr/isl-${_islver}.tar.bz2")
 #options=(!strip !emptidirs staticlibs)
-options=(debug strip !emptydirs staticlibs)
+options=('!emptydirs' 'staticlibs')
 
 # If you want to modify what is actually built for a local build, set these 0
 _build_ada=1

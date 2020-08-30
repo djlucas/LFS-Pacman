@@ -19,7 +19,6 @@ makedepends=('bash'
              'xz'
              'texinfo')
 source=("http://tukaani.org/xz/${pkgname}-${pkgver}.tar.xz")        
-options=(debug strip)
 
 build(){
   cd "${pkgname}-${pkgver}"

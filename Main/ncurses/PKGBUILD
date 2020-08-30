@@ -19,7 +19,6 @@ makedepends=('bash'
              'patch'
              'sed')
 source=("https://ftp.gnu.org/gnu/${pkgbase}/${pkgbase}-${pkgver}.tar.gz")
-options=('debug' 'strip')
 
 build() {
   cd "${pkgbase}-${pkgver}"

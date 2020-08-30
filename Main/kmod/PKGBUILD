@@ -22,7 +22,6 @@ makedepends=('bash'
              'xz'
              'zlib')
 source=("https://www.kernel.org/pub/linux/utils/kernel/${pkgname}/${pkgname}-${pkgver}.tar.xz")        
-options=('debug' 'strip')
 
 build(){
   cd "${pkgname}-${pkgver}"

@@ -11,7 +11,6 @@ depends=('tcl' 'gcc' 'glibc')
 optdepends=('tk')
 makedepends=('bash' 'coreutils' 'diffutils' 'grep' 'make' 'patch' 'sed' )
 source=("http://prdownloads.sourceforge.net/${pkgname}/${pkgname}${pkgver}.tar.gz")
-options=(debug strip)
 
 build() {
   cd "${pkgname}${pkgver}"
