@@ -1,0 +1,56 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=man-db
+pkgver=2.9.3
+pkgrel=1
+pkgdesc="The Man-DB package contains programs for finding and viewing man pages." 
+arch=('x86_64')
+url="https://www.nongnu.org/man-db/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'bzip2'
+             'coreutils'
+             'flex'
+             'gcc'
+             'gdbm'
+             'gettext'
+             'grep'
+             'groff'
+             'gzip'
+             'less'
+             'libpipeline'
+             'make'
+             'sed'
+             'xz')
+checkdepends=('util-linux')
+source=("http://download.savannah.gnu.org/releases/${pkgname}/${pkgname}-${pkgver}.tar.xz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr                                \
+              --docdir=/usr/share/doc/${pkgname}-${pkgver} \
+              --sysconfdir=/etc                            \
+              --disable-setuid                             \
+              --enable-cache-owner=bin                     \
+              --with-browser=/usr/bin/lynx                 \
+              --with-vgrind=/usr/bin/vgrind                \
+              --with-grap=/usr/bin/grap                    \
+              --with-systemdtmpfilesdir=                   \
+              --with-systemdsystemunitdir=
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('fa5aa11ab0692daf737e76947f45669225db310b2801a5911bceb7551c5597b8')
