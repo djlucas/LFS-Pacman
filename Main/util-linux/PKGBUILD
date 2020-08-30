@@ -24,6 +24,7 @@ makedepends=('bash'
              'sed'
              'zlib')
 source=("https://www.kernel.org/pub/linux/utils/${pkgname}/v${pkgver}/${pkgname}-${pkgver}.tar.xz")
+otpions=('emptydirs')
 
 build(){
   cd "${pkgname}-${pkgver}"
@@ -51,6 +52,7 @@ check(){
 package(){
   cd "${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/var/lib/hwclock"
 }
 
 sha256sums=('9e4b1c67eb13b9b67feb32ae1dc0d50e08ce9e5d82e1cccd0ee771ad2fa9e0b1')
