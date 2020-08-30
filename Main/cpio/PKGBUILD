@@ -1,0 +1,50 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=cpio
+pkgver=2.13
+pkgrel=1
+pkgdesc="The cpio package contains tools for archiving." 
+arch=('x86_64')
+url="http://www.gnu.org/software/cpio"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'make'
+             'sed'
+             'texinfo')
+source=("https://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  CFLAGS="${CFLAGS} -fcommon"
+  ./configure --prefix=/usr \
+              --bindir=/bin \
+              --enable-mt   \
+              --with-rmt=/usr/libexec/rmt
+  make
+  makeinfo --html            -o doc/html      doc/cpio.texi
+  makeinfo --html --no-split -o doc/cpio.html doc/cpio.texi
+  makeinfo --plaintext       -o doc/cpio.txt  doc/cpio.texi
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -v -m755 -d "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/html"
+  install -v -m644    doc/html/* \
+                      "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/html"
+  install -v -m644    doc/cpio.{html,txt} \
+                      "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/html"
+}
+
+sha256sums=('eab5bdc5ae1df285c59f2a4f140a98fc33678a0bf61bdba67d9436ae26b46f6d')
