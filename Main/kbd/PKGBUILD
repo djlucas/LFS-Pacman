@@ -1,0 +1,52 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=kbd
+pkgver=2.3.0
+pkgrel=1
+pkgdesc="The Kbd package contains key-table files, console fonts, and keyboard utilities."
+arch=('x86_64')
+url="http://ftp.altlinux.org/pub/people/legion/kbd"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'bison'
+             'check'
+             'coreutils'
+             'flex'
+             'gcc'
+             'gettext'
+             'gzip'
+             'make'
+             'patch'
+             'sed')
+source=("https://www.kernel.org/pub/linux/utils/${pkgname}//${pkgname}-${pkgver}.tar.xz"
+        "http://www.linuxfromscratch.org/patches/lfs/development/${pkgname}-${pkgver}-backspace-1.patch")
+
+prepare() {
+  cd "${pkgname}-${pkgver}"
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-backspace-1.patch"
+  sed -i '/RESIZECONS_PROGS=/s/yes/no/' configure
+  sed -i 's/resizecons.8 //' docs/man/man8/Makefile.in
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr --disable-vlock
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  rm -v "${pkgdir}"/usr/lib/libtswrap.{a,la,so*}
+}
+
+sha256sums=('685056143cb8effd0a1d44b5c391eb50d80dcfd014b1a4d6e2650a28d61cb82a'
+            '8be28dcb11420624a500f2ea4fe975f771174bffee50e54ec8cd295a2dec104e')
