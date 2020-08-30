@@ -25,7 +25,8 @@ makedepends=('bash'
              'xz')
 backup=('boot/grub/grub.cfg')
 source=("ftp://ftp.gnu.org/pub/gnu/grub/${pkgname}-${pkgver}.tar.xz"
-        "https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/grub/trunk/0003-10_linux-detect-archlinux-initramfs.patch")
+        "https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/grub/trunk/0003-10_linux-detect-archlinux-initramfs.patch"
+        "grub.hook")
 
 prepare() {
   cd "${pkgname}-${pkgver}"
@@ -60,7 +61,13 @@ package() {
   # Create an empty grub.cfg
   install -vdm755 "${pkgdir}/boot/grub"
   touch "${pkgdir}/boot/grub/grub.cfg"
+  # Install pacman hooks for info files
+  install -vdm755 "${pkgdir}/usr/share/libalpm/hooks/"
+  install -vm644 "${srcdir}"/grub.hook \
+                 "${pkgdir}/usr/share/libalpm/hooks/"
+
 }
 
 sha256sums=('e5292496995ad42dabe843a0192cf2a2c502e7ffcc7479398232b10a472df77d'
-            '171415ab075d1ac806f36c454feeb060f870416f24279b70104bba94bd6076d4')
+            '171415ab075d1ac806f36c454feeb060f870416f24279b70104bba94bd6076d4'
+            'e61f66ef1551e4e66a6f5b0e90a83ea9b9d1b04b113f14ddff95d09a7ad2182a')
