@@ -1,4 +1,0 @@
-post_install(){
-  systemd-machine-id-setup
-}
-
