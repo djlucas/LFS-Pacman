@@ -1,0 +1,40 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=iproute2
+pkgver=5.8.0
+pkgrel=1
+pkgdesc="The IPRoute2 package contains programs for basic and advanced IP networking." 
+arch=('x86_64')
+url="https://www.kernel.org/pub/linux/utils/net/${pkgname}/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'bison'
+             'coreutils'
+             'flex'
+             'gcc'
+             'make'
+             'libcap'
+             'libelf'
+             'linux-api-headers')
+source=("https://www.kernel.org/pub/linux/utils/net/${pkgname}//${pkgname}-${pkgver}.tar.xz")
+
+prepare() {
+  cd "${pkgname}-${pkgver}"
+  sed -i /ARPD/d Makefile
+  rm -fv man/man8/arpd.8
+  sed -i 's/.m_ipt.o//' tc/Makefile
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" DOCDIR="/usr/share/doc/${pkgname}-${pkgver}" install
+}
+
+sha256sums=('cfcd1f890290f8c8afcc91d9444ad929b9252c16f9ab3f286c50dd3c59dc646e')
