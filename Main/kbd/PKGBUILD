@@ -46,6 +46,8 @@ package(){
   cd "${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
   rm -v "${pkgdir}"/usr/lib/libtswrap.{a,la,so*}
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  cp -R -v docs/doc/* "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
 }
 
 sha256sums=('685056143cb8effd0a1d44b5c391eb50d80dcfd014b1a4d6e2650a28d61cb82a'
