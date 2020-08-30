@@ -1,0 +1,48 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=texinfo
+pkgver=6.7
+pkgrel=1
+pkgdesc="The Texinfo package contains programs for reading, writing, and converting info pages." 
+arch=('x86_64')
+url="http://www.gnu.org/software/texinfo"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gcc'
+             'grep'
+             'make'
+             'sed')
+source=("https://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.xz"
+        "texinfo-install.hook"
+        "texinfo-remove.hook")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr    \
+              --disable-static
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  make TEXMF="${pkgdir}/usr/share/texmf" install-tex
+  # Install pacman hooks for info files
+  install -vdm755 "${pkgdir}/usr/share/libalpm/hooks/"
+  install -vm644 "${srcdir}"/texinfo-{install,remove}.hook \
+                 "${pkgdir}/usr/share/libalpm/hooks/"
+}
+
+sha256sums=('988403c1542d15ad044600b909997ba3079b10e03224c61188117f3676b02caa'
+            '5409fc3aa8a35e8f3d901e96bc50c986f204d90ce6bface0a7d79d99b487f801'
+            '913ca8aac84386399b0a83ed0f6b04b5e6322da62f5c1d7ed31e1050ed37c1a9')
