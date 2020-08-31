@@ -1,0 +1,43 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=pth
+pkgver=2.0.7
+pkgrel=1
+pkgdesc="The Pth package contains a very portable POSIX/ANSI-C based library for Unix platforms which provides non-preemptive priority-based scheduling for multiple threads of execution (multithreading) inside event-driven applications."
+arch=('x86_64')
+url="http://www.gnu.org/software/pth"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'make'
+             'texinfo')
+source=("https://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr           \
+              --disable-static        \
+              --mandir=/usr/share/man
+  make -j1
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make -j1 test
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make -j1 DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  install -vm644  README PORTING SUPPORT TESTS \
+                  "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+}
+
+sha256sums=('72353660c5a2caafd601b20e12e75d865fd88f6cf1a088b306a3963f0bc77232')
