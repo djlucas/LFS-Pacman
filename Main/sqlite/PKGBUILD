@@ -1,0 +1,55 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=sqlite
+pkgver=3.33.0
+_pkgverb="3330000"
+pkgrel=1
+pkgdesc="The SQLite package is a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine."
+arch=('x86_64')
+url="https://sqlite.org/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'sed'
+             'unzip')
+source=("https://sqlite.org/2020/${pkgname}-autoconf-${_pkgverb}.tar.gz"
+        "https://sqlite.org/2020/${pkgname}-doc-${_pkgverb}.zip")
+noextract=("${pkgname}-doc-${_pkgverb}.zip")
+
+prepare(){
+  cd "${pkgname}-autoconf-${_pkgverb}"
+  unzip -q ../sqlite-doc-3330000.zip
+}
+
+build(){
+  cd "${pkgname}-autoconf-${_pkgverb}"
+  ./configure --prefix=/usr                     \
+              --disable-static                  \
+              --enable-fts5                     \
+              CFLAGS="${CFLAGS}                 \
+              -DSQLITE_ENABLE_FTS3=1            \
+              -DSQLITE_ENABLE_FTS4=1            \
+              -DSQLITE_ENABLE_COLUMN_METADATA=1 \
+              -DSQLITE_ENABLE_UNLOCK_NOTIFY=1   \
+              -DSQLITE_ENABLE_DBSTAT_VTAB=1     \
+              -DSQLITE_SECURE_DELETE=1          \
+              -DSQLITE_ENABLE_FTS3_TOKENIZER=1"
+  make
+}
+
+package(){
+  cd "${pkgname}-autoconf-${_pkgverb}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  cp -Rv "${pkgname}-doc-${_pkgverb}"/* \
+         "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+}
+
+sha256sums=('106a2c48c7f75a298a7557bcc0d5f4f454e5b43811cc738b7ca294d6956bbb15'
+            '42f6e7eb03ea26f551760804703d6b81c3017983ccdb5fdbd8b9fc1940cd018e')
