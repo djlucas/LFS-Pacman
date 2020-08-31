@@ -1,0 +1,31 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=make-ca
+pkgver=1.7
+pkgrel=1
+pkgdesc="The Grep package contains programs for searching through files." 
+arch=('x86_64')
+url="http://github.com/djlucas/${pkgname}"
+license=('GPL3')
+groups=('core')
+depends=('bash'
+         'coreutils'
+         'diffutils'
+         'gawk'
+         'grep'
+         'openssl'
+         'p11-kit'
+         'sed')
+makedepends=('make')
+optdepends=('nss')
+options=('emptydirs')
+
+source=("https://github.com/djlucas/${pkgname}/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.xz")
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/etc/ssl/local"
+}
+
+sha256sums=('6db8b96c961790507c5e36e0ed75a079ae95300f520cd88ac061cf44a4733c2f')
