@@ -1,0 +1,39 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=libksba
+pkgver=1.4.0
+pkgrel=1
+pkgdesc="The Libksba package contains a library used to make X.509 certificates as well as making the CMS (Cryptographic Message Syntax) easily accessible by other applications."
+arch=('x86_64')
+url="http://www.gnupg.org/gcrypt/"
+license=('GPL3')
+groups=('core')
+depends=('libgpg-error')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'make'
+             'texinfo'
+             $(pacman -Q valgrind >/dev/null 2>&1 && echo 'valgrind'))
+optdepends=($(pacman -Q valgrind >/dev/null 2>&1 || echo 'valgrind'))
+source=("https://www.gnupg.org/ftp/gcrypt/${pkgname}/${pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('bfe6a8e91ff0f54d8a329514db406667000cb207238eded49b599761bfca41b6')
