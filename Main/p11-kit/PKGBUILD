@@ -1,0 +1,59 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=p11-kit
+pkgver=0.23.20
+pkgrel=1
+pkgdesc="The p11-kit package provides a way to load and enumerate PKCS #11 (a Cryptographic Token Interface Standard) modules."
+arch=('x86_64')
+url="https://github.com/p11-glue/${pkgname}/"
+license=('GPL3')
+groups=('core')
+depends=('libtasn1'
+         'make-ca')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'make'
+             'sed'
+             'texinfo')
+optdepends=('gtk-doc'
+            'libxslt'
+            'nss')
+source=("https://github.com/p11-glue/${pkgname}/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.xz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  sed '20,$ d' -i trust/trust-extract-compat.in &&
+  cat >> trust/trust-extract-compat.in << "EOF"
+# Copy existing anchor modifications to /etc/ssl/local
+/usr/libexec/make-ca/copy-trust-modifications
+
+# Generate a new trust store
+/usr/sbin/make-ca -f -g
+EOF
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr     \
+              --sysconfdir=/etc \
+              --with-trust-paths=/etc/pki/anchors
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  ln -sfv /usr/libexec/p11-kit/trust-extract-compat \
+          "${pkgdir}/usr/bin/update-ca-certificates"
+  ln -sfv ./pkcs11/p11-kit-trust.so "${pkgdir}/usr/lib/libnssckbi.so"
+}
+
+sha256sums=('14d86024c3dfd6b967d9bc0b4ec7b2973014fe7423481f4d230a1a63b8aa6104')
