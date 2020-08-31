@@ -1,0 +1,37 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=unzip
+pkgver=6.0
+pkgrel=1
+pkgdesc="The UnZip package contains ZIP extraction utilities." 
+arch=('x86_64')
+url="http://infozip.sourceforge.net/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make')
+source=("https://downloads.sourceforge.net/infozip/unzip60.tar.gz"
+        "http://www.linuxfromscratch.org/patches/blfs/svn/unzip-6.0-consolidated_fixes-1.patch")
+
+prepare(){
+  cd "unzip60"
+  patch -Np1 -i "${srcdir}/unzip-6.0-consolidated_fixes-1.patch"
+}
+
+build(){
+  cd "unzip60"
+  make -f unix/Makefile generic
+}
+
+package(){
+  cd "unzip60"
+  make prefix="${pkgdir}/usr" MANDIR="${pkgdir}/usr/share/man/man1" \
+       -f unix/Makefile install
+}
+
+sha256sums=('036d96991646d0449ed0aa952e4fbe21b476ce994abc276e49d30e686708bd37'
+            '02cfd942875ca492c8fd27dff773e633a4f0b9bb47af2c3ad2697e8df8aa79f8')
