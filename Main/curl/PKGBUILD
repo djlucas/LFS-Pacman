@@ -1,10 +1,10 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=curl
-pkgver=7.50.0
+pkgver=7.71.1
 pkgrel=1
 pkgdesc="An URL retrieval utility and library"
-arch=('i686' 'x86_64')
+arch=('x86_64')
 url="http://${pkgname}.haxx.se/"
 license=('MIT')
 groups=('core')
@@ -47,7 +47,7 @@ optdepends=('axtls: use axtls instead of OpenSSL for SSL support'
             'stunnel: additional test suite coverage'
             'valgrind: additional test suite coverage')
 _confargs=""
-source=("http://${pkgname}.haxx.se/download/${pkgname}-${pkgver}.lzma")
+source=("http://${pkgname}.haxx.se/download/${pkgname}-${pkgver}.tar.xz")
 
 build() {
   #Handle optional deps
@@ -129,7 +129,6 @@ check(){
 package() {
   cd "${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
-  install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
   rm -rf docs/examples/.deps
   find docs \( -name Makefile\* \
             -o -name \*.1       \
@@ -139,5 +138,5 @@ package() {
   cp -Rv docs/* "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
 }
 
-sha256sums=('6a3376ffa365c9cf61eb8a0804dbf91883290c28bdaf4b76047addf75c7b1c80')
+sha256sums=('40f83eda27cdbeb25cd4da48cefb639af1b9395d6026d2da1825bf059239658c')
 
