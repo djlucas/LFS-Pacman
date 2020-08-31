@@ -1,0 +1,49 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=libtasn1
+pkgver=4.16.0
+pkgrel=1
+pkgdesc="Libtasn1 is a highly portable C library that encodes and decodes DER/BER data following an ASN.1 schema."
+arch=('x86_64')
+url="https://ftp.gnu.org/gnu/${pkgname}"
+license=('GPL3')
+groups=('core')
+depends=('libgpg-error'
+         $(pacman -Q pth >/dev/null 2>&1 && echo 'pth'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'make'
+             'texinfo'
+             $(pacman -Q gtk-doc >/dev/null 2>&1 && echo 'gtk-doc')
+             $(pacman -Q valgrind >/dev/null 2>&1 && echo 'valgrind'))
+optdepends=($(pacman -Q gtk-doc >/dev/null 2>&1 || echo 'gtk-doc')
+            $(pacman -Q valgrind >/dev/null 2>&1 || echo 'valgrind'))
+source=("https://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+_confargs=""
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  if $(pacamn -Q gtk-doc > /dev/null); then
+    _confargs="${_confargs} --enable-gtk-doc"
+  fi
+  ./configure --prefix=/usr --disable-static ${_confargs}
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  if ! $(pacamn -Q gtk-doc > /dev/null); then
+    make DESTDIR="${pkgdir}" -C doc/reference install-data-local
+  fi
+}
+
+sha256sums=('0e0fb0903839117cb6e3b56e68222771bebf22ad7fc2295a0ed7d576e8d4329d')
