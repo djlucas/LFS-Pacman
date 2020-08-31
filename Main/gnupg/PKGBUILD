@@ -1,0 +1,77 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=gnupg
+pkgver=2.2.21
+pkgrel=1
+pkgdesc="The GnuPG package is GNU's tool for secure communication and data storage." 
+arch=('x86_64')
+url="https://www.gnupg.org/"
+license=('GPL3')
+groups=('core')
+depends=('glibc'
+         'libassuan'
+         'libgcrypt'
+         'libksba'
+         'npth'
+         $(pacman -Q curl >/dev/null 2>&1 && echo 'curl')
+         $(pacman -Q fuse >/dev/null 2>&1 && echo 'fuse')
+         $(pacman -Q gnutls >/dev/null 2>&1 && echo 'gnutls')
+         $(pacman -Q libusb >/dev/null 2>&1 && echo 'libusb')
+         $(pacman -Q openldap >/dev/null 2>&1 && echo 'openldap')
+         $(pacman -Q sqlite >/dev/null 2>&1 && echo 'sqlite')
+         $(pacman -Q tex >/dev/null 2>&1 && echo 'tex'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'texinfo')
+optdepends=($(pacman -Q curl >/dev/null 2>&1 || echo 'curl')
+            $(pacman -Q fuse >/dev/null 2>&1 || echo 'fuse')
+            $(pacman -Q gnutls >/dev/null 2>&1 || echo 'gnutls')
+            $(pacman -Q libusb >/dev/null 2>&1 || echo 'libusb')
+            $(pacman -Q openldap >/dev/null 2>&1 || echo 'openldap')
+            $(pacman -Q sqlite >/dev/null 2>&1 || echo 'sqlite')
+            $(pacman -Q tex >/dev/null 2>&1 || echo 'tex'))
+source=("https://www.gnupg.org/ftp/gcrypt/${pkgname}/${pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr            \
+              --enable-symcryptrun     \
+              --localstatedir=/var     \
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}"
+  make
+  makeinfo --html --no-split -o doc/gnupg_nochunks.html doc/gnupg.texi
+  makeinfo --plaintext       -o doc/gnupg.txt           doc/gnupg.texi
+  make -C doc html
+  if $(pacamn -Q tex > /dev/null); then
+    make -C doc pdf ps
+  fi
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/html"
+  install -vm644  doc/gnupg_nochunks.html \
+                  "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/html/gnupg.html"
+  install -vm644  doc/*.texi doc/gnupg.txt \
+                  "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  install -vm644  doc/gnupg.html/* \
+                  "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/html"
+  if $(pacamn -Q tex > /dev/null); then
+    install -vm644 doc/gnupg.{pdf,dvi,ps} \
+            "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  fi
+}
+
+sha256sums=('61e83278fb5fa7336658a8b73ab26f379d41275bb1c7c6e694dd9f9a6e8e76ec')
