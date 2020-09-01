@@ -3,7 +3,7 @@
 pkgname=libxml2
 pkgver=2.9.10
 pkgrel=1
-pkgdesc="The Grep package contains programs for searching through files." 
+pkgdesc="The libxml2 package contains libraries and utilities used for parsing XML files." 
 arch=('x86_64')
 url="http://www.xmlsoft.org/"
 license=('GPL3')
