@@ -1,38 +1,49 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
 pkgname=fakeroot
-pkgver=1.21
+pkgver=1.24
 pkgrel=1
 pkgdesc="The fakeroot package provides a tool for simulating superuser privileges."
 arch=('x86_64')
-url="http://packages.debian.org/fakeroot/"
+url="https://tracker.debian.org/pkg/fakeroot"
 license=('GPL')
 groups=('core')
-makedepends=('autoconf' 'automake' 'm4')
-depends=('gcc' 'glibc')
-options=('!strip' 'staticlibs')
+depends=('bash'
+         'gcc'
+         'glibc'
+         'sed'
+         'util-linux')
+makedepends=('autoconf'
+             'automake'
+             'm4'
+             'make'
+             'patch')
+#checkdepends=('sharutils')
 source=("http://ftp.debian.org/debian/pool/main/f/${pkgname}/${pkgname}_${pkgver}.orig.tar.gz"
-        "http://www.linuxfromscratch.org/~dj/${pkgname}-${pkgver}-silence-dlerror-1.patch")
+        "${pkgname}-${pkgver}-silence-dlerror-1.patch::https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/fakeroot/trunk/silence-dlerror.patch")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-silence-dlerror-1.patch"
+}
 
 build(){
-  cd ${srcdir}/${pkgname}-${pkgver}
-  patch -Np1 -i ${srcdir}/${pkgname}-${pkgver}-silence-dlerror-1.patch
-  autoreconf -fi
+  cd "${pkgname}-${pkgver}"
   ./configure --prefix=/usr  \
               --disable-static \
               --with-ipc=sysv
-  sed '/SUBDIRS/s@doc @@' -i Makefile
   make
 }
 
 #check(){
-#  cd ${srcdir}/${pkgname}-${pkgver}
+#  cd "${pkgname}-${pkgver}"
 #  make check
 #}
 
 package(){
-  cd ${srcdir}/${pkgname}-${pkgver}
-  make DESTDIR=${pkgdir} install
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
  }
 
-sha256sums=('5d293c1b3604b2a9265d1811a9890c749887ef08aec55f3237d32bf35836171a'
+sha256sums=('2e045b3160370b8ab4d44d1f8d267e5d1d555f1bb522d650e7167b09477266ed'
             '347f6496c93ed0d91dcb554db92602b50520a16308e3b8bc33822bd69966267b')
