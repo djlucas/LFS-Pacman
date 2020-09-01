@@ -1,0 +1,38 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=libxml2
+pkgver=2.9.10
+pkgrel=1
+pkgdesc="The Grep package contains programs for searching through files." 
+arch=('x86_64')
+url="http://www.xmlsoft.org/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make')
+source=("http://xmlsoft.org/sources/${pkgname}-${pkgver}.tar.gz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  sed -i 's/test.test/#&/' python/tests/tstLastError.py
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr    \
+              --disable-static \
+              --with-history   \
+              --with-python=/usr/bin/python3
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('aafee193ffb8fe0c82d4afef6ef91972cbaf5feea100edc2f262750611b4be1f')
