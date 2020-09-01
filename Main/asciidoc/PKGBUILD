@@ -1,0 +1,43 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=asciidoc
+pkgver=9.0.2
+pkgrel=1
+pkgdesc="The Asciidoc package is a text document format for writing notes, documentation, articles, books, ebooks, slideshows, web pages, man pages and blogs." 
+arch=('x86_64')
+url="https://github.com/asciidoc/asciidoc-py3/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make')
+optdepends=('docbook-xsl-nons'
+            'fop'
+            'libxslt'
+            'lynx')
+source=("https://github.com/${pkgname}/${pkgname}-py3/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.gz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  sed -i 's:doc/testasciidoc.1::' Makefile.in &&
+  rm doc/testasciidoc.1.txt
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr     \
+              --sysconfdir=/etc \
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}"
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  make DESTDIR="${pkgdir}" docs
+}
+
+sha256sums=('185fd68e47034c4dd892e1d4ae64c81152bc049e9bdc7d1ad63f927d35810a3b')
