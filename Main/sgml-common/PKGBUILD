@@ -1,0 +1,42 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=sgml-common
+pkgver=0.6.3
+pkgrel=1
+pkgdesc="The SGML Common package contains install-catalog. This is useful for creating and maintaining centralized SGML catalogs."
+arch=('x86_64')
+url="https://sourceware.org/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+install=sgml-common.install
+makedepends=('autoconf'
+             'automake'
+             'bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make'
+             'patch')
+source=("https://sourceware.org/ftp/docbook-tools/new-trials/SOURCES/${pkgname}-${pkgver}.tgz"
+        "http://www.linuxfromscratch.org/patches/blfs/svn/${pkgname}-${pkgver}-manpage-1.patch")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-manpage-1.patch"
+  autoreconf -fi
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr --sysconfdir=/etc
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" docdir=/usr/share/doc install
+}
+
+sha256sums=('7dc418c1d361123ffc5e45d61f1b97257940a8eb35d0bfbbc493381cc5b1f959'
+            '50d93af704a0869faf8fedf5d23b1a9f90fff6499f4c11cf4addb5e460b7b58b')
