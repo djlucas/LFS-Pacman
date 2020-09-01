@@ -1,0 +1,49 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=docbook-xsl-nons
+pkgver=1.79.2
+pkgrel=1
+pkgdesc="The DocBook XSL Stylesheets package contains XSL stylesheets."
+url="https://docbook.org/"
+arch=(any)
+license=(custom)
+install=docbook-xsl-nons.install
+groups=('core')
+provides=('docbook-xsl')
+replaces=('docbook-xsl')
+depends=('docbook-xml'
+         'libxml2'
+         'libxlst')
+source=("https://github.com/docbook/xslt10-stylesheets/releases/download/release/${pkgver}/${pkgname}-${pkgver}.tar.bz2"
+        "https://github.com/docbook/xslt10-stylesheets/releases/download/release/${pkgver}/docbook-xsl-doc-${pkgver}.tar.bz2"
+        "http://www.linuxfromscratch.org/patches/blfs/svn/${pkgname}-${pkgver}-stack_fix-1.patch")
+noextract=("docbook-xsl-doc-${pkgver}.tar.bz2")
+
+prepare() {
+  cd "${pkgname}-${pkgver}"
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-stack_fix-1.patch"
+  tar -xf "${srcdir}/docbook-xsl-doc-${pkgver}.tar.bz2" --strip-components=1
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  install -vdm755 "${pkgdir}/usr/share/xml/docbook/${pkgname}-${pkgver}"
+  cp -Rv VERSION assembly common eclipse epub epub3 extensions fo        \
+         highlighting html htmlhelp images javahelp lib manpages params  \
+         profiling roundtrip slides template tests tools webhelp website \
+         xhtml xhtml-1_1 xhtml5                                          \
+         "${pkgdir}/usr/share/xml/docbook/${pkgname}-${pkgver}"
+
+  ln -sfv VERSION "${pkgdir}/usr/share/xml/docbook/${pkgname}-${pkgver}/VERSION.xls"
+
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  install -vm644 README \
+                    "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/README.txt"
+  install -vm644  RELEASE-NOTES* NEWS* \
+                    "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+
+cp -v -R doc/* "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+}
+sha256sums=('ee8b9eca0b7a8f89075832a2da7534bce8c5478fc8fc2676f512d5d87d832102'
+            '9bc38a3015717279a3a0620efb2d4bcace430077241ae2b0da609ba67d8340bc'
+            'a92c39715c54949ba9369add1809527b8f155b7e2a2b2e30cb4b39ee715f2e30')

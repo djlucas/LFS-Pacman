@@ -1,0 +1,45 @@
+_xmlcatalog() {
+  xmlcatalog --noout "$@" etc/xml/catalog
+}
+
+post_install() {
+  [[ -f etc/xml/catalog ]] || _xmlcatalog --create
+
+  local new=${1%-*}
+
+  _xmlcatalog --add "rewriteSystem" \
+    "https://cdn.docbook.org/release/xsl-nons/$new" \
+    "/usr/share/xml/docbook/xsl-stylesheets-nons-$new"
+
+  _xmlcatalog --add "rewriteURI" \
+    "https://cdn.docbook.org/release/xsl-nons/$new" \
+    "/usr/share/xml/docbook/xsl-stylesheets-nons-$new"
+
+  _xmlcatalog --add "rewriteSystem" \
+    "https://cdn.docbook.org/release/xsl-nons/current" \
+    "/usr/share/xml/docbook/xsl-stylesheets-nons-$new"
+
+  _xmlcatalog --add "rewriteURI" \
+    "https://cdn.docbook.org/release/xsl-nons/current" \
+    "/usr/share/xml/docbook/xsl-stylesheets-nons-$new"
+
+  _xmlcatalog --add "rewriteSystem" \
+    "http://docbook.sourceforge.net/release/xsl/current" \
+    "/usr/share/xml/docbook/xsl-stylesheets-nons-$new"
+
+  _xmlcatalog --add "rewriteURI" \
+    "http://docbook.sourceforge.net/release/xsl/current" \
+    "/usr/share/xml/docbook/xsl-stylesheets-nons-$new"
+}
+
+post_upgrade() {
+  post_remove $2
+  post_install $1
+}
+
+post_remove() {
+  local old=${1%-*}
+  _xmlcatalog --del /usr/share/xml/docbook/xsl-stylesheets-nons-$old
+}
+
+# vim:set ft=sh sw=2 et:
