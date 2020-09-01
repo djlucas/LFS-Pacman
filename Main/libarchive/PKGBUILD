@@ -1,9 +1,9 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=libarchive
-pkgver=3.2.2
+pkgver=3.4.3
 pkgrel=1
-pkgdesc="library that can create and read several streaming archive formats"
+pkgdesc="The libarchive library provides a single interface for reading/writing various compression formats."
 arch=('i686' 'x86_64')
 url="http://libarchive.org/"
 license=('BSD')
@@ -11,32 +11,44 @@ groups=('core')
 depends=('acl'
          'attr'
          'bzip2'
-         'expat'
-         'libxml2'
-         'lz4'
+         $(pacman -Q libxml2 >/dev/null 2>&1 || echo 'libxml2')
+         $(pacman -Q libxml2 >/dev/null 2>&1 && echo 'libxml2')
          'lzo'
          'openssl'
          'xz'
-         'zlib')
-source=("http://${pkgname}.org/downloads/${pkgname}-${pkgver}.tar.gz")
+         'zlib'
+         'zstd')
+makedepends=('gcc')
+source=("http://${pkgname}.org/downloads/${pkgname}-${pkgver}.tar.gz"
+        "http://www.linuxfromscratch.org/patches/blfs/svn/${pkgname}-${pkgver}-testsuite_fix-1.patch")
 
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  # Fix testsuite for new glibc
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-testsuite_fix-1.patch"
+}
 build() {
   cd "${pkgname}-${pkgver}"
+  _confargs=""
+  if ! $(pacamn -Q zsh > /dev/null); then
+    _confargs="${_confargs} --without-xml2"
+  fi
   ./configure --prefix=/usr    \
               --without-nettle \
+              ${_confargs}     \
               --disable-static
   make
 }
 
 check() {
   cd "${pkgname}-${pkgver}"
-  make check
+  make -j1 check
 }
 
 package() {
   cd "${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
-  install -D -m644 COPYING "${pkgdir}/usr/share/licenses/libarchive/COPYING"
 }
 
-sha256sums=('691c194ee132d1f0f7a42541f091db811bc2e56f7107e9121be2bc8c04f1060f')
+sha256sums=('ee1e749213c108cb60d53147f18c31a73d6717d7e3d2481c157e1b34c881ea39'
+            '91696c3a6b48f66764e73aa0a99b7e3ea039f4ce69fc8b8c4dd9f93beab5a066')
