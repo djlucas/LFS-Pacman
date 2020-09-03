@@ -1,0 +1,61 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgbase="linux"
+pkgname=("linux" "linux-api-headers" "linux-doc")
+pkgver=5.8.5
+pkgrel=1
+arch=('x86_64')
+url="http://www.kernel.org/"
+license=('GPL')
+makedepends=('bash'
+             'coreutils'
+             'diffutils'
+             'findutils'
+             'glibc'
+             'grep'
+             'gzip'
+             'kmod'
+             'make'
+             'ncurses'
+             'perl'
+             'sed')
+source=("https://www.kernel.org/pub/linux/kernel/v5.x/linux-${pkgver}.tar.xz")
+options=('!debug' '!strip' 'emptydirs')
+
+build(){
+  cd ${srcdir}/linux-${pkgver}
+  make mrproper
+  make headers
+  find usr/include -name '.*' -delete
+  rm usr/include/Makefile
+}
+
+package_linux(){
+  pkgname="linux"
+  pkgdesc="Metapackage for Linux Kernel"
+  groups=('core')
+  depends=("linux-${pkgver}")
+    mkdir "${pkgdir}/boot"
+    echo "${pkgver}" > "${pkgdir}/boot/latest.txt"
+}
+
+package_linux-api-headers(){
+  pkgname="linux-api-headers"
+  pkgdesc="The Linux API Headers expose the kernel's API for use by Glibc."
+  groups=('core')
+  depends=('rootfs')
+    cd ${srcdir}/linux-${pkgver}
+    install -vdm755 ${pkgdir}/usr
+    cp -rv usr/include ${pkgdir}/usr
+}
+
+package_linux-doc(){
+  pkgname="linux-doc"
+  pkgdesc="Documentation for the Linux kernel"
+  depends=('rootfs')
+    cd ${srcdir}/linux-${pkgver}
+    install -vdm755 "${pkgdir}/usr/share/doc/${pkgbase}"
+    cp -r Documentation/* "${pkgdir}/usr/share/doc/${pkgbase}"
+}
+
+sha256sums=('9d4ec36b158734f86e583a56f5a03721807d606ea1df6a97e6dd993ea605947f')
