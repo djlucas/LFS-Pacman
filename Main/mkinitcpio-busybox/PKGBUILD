@@ -1,0 +1,54 @@
+# Mainteaner: DJ Lucas <dj@linuxfromscratch.org>
+# Contributor: Giancarlo Razzolini <grazzolini@archlinux.org>
+# Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: Dave Reisner <dreisner@archlinux.org>
+# Contributor: Thomas Bächler <thomas@archlinux.org>
+
+## Taken almost verbatim from Arch Linux - Thanks
+
+pkgname=mkinitcpio-busybox
+pkgver=1.31.1
+pkgrel=1
+pkgdesc='Base initramfs tools'
+arch=('x86_64')
+url="https://www.busybox.net/"
+license=('GPL')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'patch'
+             'sed'
+             'texinfo')
+options=('!strip'
+         '!debug'
+         '!buildflags')
+groups=('core')
+source=("https://busybox.net/downloads/busybox-$pkgver.tar.bz2"
+        "config")
+
+prepare() {
+  cd "busybox-$pkgver"
+
+  local safeflags="-march=${CARCH/_/-} -mtune=generic -Os -pipe -fno-strict-aliasing"
+
+  sed 's|^\(CONFIG_EXTRA_CFLAGS\)=.*|\1="'"$safeflags"'"|' "$srcdir/config" > .config
+}
+
+build() {
+  # reproducible build
+  export KCONFIG_NOTIMESTAMP=1
+  make -C "busybox-$pkgver"
+}
+
+package() {
+  install -Dm755 "$srcdir/busybox-$pkgver/busybox" "$pkgdir/usr/lib/initcpio/busybox"
+}
+
+sha256sums=('d0f940a72f648943c1f2211e0e3117387c31d765137d92bd8284a3fb9752a998'
+            '2d724738dfb062b8676a8df0488a5e288fc7ceb305633fa6b8d672a722837e81')
