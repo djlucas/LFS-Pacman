@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgbase="linux"
-pkgname=("linux" "linux-api-headers" "linux-doc")
+pkgname=("linux" "linux-api-headers" "linux-docs")
 pkgver=5.8.5
 pkgrel=1
 arch=('x86_64')
@@ -34,7 +34,7 @@ package_linux(){
   pkgname="linux"
   pkgdesc="Metapackage for Linux Kernel"
   groups=('core')
-  depends=("linux-${pkgver}")
+  depends=("linux-kernel-${pkgver}")
     mkdir "${pkgdir}/boot"
     echo "${pkgver}" > "${pkgdir}/boot/latest.txt"
 }
@@ -49,8 +49,8 @@ package_linux-api-headers(){
     cp -rv usr/include ${pkgdir}/usr
 }
 
-package_linux-doc(){
-  pkgname="linux-doc"
+package_linux-docs(){
+  pkgname="linux-docs"
   pkgdesc="Documentation for the Linux kernel"
   depends=('rootfs')
     cd ${srcdir}/linux-${pkgver}
