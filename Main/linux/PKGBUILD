@@ -34,7 +34,7 @@ package_linux(){
   pkgname="linux"
   pkgdesc="Metapackage for Linux Kernel"
   groups=('core')
-  depends=("linux-kernel-${pkgver}")
+  depends=("linux-${pkgver}-kernel")
     mkdir "${pkgdir}/boot"
     echo "${pkgver}" > "${pkgdir}/boot/latest.txt"
 }
