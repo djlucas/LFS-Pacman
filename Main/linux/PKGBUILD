@@ -47,6 +47,7 @@ package_linux-api-headers(){
     cd ${srcdir}/linux-${pkgver}
     install -vdm755 ${pkgdir}/usr
     cp -rv usr/include ${pkgdir}/usr
+  ## NOTE: Do not upgrade kernel headers without bumping glibc relver
 }
 
 package_linux-docs(){
