@@ -2,7 +2,7 @@
 
 pkgname=glibc
 pkgver=2.32
-pkgrel=2
+pkgrel=3
 pkgdesc="The Glibc package contains the main C library. This library provides the basic routines for allocating memory, searching directories, opening and closing files, reading and writing files, string handling, pattern matching, arithmetic, and so on."
 arch=('x86_64')
 url="http://www.gnu.org/software/libc/"
@@ -24,10 +24,6 @@ makedepends=('bash'
              'sed'
              'texinfo')
 depends=('rootfs')
-#options=(!debug
-#         !strip
-#         staticlibs)
-# Don't use !strip for deug builds
 options=('staticlibs')
 backup=('etc/ld.so.cache'
         'etc/locale.gen'
@@ -166,6 +162,8 @@ package(){
 
   # If not a debug build, then we need to specify !strip and do it manually
   if check_option 'debug' n; then
+    options+=('!strip')
+
     # Executables
     find "$pkgdir"/usr/bin -type f -executable -exec strip $STRIP_BINARIES {} + 2> /dev/null || true
     find "$pkgdir"/usr/sbin -type f -executable -exec strip $STRIP_BINARIES {} + 2> /dev/null || true
