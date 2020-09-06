@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=p11-kit
-pkgver=0.23.20
+pkgver=0.23.21
 pkgrel=1
 pkgdesc="The p11-kit package provides a way to load and enumerate PKCS #11 (a Cryptographic Token Interface Standard) modules."
 arch=('x86_64')
@@ -56,4 +56,4 @@ package(){
   ln -sfv ./pkcs11/p11-kit-trust.so "${pkgdir}/usr/lib/libnssckbi.so"
 }
 
-sha256sums=('14d86024c3dfd6b967d9bc0b4ec7b2973014fe7423481f4d230a1a63b8aa6104')
+sha256sums=('f1baa493f05ca0d867f06bcb54cbb5cdb28c756db07207b6e18de18a87b10627')
