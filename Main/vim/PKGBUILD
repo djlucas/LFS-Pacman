@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname="vim"
-pkgver=8.2.1523
+pkgver=8.2.1620
 shortver=82
 pkgrel=1
 pkgdesc="The Vim package contains a powerful text editor."
@@ -63,4 +63,4 @@ endif
 " End /etc/vimrc
 EOF
 }
-sha256sums=('9b89d521b217959275d9d391edfc514682bf5242ff74251e67bb069f498bec56')
+sha256sums=('50d8c0afcf66aa965dbe016fcab5e4b8a8a78f65f32450747939a74340f228eb')
