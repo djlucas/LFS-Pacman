@@ -9,7 +9,7 @@ pkgname=(gcc-ada
          gcc)
 pkgver=10.2.0
 _islver=0.21
-pkgrel=3
+pkgrel=4
 arch=('x86_64')
 url="https://gcc.gnu.org/"
 license=('GPL'
@@ -40,7 +40,6 @@ checkdepends=('dejagnu'
               'inetutils')
 source=("https://ftp.gnu.org/gnu/${pkgbase}/${pkgbase}-${pkgver}/${pkgbase}-${pkgver}.tar.xz"
         "http://isl.gforge.inria.fr/isl-${_islver}.tar.bz2")
-#options=(!strip !emptidirs staticlibs)
 options=('!emptydirs' 'staticlibs')
 
 # If you want to modify what is actually built for a local build, set these 0
@@ -276,6 +275,32 @@ package_gcc(){
   install -vdm755 ${pkgdir}/usr/lib/bfd-plugins
   ln -sfv ../../libexec/gcc/$CARCH-pc-linux-gnu/${pkgver}/liblto_plugin.so \
           ${pkgdir}/usr/lib/bfd-plugins
+  # Strip most of the package if not a debug build
+  if check_option 'debug' n; then
+    options+=('!strip')
+
+    # Executables
+    find "$pkgdir"/usr/bin -type f -executable -exec strip $STRIP_BINARIES {} + 2> /dev/null || true
+    find "${pkgdir}"/usr/lib/libexec/ \
+     -type f -executable \
+     -not -name "*.so*" \
+     -not -name "*.a" \
+     -not -name "*.sh" \
+     -exec strip $STRIP_BINARIES {} + 2> /dev/null || true
+
+    # Libraries
+    find "$pkgdir"/usr/lib -name '*.a' -type f -exec strip $STRIP_STATIC {} + 2> /dev/null || true
+    find "$pkgdir"/usr/lib \
+      -type f \
+      -name '*.so' \
+      -not -name "libquadmath*" \
+      -not -name "libstdc++*" \
+      -not -name "libitm*" \
+      -not -name "libatomic*" \
+      -exec strip $STRIP_SHARED {} + 2> /dev/null || true
+ 
+  fi
+
 }
 
 sha256sums=('b8dd4368bb9c7f0b98188317ee0254dd8cc99d1e3a18d0ff146c855fe16c1d8c'
