@@ -2,7 +2,7 @@
 
 pkgname=cracklib
 pkgver=2.9.7
-pkgrel=1
+pkgrel=2
 pkgdesc="The CrackLib package contains a library used to enforce strong passwords by comparing user selected passwords to words in chosen word lists." 
 arch=('x86_64')
 url="http://www.gnu.org/software/cracklib"
@@ -19,7 +19,7 @@ source=("https://github.com/${pkgname}/${pkgname}/releases/download/v${pkgver}/$
         "https://github.com/${pkgname}/${pkgname}/releases/download/v${pkgver}/${pkgname}-words-${pkgver}.bz2")        
 install="cracklib.install"
 backup=("usr/share/dict/cracklib-extra-words")
-options=('!emptydirs')
+options=('emptydirs')
 
 build(){
   cd "${pkgname}-${pkgver}"
