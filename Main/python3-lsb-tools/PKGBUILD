@@ -1,0 +1,25 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=python3-lsb-tools
+pkgnamed=LSB-Tools
+pkgver=0.7
+pkgrel=1
+pkgdesc="The LSB-Tools package includes tools for Linux Standards Base (LSB) conformance."
+arch=('any')
+license=('MIT')
+url="https://github.com/djlucas/LSB-Tools/"
+groups=('core')
+depends=('python3-setuptools')
+provides=('lsb-tools')
+source=("https://github.com/djlucas/${pkgnamed}/releases/download/v0.7/${pkgnamed}-${pkgver}.tar.gz")
+
+build() {
+  cd ${pkgnamed}-${pkgver}
+  python3 setup.py build
+}
+
+package() {
+  cd ${pkgnamed}-${pkgver}
+  python3 setup.py install --root="$pkgdir" --optimize=1
+}
+sha256sums=('302dcbdf889b975880c98d4c4f0575ee008e1e22ee1af0dc55b0c0ad69b1b0ef')
