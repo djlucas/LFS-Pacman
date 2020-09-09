@@ -2,7 +2,7 @@
 
 pkgname=openssh
 pkgver=8.3p1
-pkgrel=1
+pkgrel=2
 pkgdesc="The OpenSSH package contains ssh and scp clients and the sshd daemon." 
 arch=('x86_64')
 url="http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/"
@@ -51,7 +51,7 @@ prepare() {
     echo -e "\\033[1;31mERROR!!!"
     echo -e "You must create a user 'sshd' with UID '50' before building this package!\e[0m" >&2
     echo "Try the following:"
-    echo "     sudo useradd  -c 'sshd PrivSep'  \\
+    echo "     sudo useradd  -c 'sshd PrivSep'   \\
                    -d /var/lib/sshd    \\
                    -g sshd             \\
                    -s /bin/false       \\
@@ -96,7 +96,6 @@ check(){
 package(){
   cd "${pkgname}-${pkgver}"
   install -vdm700 "${pkgdir}/var/lib/sshd"
-  chown -v sshd:sshd "${pkgdir}/var/lib/sshd"
   make DESTDIR="${pkgdir}" install
   install -vm755  contrib/ssh-copy-id "${pkgdir}/usr/bin"
   install -vdm755 "${pkgdir}/usr/share/man/man1"

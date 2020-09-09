@@ -10,6 +10,11 @@ post_install(){
              -u 50 sshd
   fi
 
+  # Generate host keys if RSA host key is not present
+  if [ ! -f /etc/ssh/ssh_host_rsa_key ]; then
+    ssh-keygen -A
+  fi
+
   echo -e "\\033[1;32mRemember to enable the sshd starup script with:\e[0m"
   echo "     sudo install_initd sshd"
   echo ""
@@ -18,8 +23,11 @@ post_upgrade(){
   post_install
 }
 
-post_remove(){
+pre_remove() {
   remove_initd sshd
+}
+
+post_remove(){
   groupdel sshd 2>/dev/null || true
   userdel sshd 2>/dev/null  || true
 }
