@@ -1,0 +1,44 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=pacman-contrib
+pkgver=1.4.0
+pkgrel=2
+pkgdesc="Pacman-contrib contains utilities useful for working with pacman based packages."
+arch=('x86_64')
+url="http://www.archlinux.org/pacman/"
+license=('GPL')
+groups=('core')
+depends=('pacman')
+makedepends=('bash'
+             'gcc'
+             'glibc'
+             'make')
+optdepends=('vim')
+if $(pacman -Q vim > /dev/null); then
+  _vimfilesdir="/usr/share/vim/vim$(vim --version | grep -m1 -o "[0-9]\.[0-9]" | sed 's@\.@@')"
+else
+  _vimfilesdir="/usr/share/vim/vim82"
+fi
+source=("https://git.archlinux.org/${pkgname}.git/snapshot/${pkgname}-${pkgver}.tar.gz")
+
+prepare() {
+  cd "${pkgname}-${pkgver}"
+  ./autogen.sh
+}
+build() {
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var
+  make
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  mv -v "${pkgdir}"/usr/share/vim/vimfiles "${pkgdir}/${_vimfilesdir}"
+  rm -rf "${pkgdir}/usr/lib"
+}
+
+sha256sums=('8746f1352aaad990fe633be34f925d5ab8bd8a19a5f1274e72dbde426deb86bd')
+
