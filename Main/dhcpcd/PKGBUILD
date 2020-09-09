@@ -2,7 +2,7 @@
 
 pkgname=dhcpcd
 pkgver=9.2.0
-pkgrel=1
+pkgrel=2
 pkgdesc="dhcpcd is an implementation of the DHCP client specified in RFC2131." 
 arch=('x86_64')
 url="https://roy.marples.name/downloads/dhcpcd/"
@@ -66,7 +66,8 @@ package(){
   install -vdm755 "${pkgdir}/lib/services"
   install -vm754  "${srcdir}/dhcpcd.init" "${pkgdir}/lib/services/dhcpcd"
   install -vdm755 "${pkgdir}/etc/sysconfig"
-  install -vm644  "${srcdir}/ifconfig.dhcpcd.sample" "${pkgdir}/etc/sysconfig/"
+  install -vm644  "${srcdir}/ifconfig.dhcpcd.sample" \
+                  "${pkgdir}/etc/sysconfig/sample.ifconfig.dhcpcd"
 }
 
 sha256sums=('fcb2d19672d445bbfd38678fdee4f556ef967a3ea6bd81092d10545df2cb9666'
