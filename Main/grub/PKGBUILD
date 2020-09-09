@@ -1,7 +1,7 @@
 # Maintainer: archetech trw2006@hotmail.com
 pkgname=grub
 pkgver=2.04
-pkgrel=1
+pkgrel=2
 pkgdesc="The GRUB package contains the GRand Unified Bootloader." 
 arch=('x86_64')
 url="http://www.gnu.org/software/grub"
@@ -70,4 +70,4 @@ package() {
 
 sha256sums=('e5292496995ad42dabe843a0192cf2a2c502e7ffcc7479398232b10a472df77d'
             '171415ab075d1ac806f36c454feeb060f870416f24279b70104bba94bd6076d4'
-            'e61f66ef1551e4e66a6f5b0e90a83ea9b9d1b04b113f14ddff95d09a7ad2182a')
+            'e50884645a27bc55640ca1a9698e4d7812e938cbf3a8253fff2a998a45ddab20')
