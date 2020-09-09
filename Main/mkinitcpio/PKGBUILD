@@ -1,0 +1,30 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=mkinitcpio
+pkgver=0.1
+pkgrel=1
+pkgdesc="The mkinitcpio package contains a modular initrd utility."
+arch=('x86_64')
+url="https://github.com/djlucas/mkinitcpio"
+license=('GPL3')
+groups=('core')
+depends=('bash'
+         'coreutils'
+         'cpio'
+         'grep'
+         'gzip'
+         'sed'
+         'zlib'
+         'xz')
+makedepends=('make')
+source=("${pkgname}-${pkgver}.tar.gz::https://github.com/djlucas/${pkgname}/archive/v${pkgver}.tar.gz")
+optdepends=('kmod'
+            'linux'
+            'mkinitcpio-busybox')
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('757c28214cb26e0e56eb55b05ea9c5d7055869e14fe046ac0fdc3bab021f409c')
