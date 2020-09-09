@@ -1,0 +1,82 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=sudo
+pkgver=1.9.2
+pkgrel=1
+pkgdesc="The Sudo package allows a system administrator to give certain users (or groups of users) the ability to run some (or all) commands as root or another user while logging the commands and arguments." 
+arch=('x86_64')
+url="http://www.sudo.ws/"
+license=('GPL3')
+groups=('core')
+depends=('glibc'
+         $(pacman -Q linux-pam >/dev/null 2>&1 && echo 'linux-pam')
+         $(pacman -Q krb5 >/dev/null 2>&1 && echo 'krb5')
+         $(pacman -Q openldap-client >/dev/null 2>&1 && echo 'openldap-client'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'make'
+             'sed'
+             'shadow'
+             'texinfo')
+optdepends=($(pacman -Q linux-pam >/dev/null 2>&1 || echo 'linux-pam')
+            $(pacman -Q krb5 >/dev/null 2>&1 || echo 'krb5')
+            $(pacman -Q openldap-client >/dev/null 2>&1 || echo 'openldap-client'))
+source=("http://www.sudo.ws/dist/${pkgname}-${pkgver}.tar.gz")
+backup=('etc/sudoers'
+        'etc/sudoers.d/sudo'
+        'etc/pam.d/sudo')
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr              \
+              --libexecdir=/usr/lib      \
+              --with-secure-path         \
+              --with-all-insults         \
+              --with-env-editor          \
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}" \
+              --with-passprompt="[sudo] password for %p: "
+make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  evn LC_ALL=C make check || true
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  ln -sfv libsudo_util.so.0.0.0 "${pkgdir}/usr/lib/sudo/libsudo_util.so.0"
+
+  install -vdm755 "${pkgdir}/etc/sudoers.d"
+  cat > "${pkgdir}/etc/sudoers.d/sudo" << "EOF"
+Defaults secure_path="/usr/bin:/bin:/usr/sbin:/sbin"
+%wheel ALL=(ALL) ALL
+EOF
+
+  if $(pacman -Q linux-pam > /dev/null 2>&1); then
+    install -vdm755 "${pkgdir}/etc/pam.d"
+    cat > "${pkgdir}/etc/pam.d/sudo" << "EOF"
+# Begin /etc/pam.d/sudo
+
+# include the default auth settings
+auth      include     system-auth
+
+# include the default account settings
+account   include     system-account
+
+# Set default environment variables for the service user
+session   required    pam_env.so
+
+# include system session defaults
+session   include     system-session
+
+# End /etc/pam.d/sudo
+EOF
+  fi
+}
+
+sha256sums=('7c98d201f181c47152711b9f391e0f6b5545f3ef8926298a3e8bc6288e118314')
