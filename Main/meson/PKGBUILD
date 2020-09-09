@@ -2,7 +2,7 @@
 
 pkgname=meson
 pkgver=0.55.1
-pkgrel=1
+pkgrel=2
 pkgdesc="Meson is an open source build system meant to be both extremely fast and as user friendly as possible."
 url='https://mesonbuild.com/'
 arch=('any')
@@ -21,7 +21,7 @@ optdepends=($(pacman -Q bash >/dev/null 2>&1 || echo 'bash')
 source=("https://github.com/mesonbuild/meson/releases/download/${pkgver}/meson-${pkgver}.tar.gz")
 
 if $(pacman -Q vim > /dev/null 2>&1); then
-  vimfilesdir="/usr/share/vim/vim$(vim --version | grep -m1 -o "[0-9]\.[0-9]")"
+  vimfilesdir="/usr/share/vim/vim$(vim --version | grep -m1 -o "[0-9]\.[0-9]" | sed 's@\.@@')"
 fi
 
 build() {
