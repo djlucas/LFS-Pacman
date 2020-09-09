@@ -1,0 +1,25 @@
+post_install(){
+  if [ "$(getent group dhcpcd | cut -d ":" -f 3)" != "50" ]; then
+    groupadd -g 50 sshd
+  fi 
+  if [ "$(getent passwd dhcpcd | cut -d ":" -f 3)" != "50" ]; then
+    useradd  -c 'sshd PrivSep' \
+             -d /var/lib/sshd  \
+             -g sshd           \
+             -s /bin/false     \
+             -u 50 sshd
+  fi
+
+  echo -e "\\033[1;32mRemember to enable the sshd starup script with:\e[0m"
+  echo "     sudo install_initd sshd"
+  echo ""
+}
+post_upgrade(){
+  post_install
+}
+
+post_remove(){
+  remove_initd sshd
+  groupdel sshd 2>/dev/null || true
+  userdel sshd 2>/dev/null  || true
+}

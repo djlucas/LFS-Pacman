@@ -1,0 +1,121 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=openssh
+pkgver=8.3p1
+pkgrel=1
+pkgdesc="The OpenSSH package contains ssh and scp clients and the sshd daemon." 
+arch=('x86_64')
+url="http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/"
+license=('GPL3')
+groups=('core')
+depends=('glibc'
+         $(pacman -Q krb5 >/dev/null 2>&1 && echo 'krb5')
+         $(pacman -Q libedit >/dev/null 2>&1 && echo 'libedit')
+         $(pacman -Q linux-pam >/dev/null 2>&1 && echo 'linux-pam'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'make'
+             'openssl'
+             'sed'
+             'texinfo')
+source=("http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/${pkgname}-${pkgver}.tar.gz"
+        "sshd.init")
+optdepends=($(pacman -Q krb5 >/dev/null 2>&1 || echo 'krb5')
+            $(pacman -Q libedit >/dev/null 2>&1 || echo 'libedit')
+            $(pacman -Q linux-pam >/dev/null 2>&1 || echo 'linux-pam')
+            'xauth'
+            'openjdk'
+            'net-tools'
+            'sysstat'
+            'gdb')
+backup=('etc/ssh/ssh_config'
+        'etc/ssh/sshd_config'
+        'etc/pam.d/sshd')
+options=('emptydirs')
+install="openssh.install"
+_confargs=""
+
+prepare() {
+  if [ "$(getent group sshd | cut -d ":" -f 3)" != "50" ]; then
+    echo -e "\\033[1;31mERROR!!!"
+    echo -e "You must create a group 'sshd' with GID '50' before building this package!\e[0m" >&2
+    echo "Try the following:"
+    echo "      sudo groupadd -g 50 sshd"
+    exit 1
+  fi
+
+  if [ "$(getent passwd sshd | cut -d ":" -f 3)" != "50" ]; then
+    echo -e "\\033[1;31mERROR!!!"
+    echo -e "You must create a user 'sshd' with UID '50' before building this package!\e[0m" >&2
+    echo "Try the following:"
+    echo "     sudo useradd  -c 'sshd PrivSep'  \\
+                   -d /var/lib/sshd    \\
+                   -g sshd             \\
+                   -s /bin/false       \\
+                   -u 50 sshd"
+    exit 1
+  fi
+}
+
+build(){
+  # libedit support
+  if $(pacman -Q libedit > /dev/null 2>&1); then
+    _confargs="${_confargs} --with-libedit"
+  fi
+
+  # Linux-PAM support
+  if $(pacman -Q linux-pam > /dev/null 2>&1); then
+    _confargs="${_confargs} --with-pam"
+  fi
+
+  # Kerberos support
+  if $(pacman -Q krb5 > /dev/null 2>&1); then
+    _confargs="${_confargs} --with-kerberos5=/usr"
+  fi
+
+  # xauth is not requried at build time
+
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr                     \
+              --sysconfdir=/etc/ssh             \
+              --with-md5-passwords              \
+              --with-privsep-path=/var/lib/sshd \
+              ${_confargs}                      \
+              --with-xauth=/usr/bin/xauth
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make -j1 tests
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  install -vdm700 "${pkgdir}/var/lib/sshd"
+  chown -v sshd:sshd "${pkgdir}/var/lib/sshd"
+  make DESTDIR="${pkgdir}" install
+  install -vm755  contrib/ssh-copy-id "${pkgdir}/usr/bin"
+  install -vdm755 "${pkgdir}/usr/share/man/man1"
+  install -vm644  contrib/ssh-copy-id.1 \
+                  "${pkgdir}/usr/share/man/man1"
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  install -vm644  INSTALL LICENCE OVERVIEW README* \
+                  "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/"
+
+  install -vdm755 "${pkgdir}/etc/rc.d/init.d"
+  install -vm754 "${srcdir}/sshd.init" "${pkgdir}/etc/rc.d/init.d/sshd"
+
+  if $(pacman -Q linux-pam > /dev/null 2>&1); then
+    install -vdm755 "${pkgdir}/etc/pam.d"
+    sed 's@d/login@d/sshd@g' /etc/pam.d/login > "${pkgdir}/etc/pam.d/sshd"
+    chmod 644 "${pkgdir}/etc/pam.d/sshd"
+    echo "UsePAM yes" >> "${pkgdir}/etc/ssh/sshd_config"
+  fi
+}
+
+sha256sums=('f2befbe0472fe7eb75d23340eb17531cb6b3aac24075e2066b41f814e12387b2'
+            '4994a393d945146ba2bd9ee73ded4284ebb183c0a5fdc68353057c6043ebf44f')
