@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=libgpg-error
-pkgver=1.38
+pkgver=1.39
 pkgrel=1
 pkgdesc="The Libgpg-error package contains a library that defines common error values for all GnuPG components." 
 arch=('x86_64')
@@ -36,4 +36,4 @@ package(){
   install -v -m644 -D README "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
 }
 
-sha256sums=('d8988275aa69d7149f931c10442e9e34c0242674249e171592b430ff7b3afd02')
+sha256sums=('4a836edcae592094ef1c5a4834908f44986ab2b82e0824a0344b49df8cdb298f')
