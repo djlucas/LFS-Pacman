@@ -1,0 +1,74 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=dhcpcd
+pkgver=9.2.0
+pkgrel=1
+pkgdesc="dhcpcd is an implementation of the DHCP client specified in RFC2131." 
+arch=('x86_64')
+url="https://roy.marples.name/downloads/dhcpcd/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'make'
+             'sed'
+             'texinfo')
+source=("https://roy.marples.name/downloads/${pkgname}/${pkgname}-${pkgver}.tar.xz"
+        "dhcpcd.init"
+        "ifconfig.dhcpcd.sample")
+options=('emptydirs')
+install="dhcpcd.install"
+
+prepare() {
+  if [ "$(getent group dhcpcd | cut -d ":" -f 3)" != "52" ]; then
+    echo -e "\\033[1;31mERROR!!!"
+    echo -e "You must create a group 'dhcpcd' with GID '52' before building this package!\e[0m" >&2
+    echo "Try the following:"
+    echo "      sudo groupadd -g 52 dhcpcd"
+    exit 1
+  fi
+
+  if [ "$(getent passwd dhcpcd | cut -d ":" -f 3)" != "52" ]; then
+    echo -e "\\033[1;31mERROR!!!"
+    echo -e "You must create a user 'dhcpcd' with UID '52' before building this package!\e[0m" >&2
+    echo "Try the following:"
+    echo "     sudo useradd  -c 'dhcpcd PrivSep' \\
+                   -d /var/lib/dhcpcd  \\
+                   -g dhcpcd           \\
+                   -s /bin/false       \\
+                   -u 52 dhcpcd"
+    exit 1
+  fi
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --libexecdir=/lib/dhcpcd \
+              --dbdir=/var/lib/dhcpcd  \
+              --privsepuser=dhcpcd
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make test
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  install -vdm700 "${pkgdir}/var/lib/dhcpcd"
+  chown -v dhcpcd:dhcpcd "${pkgdir}/var/lib/dhcpcd"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/lib/services"
+  install -vm754  "${srcdir}/dhcpcd.init" "${pkgdir}/lib/services/dhcpcd"
+  install -vdm755 "${pkgdir}/etc/sysconfig"
+  install -vm644  "${srcdir}/ifconfig.dhcpcd.sample" "${pkgdir}/etc/sysconfig/"
+}
+
+sha256sums=('fcb2d19672d445bbfd38678fdee4f556ef967a3ea6bd81092d10545df2cb9666'
+            '1b45cf23eb7fa4911c0fb2fd073cb0cf2e737d0e14cc62986ae3e49bac0a878a'
+            '71362f55c518ebc39a41e15331463feed41691ba50345ed2e8b61afca3cc317d')
