@@ -3,7 +3,7 @@
 # Use pkgver as part of pkgname so that multiple kernels can co-exist
 # In LFS-Pacman, the grub hook is installed with grub
 _pkgname=linux
-_pkgver=5.8.5
+_pkgver=5.8.8
 pkgname="linux-${_pkgver}-kernel"
 pkgver=1
 pkgrel=1
@@ -57,5 +57,5 @@ package() {
 }
 
 # vim:set ts=8 sts=2 sw=2 et:
-sha256sums=('9d4ec36b158734f86e583a56f5a03721807d606ea1df6a97e6dd993ea605947f'
-            'b4107162ad4a0fdff6f06a7de2292f9c9a18937607f10be4aead1781c36a2198')
+sha256sums=('33f61bb3e99a4b8bcc0fdfc7e7d72071795bccba465184665a9ae7bd7f00a976'
+            '883ad284ee14a4694da6f25216e88957fffb88dbc997b4388ed3d2df5a5c9ca2')
