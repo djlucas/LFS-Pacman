@@ -1,0 +1,17 @@
+post_install(){
+  sed "/^# End/s@#@session   include     elogind-session\n\n#@" \
+      -i /etc/pam.d/system-session
+}
+
+pre_remove(){
+  sed '/elogind-session/d' -i /etc/pam.d/system-session
+}
+
+pre_upgrade(){
+  pre_remove
+}
+
+post_upgrade(){
+  post_install
+}
+
