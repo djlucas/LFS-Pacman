@@ -30,7 +30,7 @@ optdepends=('doxygen'
             'python3-pygobject'
             'valgrind'
             $(pacman -Q elogind >/dev/null 2>&1 || echo 'elogind')
-            $(pacman -Q libx11 >/dev/null 2>&1 && echo 'libx11'))
+            $(pacman -Q libx11 >/dev/null 2>&1 || echo 'libx11'))
 source=("http://dbus.freedesktop.org/releases/${pkgname}/${pkgname}-${pkgver}.tar.gz")
 _confargs=""
 
