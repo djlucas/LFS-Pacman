@@ -1,0 +1,55 @@
+diff -Naurp pacman-5.2.2-orig/etc/makepkg.conf pacman-5.2.2/etc/makepkg.conf
+--- pacman-5.2.2-orig/etc/makepkg.conf	2020-06-26 01:50:08.000000000 -0500
++++ pacman-5.2.2/etc/makepkg.conf	2020-09-12 16:37:12.455528761 -0500
+@@ -103,7 +103,7 @@ MAN_DIRS=({usr{,/local}{,/share},opt/*}/
+ DOC_DIRS=(usr/{,local/}{,share/}{doc,gtk-doc} opt/*/{doc,gtk-doc})
+ #-- Files to be removed from all packages (if purge is specified)
+ PURGE_TARGETS=(usr/{,share}/info/dir .packlist *.pod)
+-#-- Directory to store source code in for debug packages
++#-- Directory to store source code in for debug packages - not stored if empty
+ DBGSRCDIR="/usr/src/debug"
+ 
+ #########################################################################
+diff -Naurp pacman-5.2.2-orig/etc/makepkg.conf.in pacman-5.2.2/etc/makepkg.conf.in
+--- pacman-5.2.2-orig/etc/makepkg.conf.in	2020-06-22 03:33:22.000000000 -0500
++++ pacman-5.2.2/etc/makepkg.conf.in	2020-09-12 16:36:46.048861173 -0500
+@@ -103,7 +103,7 @@ MAN_DIRS=({usr{,/local}{,/share},opt/*}/
+ DOC_DIRS=(usr/{,local/}{,share/}{doc,gtk-doc} opt/*/{doc,gtk-doc})
+ #-- Files to be removed from all packages (if purge is specified)
+ PURGE_TARGETS=(usr/{,share}/info/dir .packlist *.pod)
+-#-- Directory to store source code in for debug packages
++#-- Directory to store source code in for debug packages - not stored if empty
+ DBGSRCDIR="/usr/src/debug"
+ 
+ #########################################################################
+diff -Naurp pacman-5.2.2-orig/scripts/libmakepkg/tidy/strip.sh.in pacman-5.2.2/scripts/libmakepkg/tidy/strip.sh.in
+--- pacman-5.2.2-orig/scripts/libmakepkg/tidy/strip.sh.in	2020-06-22 03:33:22.000000000 -0500
++++ pacman-5.2.2/scripts/libmakepkg/tidy/strip.sh.in	2020-09-12 16:35:12.258857870 -0500
+@@ -56,16 +56,17 @@ strip_file() {
+ 		fi
+ 
+ 		# copy source files to debug directory
+-		local file dest t
+-		while IFS= read -r t; do
+-			file=${t/${dbgsrcdir}/"$srcdir"}
+-			dest="${dbgsrc/"$dbgsrcdir"/}$t"
+-			if ! [[ -f $dest ]]; then
+-				mkdir -p "${dest%/*}"
+-				cp -- "$file" "$dest"
+-			fi
+-		done < <(source_files "$binary")
+-
++		if [[ "x$DBGSRCDIR" != "x" ]]; then
++			local file dest t
++			while IFS= read -r t; do
++				file=${t/${dbgsrcdir}/"$srcdir"}
++				dest="${dbgsrc/"$dbgsrcdir"/}$t"
++				if ! [[ -f $dest ]]; then
++					mkdir -p "${dest%/*}"
++					cp -- "$file" "$dest"
++				fi
++			done < <(source_files "$binary")
++		fi
+ 		# copy debug symbols to debug directory
+ 		mkdir -p "$dbgdir/${binary%/*}"
+ 		objcopy --only-keep-debug "$binary" "$dbgdir/$binary.debug"

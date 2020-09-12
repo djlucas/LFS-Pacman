@@ -1,8 +1,8 @@
-# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=pacman
 pkgver=5.2.2
-pkgrel=1
+pkgrel=2
 pkgdesc="Pacman is a library-based package manager with dependency support."
 arch=('x86_64')
 url="http://www.archlinux.org/pacman/"
@@ -21,7 +21,13 @@ backup=('etc/pacman.conf'
         'etc/makepkg.conf')
 source=("https://sources.archlinux.org/other/${pkgname}/${pkgname}-${pkgver}.tar.gz"
         "makepkg.conf"
-        "pacman.conf")
+        "pacman.conf"
+        "${pkgname}-${pkgver}-no_debug_src-1.patch")
+
+prepare() {
+  cd "${pkgname}-${pkgver}"
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-no_debug_src-1.patch"
+}
 
 build() {
   cd "${pkgname}-${pkgver}"
@@ -48,6 +54,7 @@ package() {
 }
 
 sha256sums=('bb201a9f2fb53c28d011f661d50028efce6eef2c1d2a36728bdd0130189349a0'
-            '4a01468c69f6b0f82ccb6dcf4de51a43c73f8e481b1f33520a165911135071cf'
-            'a8fa9ac9746481ab5fa9ff01cd82bcf6c7d9c2e5e5648340757529243a03e286')
+            '9f16591284066460ce0eee253be549ed4962489fd1e53e7e10401f3816e8e71c'
+            'a8fa9ac9746481ab5fa9ff01cd82bcf6c7d9c2e5e5648340757529243a03e286'
+            '62d00d50a53a2a8be940ee11460d7edb22c72cb2b50a56c436a571959e94cb58')
 
