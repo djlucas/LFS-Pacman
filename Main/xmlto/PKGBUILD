@@ -1,0 +1,44 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=xmlto
+pkgver=0.0.28
+pkgrel=1
+pkgdesc="The xmlto package is a front-end to a XSL toolchain." 
+arch=('x86_64')
+url="https://releases.pagure.org/xmlto/"
+license=('GPL3')
+groups=('core')
+depends=('docbook-xml'
+         'docbook-xsl'
+         'glibc'
+         'libxslt')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make')
+optdepends=('fop'
+            'links'
+            'lynx'
+            'tex'
+            'w3m')
+source=("${url}${pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  LINKS="/usr/bin/links" ./configure --prefix=/usr
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('1130df3a7957eb9f6f0d29e4aa1c75732a7dfb6d639be013859b5c7ec5421276')
