@@ -1,0 +1,40 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=desktop-file-utils
+pkgver=0.26
+pkgrel=1
+pkgdesc="The Desktop File Utils package contains command line utilities for working with Desktop entries."
+arch=('x86_64')
+url="https://www.freedesktop.org/sofware/${pkgname}/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+optdepends=('emacs')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'texinfo')
+install="${pkgname}.install"
+source=("https://www.freedesktop.org/software/${pkgname}/releases/${pkgname}-${pkgver}.tar.xz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  mkdir build
+  cd    build
+
+  meson --prefix=/usr ..
+  ninja
+}
+
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  DESTDIR="${pkgdir}" ninja install
+  install -vdm755 "${pkgdir}/usr/share/applications"
+}
+
+sha256sums=('b26dbde79ea72c8c84fb7f9d870ffd857381d049a86d25e0038c4cef4c747309')
