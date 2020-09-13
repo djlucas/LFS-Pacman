@@ -1,0 +1,63 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=glib
+pkgver=2.66.0
+pkgrel=1
+pkgdesc="GLib provides the core application building blocks for libraries and applications written in C."
+arch=('x86_64')
+url="https://developer.gnome.org/glib/"
+license=('GPL3')
+groups=('core')
+depends=('dbus'
+         'desktop-file-utils'
+         'gobject-introspection'
+         'glibc'
+         'libxslt'
+         'pcre'
+         'shared-mime-info')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'docbook-xml'
+             'docbook-xsl'
+             'gcc'
+             'grep'
+             'gtk-doc'
+             'meson'
+             'ninja'
+             'sed')
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/2.66/${pkgname}-${pkgver}.tar.xz"
+        "http://www.linuxfromscratch.org/patches/blfs/svn/glib-2.64.5-skip_warnings-1.patch")
+_confargs=""
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  patch -Np1 -i "${srcdir}/glib-2.64.5-skip_warnings-1.patch"
+  mkdir build
+}
+
+build(){
+  if $(pacman -Q gtk-doc > /dev/null 2>&1); then
+    _confargs="${_confargs} -Ddoc=true"
+  fi
+
+  cd "${pkgname}-${pkgver}/build"
+  meson --prefix=/usr      \
+        -Dman=true         \
+        -Dselinux=disabled \
+        ${_confargs} ..
+  ninja
+}
+
+#check(){
+#  cd "${pkgname}-${pkgver}"
+#  make check
+#}
+
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  DESTDIR="${pkgdir}" ninja install
+}
+
+sha256sums=('c5a66bf143065648c135da4c943d2ac23cce15690fc91c358013b2889111156c'
+            'e1fd9ee7e4e943e25713032fdc8f720f2e566a5aa3653e340680cdc276744658')
