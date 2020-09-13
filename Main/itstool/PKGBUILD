@@ -1,0 +1,32 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=itstool
+pkgver=2.0.6
+pkgrel=1
+pkgdesc="Itstool extracts messages from XML files and outputs PO template files, then merges translations from MO files to create translated XML files."
+arch=('x86_64')
+url="http://itstool.org/"
+license=('GPL3')
+groups=('core')
+depends=('docbook-xml'
+         'glibc'
+         'python3')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make')
+source=("http://files.${pkgname}.org/${pkgname}/${pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  PYTHON=/usr/bin/python3 ./configure --prefix=/usr
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('6233cc22726a9a5a83664bf67d1af79549a298c23185d926c3677afa917b92a9')
