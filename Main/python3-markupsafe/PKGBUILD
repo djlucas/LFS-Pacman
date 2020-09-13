@@ -1,0 +1,24 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=python3-markupsafe
+pkgnamed=MarkupSafe
+pkgver=1.1.1
+pkgrel=1
+pkgdesc="MarkupSafe is a Python module that implements a XML/HTML/XHTML Markup safe string."
+arch=('x86_64')
+license=('PSF')
+url="https://pypi.org/project/${pkgnamed}/"
+groups=('core')
+depends=('python3')
+source=("https://files.pythonhosted.org/packages/source/M/${pkgnamed}/${pkgnamed}-${pkgver}.tar.gz")
+
+build() {
+  cd "${pkgnamed}-${pkgver}"
+  python3 setup.py build
+}
+
+package() {
+  cd "${pkgnamed}-${pkgver}"
+  python3 setup.py install --root="$pkgdir" --optimize=1
+}
+sha256sums=('29872e92839765e546828bb7754a68c418d927cd064fd4708fab9fe9c8bb116b')
