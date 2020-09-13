@@ -1,14 +1,23 @@
-# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
-pkgname=('elogind-debug'
-         'elogind')
-pkgbase=elogind
+pkgname=elogind
 pkgver=243.7
 pkgrel=1
 arch=('x86_64')
-url="https://github.com/${pkgbase}/${pkgbase}/"
+url="https://github.com/${pkgname}/${pkgname}/"
 license=('GPL3')
 groups=('core')
+depends=('glibc'
+         'dbus'
+         'polkit'
+         'linux-pam')
+optdepends=('docbook-xml'
+            'docbook-xsl'
+            'libxslt'
+            'lxml'
+            'gobject-introspection'
+            'zsh'
+            'valgrind')
 makedepends=('bash'
              'binutils'
              'coreutils'
@@ -20,14 +29,13 @@ makedepends=('bash'
              'ninja'
              'sed'
              'texinfo')
-source=("https://github.com/${pkgbase}/${pkgbase}/archive/v${pkgver}/${pkgbase}-${pkgver}.tar.gz")
-options=('debug'
-         '!strip')
-prepare(){
-  cd "${pkgbase}-${pkgver}"
-  mkdir build
-  cd    build
+# Pamcan's src copy is just broken with this one, just don't strip it.
+source=("https://github.com/${pkgname}/${pkgname}/archive/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
 
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  mkdir build
+  cd build
   meson --prefix=/usr                        \
         --sysconfdir=/etc                    \
         --localstatedir=/var                 \
@@ -36,17 +44,20 @@ prepare(){
         -Dman=auto                           \
         ..
 }
+
 build(){
-  cd "${pkgbase}-${pkgver}/build"
+  cd "${pkgname}-${pkgver}/build"
   ninja
+}
 
-  # Debug builds are broken, just install to tempdir and work from there
-  DESTDIR="${srcdir}/tmpinst" ninja install
-  ln -sfv  libelogind.pc "${srcdir}/tmpinst/usr/lib/pkgconfig/libsystemd.pc"
-  ln -sfvn elogind "${srcdir}/tmpinst/usr/include/systemd"
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  DESTDIR="${pkgdir}" ninja install
+  ln -sfv  libelogind.pc "${pkgdir}/usr/lib/pkgconfig/libsystemd.pc"
+  ln -sfvn elogind "${pkgdir}/usr/include/systemd"
 
-  install -vdm755 "${srcdir}/tmpinst/etc/pam.d"
-  cat > "${srcdir}/tmpinst/etc/pam.d/elogind-session" << "EOF"
+  install -vdm755 "${pkgdir}/etc/pam.d"
+  cat > "${pkgdir}/etc/pam.d/elogind-session" << "EOF"
 # Begin /etc/pam.d/elogind-session
 
 session  required    pam_loginuid.so
@@ -54,7 +65,7 @@ session  optional    pam_elogind.so
 
 # End /etc/pam.d/elogind-session
 EOF
-  cat > "${srcdir}/tmpinst/etc/pam.d/elogind-user" << "EOF"
+  cat > "${pkgdir}/etc/pam.d/elogind-user" << "EOF"
 # Begin /etc/pam.d/elogind-user
 
 account  required    pam_access.so
@@ -72,60 +83,6 @@ password required    pam_deny.so
 
 # End /etc/pam.d/elogind-user
 EOF
-}
-
-# Makepkg makes a mess of the debug package for this one...
-# Just build the debug package manually
-
-package_elogind-debug(){
-  pkgdesc="Contains debugging symbols for elogind."
-  depends=('elogind')
-  options+=('!debug'
-            '!strip')
-  # Strip unneeded for libraries
-  for dir in lib usr/lib; do
-    install -vdm755 "${pkgdir}/usr/lib/debug/${dir}"
-    for file in `find --max-depth=1 "${srcdir}/tmpinst/${dir}" type f -name "*.so*"`; do
-      objcopy --only-keep-debug "${file}" \
-              "${pkgdir}/usr/lib/debug/${dir}/${file}.dbg"
-      strip --strip-unneeded "${file}"
-      objcopy --add-gnu-debuglink="/usr/lib/debug/${dir}/${file}.dbg" "${file}"
-    done
-  done
-
-  # Strip all for executables
-  for dir in bin usr/bin /usr/libexec; do
-    install -vdm755 "${pkgdir}/usr/lib/debug/${dir}"
-    for file in `find --max-depth=1 "${srcdir}/tmpinst/${dir}" type f`; do
-      objcopy --only-keep-debug "${file}" \
-              "${pkgdir}/usr/lib/debug/${dir}/${file}.dbg"
-      strip --strip-all "${file}"
-      objcopy --add-gnu-debuglink="/usr/lib/debug/${dir}/${file}.dbg" "${file}"
-    done
-  done
-
-  rm -rf "${pkgdir}/home"
-  rm -rf "${pkgdir}/usr/src"
-}
-
-package_elogind(){
-  pkgdesc="Elogind is the systemd project's 'logind', extracted out to be a standalone daemon."
-  install=elogind.install
-  options+=('!debug'
-            '!strip')
-  depends=('glibc'
-           'dbus'
-           'polkit'
-           'linux-pam')
-  optdepends=('docbook-xml'
-              'docbook-xsl'
-              'libxslt'
-              'lxml'
-              'gobject-introspection'
-              'zsh'
-              'valgrind')
-
-  cp -Rv "${srcdir}"/tmpinst/* "${pkgdir}"
 }
 
 sha256sums=('941fde1ffbdf51d61e47fcebc49e2fc2b1347fcf3b0522bfa9d65ad5da653e53')
