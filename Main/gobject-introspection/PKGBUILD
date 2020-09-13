@@ -1,0 +1,64 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=gobject-introspection
+pkgver=1.64.1
+pkgrel=1
+pkgdesc="The GObject Introspection is used to describe the program APIs and collect them in a uniform, machine readable format."
+arch=('x86_64')
+url="https://developer.gnome.org/gobject-introspection/"
+license=('GPL3')
+groups=('core')
+depends=('glib'
+         'glibc'
+         $(pacman -Q python3-mako > /dev/null 2>&1 && echo 'python3-mako')
+         $(pacman -Q python3-markdown > /dev/null 2>&1 && echo 'python3-markdown'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'gtk-doc'
+             'meson'
+             'ninja'
+             'sed')
+#checkdepends=('cairo'
+#              'gjs'
+#              'gtk-doc'
+#              'python3-mako'
+#              'python3-markdown')
+optdepends=('gtk-doc'
+            'python3-mako')
+_confargs=""
+
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/1.64/${pkgname}-${pkgver}.tar.xz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  mkdir build
+  cd build
+
+  if $(pacman -Q python3-mako python3-markdown > /dev/null 2>&1); then
+    _confargs="${_confargs} -Ddoctool=enabled"
+  fi
+
+  if $(pacman -Q gtk-doc python3-pygments > /dev/null 2>&1); then
+    _confargs="${_confargs} -Dgtk_doc=true"
+  fi
+
+  meson --prefix=/usr     \
+        ${_confargs} ..
+  ninja
+}
+
+# Many dependencies
+#check(){
+#  cd "${pkgname}-${pkgver}"
+#  ninja test -k0
+#}
+
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  DESTDIR="${pkgdir}" ninja install
+}
+
+sha256sums=('80beae6728c134521926affff9b2e97125749b38d38744dc901f4010ee3e7fa7')
