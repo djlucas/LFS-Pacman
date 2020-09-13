@@ -1,0 +1,8 @@
+post_install(){
+  /usr/bin/update-mime-database
+}
+
+post_upgrade(){
+  post_install
+}
+

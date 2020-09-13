@@ -1,0 +1,39 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=shared-mime-info
+pkgver=2.0
+pkgrel=1
+pkgdesc="The Shared Mime Info package contains a MIME database."
+arch=('x86_64')
+url="https://www.freedesktop.org/sofware/${pkgname}/"
+license=('GPL3')
+groups=('core')
+depends=('glib'
+         'glibc'
+         'itstool'
+         'libxml2')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'xmlto')
+install="${pkgname}.install"
+source=("https://gitlab.freedesktop.org/xdg/${pkgname}/uploads/0440063a2e6823a4b1a6fb2f2af8350f/${pkgname}-${pkgver}.tar.xz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  mkdir build
+  cd    build
+
+  meson --prefix=/usr ..
+  ninja
+}
+
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  DESTDIR="${pkgdir}" ninja install
+}
+
+sha256sums=('23c1cb7919f31cf97aeb5225548f75705f706aa5cc7d1c4c503364bcc8681e06')
