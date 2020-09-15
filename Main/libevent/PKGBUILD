@@ -1,0 +1,49 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=libevent
+pkgver=2.1.12
+pkgrel=1
+pkgdesc="libevent is an asynchronous event notification software library."
+arch=('x86_64')
+url="https://github.com/${pkgname}/${pkgname}"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'texinfo')
+optdepends=('doxygen')
+source=("https://github.com/${pkgname}/${pkgname}/releases/download/release-${pkgver}-stable/${pkgname}-${pkgver}-stable.tar.gz")
+
+build(){
+  cd "${pkgname}-${pkgver}-stable"
+  ./configure --prefix=/usr \
+              --disable-static
+  make
+
+  if $(pacman -Q doxygen > /dev/null 2>&1); then
+    doxygen Doxyfile
+  fi
+}
+
+check(){
+  cd "${pkgname}-${pkgver}-stable"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}-stable"
+  make DESTDIR="${pkgdir}" install
+  if $(pacman -Q doxygen > /dev/null 2>&1); then
+    install -vdm755 "${pkgdir}/usr/share/doc/libevent-2.1.12/api"
+    cp -Rv doxygen/html/* "${pkgdir}/usr/share/doc/libevent-2.1.12/api"
+  fi
+}
+
+sha256sums=('92e6de1be9ec176428fd2367677e61ceffc2ee1cb119035037a27d346b0403bb')
