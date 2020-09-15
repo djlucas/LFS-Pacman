@@ -1,0 +1,45 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=nghttp2
+pkgver=1.41.0
+pkgrel=1
+pkgdesc="nghttp2 is an implementation of HTTP/2 and its header compression algorithm, HPACK."
+arch=('x86_64')
+url="https://github.com/${pkgname}/${pkgname}"
+license=('GPL3')
+groups=('core')
+depends=('glibc'
+         $(pacman -Q boost > /dev/null 2>&1 && echo 'boost')
+         $(pacman -Q jansson > /dev/null 2>&1 && echo 'jansson')
+         $(pacman -Q libevent > /dev/null 2>&1 && echo 'libevent')
+         $(pacman -Q python2 > /dev/null 2>&1 && echo 'python2'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'texinfo')
+optdepends=($(pacman -Q boost > /dev/null 2>&1 || echo 'boost')
+            $(pacman -Q jansson > /dev/null 2>&1 || echo 'jansson')
+            $(pacman -Q libevent > /dev/null 2>&1 || echo 'libevent')
+            $(pacman -Q python2 > /dev/null 2>&1 || echo 'python2'))
+source=("https://github.com/${pkgname}/${pkgname}/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.xz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr     \
+              --disable-static  \
+              --enable-lib-only \
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}" &&
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('abc25b8dc601f5b3fefe084ce50fcbdc63e3385621bee0cbfa7b57f9ec3e67c2')
