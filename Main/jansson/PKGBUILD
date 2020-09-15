@@ -1,0 +1,40 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=jansson
+pkgver=2.13.1
+pkgrel=1
+pkgdesc="The Jansson package contains a library used to encode, decode, and manipulate JSON data."
+arch=('x86_64')
+url="http://www.digip.org/${pkgname}"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'texinfo')
+source=("http://www.digip.org/${pkgname}/releases/${pkgname}-${pkgver}.tar.gz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr \
+              --disable-static
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('f4f377da17b10201a60c1108613e78ee15df6b12016b116b6de42209f47a474f')
