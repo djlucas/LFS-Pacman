@@ -1,0 +1,65 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=cmake
+pkgver=3.18.2
+_pkgvers=3.18
+pkgrel=1
+pkgdesc="The CMake package contains a modern toolset used for generating Makefiles." 
+arch=('x86_64')
+url="https://cmake.org/"
+license=('GPL3')
+groups=('core')
+depends=('glibc'
+         'libuv'
+         $(pacman -Q curl > /dev/null 2>&1 && echo 'curl')
+         $(pacman -Q libarchive > /dev/null 2>&1 && echo 'libarchive')
+         $(pacman -Q nghttp2 > /dev/null 2>&1 && echo 'nghttp2')
+         $(pacman -Q qt5 > /dev/null 2>&1 && echo "qt5"))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'patch'
+             'sed'
+             'texinfo')
+optdepends=($(pacman -Q libarchive > /dev/null 2>&1 && echo 'libarchive')
+            $(pacman -Q nghttp2 > /dev/null 2>&1 && echo 'nghttp2')
+            $(pacman -Q qt5 > /dev/null 2>&1 && echo "qt5")
+            'git'
+            'subversion'
+            'sphinx')
+
+source=("https://${pkgname}.org/files/v${_pkgvers}/${pkgname}-${pkgver}.tar.gz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  sed -i '/"lib64"/s/64//' Modules/GNUInstallDirs.cmake
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./bootstrap --prefix=/usr        \
+              --system-libs        \
+              --mandir=/share/man  \
+              --no-system-jsoncpp  \
+              --no-system-librhash \
+              --docdir="/share/doc/${pkgname}-${pkgver}"
+  make
+}
+
+# Buggy with LANG set - package works well, disable for now - revisit later
+#check(){
+#  cd "${pkgname}-${pkgver}"
+#  make check
+#}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('5d4e40fc775d3d828c72e5c45906b4d9b59003c9433ff1b36a1cb552bbd51d7e')
