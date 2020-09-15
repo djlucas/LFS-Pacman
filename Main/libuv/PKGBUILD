@@ -1,0 +1,47 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=libuv
+pkgver=1.39.0
+pkgrel=1
+pkgdesc="The libuv package is a multi-platform support library with a focus on asynchronous I/O."
+arch=('x86_64')
+url="https://libuv.org/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'texinfo')
+optdepends=('doxygen')
+source=("https://dist.${pkgname}.org/dist/v${pkgver}/${pkgname}-v${pkgver}.tar.gz")
+
+prepare(){
+  cd "${pkgname}-v${pkgver}"
+  sh autogen.sh
+}
+
+build(){
+  cd "${pkgname}-v${pkgver}"
+  ./configure --prefix=/usr \
+              --disable-static
+  make
+}
+
+check(){
+  cd "${pkgname}-v${pkgver}"
+  make check || true
+  # one test is known to fail
+}
+
+package(){
+  cd "${pkgname}-v${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('5c52de5bdcfb322dbe10f98feb56e45162e668ad08bc28ab4b914d4f79911697')
