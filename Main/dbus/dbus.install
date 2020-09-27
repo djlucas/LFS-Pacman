@@ -1,0 +1,5 @@
+post_install(){
+  echo "Remember to enabled the dbus service at startup:"
+  echo "# install_initd dbus"
+}
+
