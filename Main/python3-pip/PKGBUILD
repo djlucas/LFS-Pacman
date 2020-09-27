@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname="python3-pip"
-pkgver=20.2.2
+pkgver=20.2.3
 pkgrel=1
 pkgdesc="The PyPA recommended tool for installing Python packages"
 url="https://pip.pypa.io/"
@@ -28,4 +28,4 @@ package() {
     | install -Dm644 /dev/stdin "{$pkgdir}"/usr/share/fish/vendor_completions.d/pip.fish
 }
 
-sha256sums=('31e4089275c151db5b986db27c2cb6c0033543d69565ab4f5e1387de721202cd')
+sha256sums=('57125defc81049b227fd81679664221d2d9b2bc5d3b855660a93bf87ecdc3509')
