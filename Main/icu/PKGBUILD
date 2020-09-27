@@ -1,0 +1,46 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=icu
+pkgver=67.1
+pkgrel=1
+pkgdesc="The International Components for Unicode (ICU) package is a mature, widely used set of C/C++ libraries providing Unicode and Globalization support for software applications."
+arch=('x86_64')
+url="http://github.com/unicode-org/icu/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'clang'
+             'coreutils'
+             'diffutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'texinfo')
+source=("http://github.com/unicode-org/icu/releases/download/release-67-1/icu4c-67_1-src.tgz")
+
+build(){
+  cd "${pkgname}/source"
+  # clang does not understand -fvar-tracking-assingments
+  rem="-fvar-tracking-assignments"
+  export CFLAGS=$(echo ${CFLAGS} | sed 's@-fvar-tracking-assignments@@')
+  export CXXFLAGS=$(echo ${CXXFALGS} | sed 's@-fvar-tracking-assignments@@')
+  echo "CFLAGS is ${CFLAGS}"
+  ./configure --prefix=/usr
+  make
+}
+
+check(){
+  cd "${pkgname}/source"
+  make check
+}
+
+package(){
+  cd "${pkgname}/source"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('94a80cd6f251a53bd2a997f6f1b5ac6653fe791dfab66e1eb0227740fb86d5dc')
