@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 pkgname=linux-pam
 pkgver=1.4.0
-pkgrel=1
+pkgrel=2
 pkgdesc="The Linux PAM package contains Pluggable Authentication Modules used to enable the local system administrator to choose how applications authenticate users."
 arch=('i686' 'x86_64')
 url="http://www.gnu.org/software/${pkgname}/"
@@ -32,6 +32,10 @@ backup=('etc/pam.d/system-account'
 prepare(){
   cd "Linux-PAM-${pkgver}"
   tar -xf "../Linux-PAM-${pkgver}-docs.tar.xz" --strip-components=1
+  # Don't install systemd specific items on SysV
+  sed -e /service_DATA/d \
+      -i modules/pam_namespace/Makefile.am
+  autoreconf
 }
 
 build(){
