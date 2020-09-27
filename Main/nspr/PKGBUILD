@@ -1,0 +1,41 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=nspr
+pkgver=4.29
+pkgdesc="Netscape Portable Runtime (NSPR) provides a platform-neutral API for system level and libc like functions."
+pkgrel=1
+arch=('x86_64')
+url="http://www.mozila.org/"
+license=('LGPL3')
+groups=('core')
+source=("https://archive.mozilla.org/pub/${pkgname}/releases/v${pkgver}/src/${pkgname}-${pkgver}.tar.gz")
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'sed')
+
+prepare() {
+  cd "${pkgname}-${pkgver}/nspr"
+  sed -r 's#^(RELEASE_BINS =).*#\1#' -i pr/src/misc/Makefile.in
+  sed 's#$(LIBRARY) ##' -i config/rules.mk
+}
+build() {
+  cd "${pkgname}-${pkgver}/nspr"
+  ./configure --prefix=/usr \
+              --with-mozilla \
+              --with-pthreads \
+              --enable-64bit
+  make
+}
+
+package() {
+  cd "${pkgname}-${pkgver}/nspr"
+  make DESTDIR="${pkgdir}" install
+}
+
+
+sha256sums=('22286bdb8059d74632cc7c2865c139e63953ecfb33bf4362ab58827e86e92582')
