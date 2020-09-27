@@ -1,0 +1,40 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=libssh2
+pkgver=1.9.0
+pkgrel=1
+pkgdesc="The libssh2 package is a client-side C library implementing the SSH2 protocol."
+arch=('x86_64')
+url="http://www.libssh2.org/"
+license=('GPL3')
+groups=('core')
+depends=('glibc'
+         $(pacman -Q gnupg > /dev/null 2>&1 && echo 'gnupg')
+         $(pacman -Q libgcrypt > /dev/null 2>&1 && echo 'libgcrypt'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make'
+             'sed')
+optdepends=($(pacman -Q gnupg > /dev/null 2>&1 || echo 'gnupg')
+            $(pacman -Q libgcrypt >/dev/null 2>&1 || echo 'libgcrypt'))
+source=("https://www.libssh2.org/download/${pkgname}-${pkgver}.tar.gz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr --disable-static
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('d5fb8bd563305fd1074dda90bd053fb2d29fc4bce048d182f96eaa466dfadafd')
