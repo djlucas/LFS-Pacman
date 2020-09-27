@@ -1,0 +1,56 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=js
+pkgver=78.3.0
+pkgrel=1
+pkgdesc="Mozilla's Spider Monkey project is the JavaScript engine written in C."
+arch=('x86_64')
+url="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey"
+license=('GPL3')
+groups=('core')
+depends=('glibc'
+         'icu')
+makedepends=('autoconf213'
+             'bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'rustc'
+             'sed'
+             'which')
+# Always use the latest Firefox ESR release for JS source
+source=("https://archive.mozilla.org/pub/firefox/releases/${pkgver}esr/source/firefox-${pkgver}esr.source.tar.xz")
+
+prepare(){
+  cd "firefox-${pkgver}"
+  mkdir obj
+}
+
+build(){
+  cd "firefox-${pkgver}/obj"
+  CC=gcc CXX=g++                              \
+  ../js/src/configure --prefix=/usr           \
+                      --with-intl-api         \
+                      --with-system-zlib      \
+                      --with-system-icu       \
+                      --disable-jemalloc      \
+                      --disable-debug-symbols \
+                      --enable-readline
+  make
+}
+
+check(){
+  cd "firefox-${pkgver}/obj"
+  make -C js/src check-jit-test JITTEST_EXTRA_ARGS="--timeout 300"
+}
+
+package(){
+  cd "firefox-${pkgver}/obj"
+  make DESTDIR="${pkgdir}" install
+  rm -v "${pkgdir}/usr/lib/libjs_static.ajs"
+  sed '/@NSPR_CFLAGS@/d' -i "${pkgdir}/usr/bin/js78-config"
+}
+
+sha256sums=('85273e22d6c31ccd000d72af47530cea3dc52f63f06e53701d9c6c82f68f7bf7')
