@@ -1,4 +1,5 @@
 post_install(){
+  grep "elogind-session" /etc/pam.d/system-sesson || \
   sed "/^# End/s@#@session   include     elogind-session\n\n#@" \
       -i /etc/pam.d/system-session
 }

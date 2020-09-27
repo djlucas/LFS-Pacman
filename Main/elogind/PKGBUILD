@@ -2,7 +2,7 @@
 
 pkgname=elogind
 pkgver=243.7
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="https://github.com/${pkgname}/${pkgname}/"
 license=('GPL3')
@@ -31,6 +31,7 @@ makedepends=('bash'
              'texinfo')
 # Pamcan's src copy is just broken with this one, just don't strip it.
 source=("https://github.com/${pkgname}/${pkgname}/archive/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
+install=elogind.install
 
 prepare(){
   cd "${pkgname}-${pkgver}"
