@@ -1,0 +1,57 @@
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+
+pkgname=e2fsprogs
+pkgver=1.45.6
+pkgrel=1
+pkgdesc="The e2fsprogs package contains the utilities for handling the ext2 file system. It also supports the ext3 and ext4 journaling file systems." 
+arch=('x86_64')
+url="http://e2fsprogs.sourceforge.net/"
+license=('GPL3')
+groups=('core')
+depends=('gcc'
+         'glibc'
+         'util-linux')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gawk'
+             'grep'
+             'gzip'
+             'make'
+             'sed'
+             'texinfo')
+checkdepends=('procps-ng'
+              'psmisc')
+source=("https://downloads.sourceforge.net/project/${pkgname}/${pkgname}/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  mkdir build
+  cd build
+  ../configure --prefix=/usr           \
+               --bindir=/bin           \
+               --with-root-prefix=""   \
+               --enable-elf-shlibs     \
+               --disable-libblkid      \
+               --disable-libuuid       \
+               --disable-uuidd         \
+               --disable-fsck
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}/build"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  make DESTDIR="${pkgdir}" install
+  chmod -v u+w "${pkgdir}"/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
+  gunzip -v "${pkgdir}/usr/share/info/libext2fs.info.gz"
+  makeinfo -o      doc/com_err.info ../lib/et/com_err.texinfo
+  install -v -m644 doc/com_err.info "${pkgdir}/usr/share/info"
+}
+
+sha256sums=('5f64ac50a2b60b8e67c5b382bb137dec39344017103caffc3a61554424f2d693')
