@@ -1,0 +1,93 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=polkit
+pkgver=0.118
+pkgrel=1
+pkgdesc="Polkit is a toolkit for defining and handling authorizations."
+arch=('x86_64')
+url="https://www.freedesktop.org/software/polkit/"
+license=('GPL3')
+groups=('core')
+depends=('dbus'
+         'elogind'
+         'glib'
+         'glibc'
+         'gobject-introspection'
+         'js'
+         'linux-pam')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gcc'
+             'grep'
+             'make'
+             'patch'
+             'sed'
+             $(pacman -Q docbook-xml > /dev/null 2>&1 && echo 'docbook-xml')
+             $(pacman -Q docbook-xsl > /dev/null 2>&1 && echo 'docbook-xsl')
+             $(pacman -Q libxslt > /dev/null 2>&1 && echo 'libxslt')
+             $(pacman -Q gtkdoc > /dev/null 2>&1 && echo 'gtk-doc'))
+optdepends=($(pacman -Q docbook-xml > /dev/null 2>&1 || echo 'docbook-xml')
+            $(pacman -Q docbook-xsl > /dev/null 2>&1 || echo 'docbook-xsl')
+            $(pacman -Q libxslt > /dev/null 2>&1 || echo 'libxslt')
+            $(pacman -Q gtkdoc > /dev/null 2>&1 || echo 'gtk-doc'))
+source=("https://www.freedesktop.org/software/${pkgname}/releases/${pkgname}-${pkgver}.tar.gz"
+        "http://www.linuxfromscratch.org/patches/blfs/svn/${pkgname}-${pkgver}-fix_elogind_detection-1.patch")
+install="polkit.install"
+_confargs=""
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-fix_elogind_detection-1.patch"
+  autoreconf -fi
+}
+
+build(){
+  # Build API documentation if gtk-doc is insalled
+  if $(pacman -Q gtk-doc > /dev/null 2>&1); then
+    _confargs="${_confargs} --enable-gtk-doc"
+  fi
+
+  # Only build man pages if all three are installed
+  if $(pacman -Q libxslt > /dev/null 2>&1); then
+    if $(pacamn -Q docbook-xml docbook-xsl > /dev/null 2>&1); then
+      echo "Building man pages..."
+    else
+      _confargs="${_confargs} --disable-man-pages"
+    fi
+  fi
+
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static     \
+              --with-os-type=LFS   \
+              ${_confargs}         \
+              --disable-libsystemd-login
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  cat > "${pkgdir}/etc/pam.d/polkit-1" << "EOF"
+# Begin /etc/pam.d/polkit-1
+
+auth     include        system-auth
+account  include        system-account
+password include        system-password
+session  include        system-session
+
+# End /etc/pam.d/polkit-1
+EOF
+}
+
+sha256sums=('6d54e984e7072339f0d3147179e16e34e5fe0705158f259a765d772dcf78956b'
+            '6313464610ede6f996c7a30b4c96b39c6b2a30dabd6552980bf18c6d834b3d5e')
