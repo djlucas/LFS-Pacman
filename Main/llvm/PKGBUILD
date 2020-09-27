@@ -1,0 +1,69 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=llvm
+pkgname=llvm
+pkgver=10.0.1
+pkgrel=1
+pkgdesc="The LLVM package contains a collection of modular and reusable compiler and toolchain technologies."
+arch=('x86_64')
+url="https://github.com/llvm/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'cmake'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'ninja'
+             'sed')
+optdepends=('doxygen'
+            'git'
+            'graphviz'
+            'libxml2'
+            'python2'
+            'ocaml'
+            'python2-pyyaml'
+            'rsync'
+            'python3-sphinx'
+            'tex'
+            'valgrind'
+            'zip')
+source=("https://github.com/llvm/llvm-project/releases/download/llvmorg-${pkgver}/llvm-${pkgver}.src.tar.xz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}.src"
+  mkdir -v build
+}
+
+build(){
+  cd "${pkgname}-${pkgver}.src/build"
+  _mflags=`echo "${MAKEFLAGS}" | grep -o -- "-j[ ]\{0,1\}[0-9]\{1,2\}"`
+  CC=gcc CXX=g++                                  \
+  cmake -DCMAKE_INSTALL_PREFIX=/usr               \
+        -DLLVM_ENABLE_FFI=ON                      \
+        -DCMAKE_BUILD_TYPE=Release                \
+        -DLLVM_BUILD_LLVM_DYLIB=ON                \
+        -DLLVM_LINK_LLVM_DYLIB=ON                 \
+        -DLLVM_ENABLE_RTTI=ON                     \
+        -DLLVM_TARGETS_TO_BUILD="host;AMDGPU;BPF" \
+        -DLLVM_BUILD_TESTS=ON                     \
+        -Wno-dev -G Ninja ..
+  ninja ${_mflags}
+}
+
+check(){
+  cd "${pkgname}-${pkgver}.src/build"
+  _mflags=`echo "${MAKEFLAGS}" | grep -o -- "-j[ ]\{0,1\}[0-9]\{1,2\}"`
+  ninja ${_mflags} check-all || true
+  # six tests are known to fail
+}
+
+package(){
+  cd "${pkgname}-${pkgver}.src/build"
+  DESTDIR="${pkgdir}" ninja install
+}
+
+sha256sums=('c5d8e30b57cbded7128d78e5e8dad811bff97a8d471896812f57fa99ee82cdf3')
