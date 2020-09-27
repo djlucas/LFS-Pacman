@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=python3
-pkgver=3.8.5
+pkgver=3.8.6
 pkgverb=3.8
 pkgrel=1
 pkgdesc="The Python 3 package contains the Python development environment. It is useful for object-oriented programming, writing scripts, prototyping large programs, or developing entire applications."
@@ -72,4 +72,4 @@ package() {
   chmod -v 755 "${pkgdir}/usr/lib/libpython${pkgverb}.so"
   chmod -v 755 "${pkgdir}/usr/lib/libpython3.so"
 }
-sha256sums=('e3003ed57db17e617acb382b0cade29a248c6026b1bd8aad1f976e9af66a83b0')
+sha256sums=('a9e0b79d27aa056eb9cce8d63a427b5f9bab1465dee3f942dcfdb25a82f4ab8a')
