@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=binutils
-pkgver=2.35
+pkgver=2.35.1
 pkgrel=1
 arch=('x86_64')
 pkgdesc="The Binutils package contains a linker, an assembler, and other tools for handling object files."
@@ -71,4 +71,4 @@ package(){
   make DESTDIR="${pkgdir}" tooldir=/usr install
 }
 
-sha256sums=('1b11659fb49e20e18db460d44485f09442c8c56d5df165de9461eb09c8302f85')
+sha256sums=('3ced91db9bf01182b7e420eab68039f2083aed0a214c0424e257eae3ddee8607')
