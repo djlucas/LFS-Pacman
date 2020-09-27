@@ -1,0 +1,45 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=compiler-rt
+pkgver=10.0.1
+pkgrel=1
+pkgdesc="The compiler runtime contains the runtime libraries for Clang."
+arch=('x86_64')
+url="https://github.com/llvm/"
+license=('GPL3')
+groups=('core')
+depends=('glibc' 'llvm')
+makedepends=('bash'
+             'binutils'
+             'cmake'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'ninja'
+             'sed')
+source=("https://github.com/llvm/llvm-project/releases/download/llvmorg-${pkgver}/${pkgname}-${pkgver}.src.tar.xz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}.src"
+  mkdir -v build
+}
+
+build(){
+  cd "${pkgname}-${pkgver}.src/build"
+  _mflags=`echo "${MAKEFLAGS}" | grep -o -- "-j[ ]\{0,1\}[0-9]\{1,2\}"`
+  cmake -DCMAKE_INSTALL_PREFIX=/usr               \
+        -DCMAKE_BUILD_TYPE=Release                \
+        -G Ninja ..
+  ninja ${_mflags}
+}
+
+package(){
+  cd "${pkgname}-${pkgver}.src/build"
+  DESTDIR="${pkgdir}" ninja install
+  install -vdm755 "${pkgdir}"/usr/lib/clang/${pkgver}/{lib,share}
+  mv "${pkgdir}"/usr/lib/{linux,clang/${pkgver}/lib/}
+  mv "${pkgdir}"/usr/{share/*.txt,lib/clang/${pkgver}/share/}
+}
+
+sha256sums=('d90dc8e121ca0271f0fd3d639d135bfaa4b6ed41e67bd6eb77808f72629658fa')
