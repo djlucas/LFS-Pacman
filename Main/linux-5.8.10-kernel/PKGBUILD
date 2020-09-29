@@ -1,0 +1,65 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+# Use pkgver as part of pkgname so that multiple kernels can co-exist
+# In LFS-Pacman, the grub hook is installed with grub
+_pkgname=linux
+_pkgver=5.8.10
+pkgname="linux-${_pkgver}-kernel"
+pkgver=1
+pkgrel=1
+pkgdesc='Linux kernel for LFS-Pacman'
+url="https://www.kernel.org"
+arch=('x86_64')
+license=('GPL2')
+makedepends=('bash'
+             'bc'
+             'binutils'
+             'coreutils'
+             'cpio'
+             'diffutils'
+             'findutils'
+             'gcc'
+             'glibc'
+             'grep'
+             'gzip'
+             'kmod'
+             'libelf'
+             'make'
+             'ncurses'
+             'openssl'
+             'perl'
+             'sed')
+options=('!strip')
+source=("https://www.kernel.org/pub/${_pkgname}/kernel/v5.x/${_pkgname}-${_pkgver}.tar.xz"
+        "kernel-config")
+
+prepare() {
+  cd "${_pkgname}-${_pkgver}"
+  make mrproper
+  cp "${srcdir}/kernel-config" .config
+  make olddefconfig
+}
+
+build() {
+  cd "${_pkgname}-${_pkgver}"
+  make
+  make modules
+}
+
+package() {
+  cd "${_pkgname}-${_pkgver}"
+  make INSTALL_MOD_PATH="${pkgdir}" modules_install
+  install -vdm755 "${pkgdir}/boot"
+  install -vm644 arch/x86/boot/bzImage \
+                 "${pkgdir}/boot/vmlinuz-${_pkgver}-lfs-${pkgrel}"
+  install -vm644 System.map "${pkgdir}/boot/System.map-${_pkgver}-lfs-${pkgrel}"
+  install -vm644 .config "${pkgdir}/boot/config-${_pkgver}-lfs-${pkgrel}"
+  _distver="${_pkgver}-lfs-${pkgrel}"
+  #install -vdm755 "${pkgdir}/etc/mkinitcpio.d/"
+  #sed "s@\%PKGBASE\%@${_distver}@g" /usr/share/mkinitcpio/hook.preset > \
+  #                                "${pkgdir}/etc/mkinitcpio.d/${_pkgver}.preset"
+}
+
+# vim:set ts=8 sts=2 sw=2 et:
+sha256sums=('9d6e126a7fad618a477540e242f148f7d61e0116b500312f788ac63e126b5af2'
+            'b7607f0171d2c370fe84cd9f3b62086db6f88481832ba107eb64e128bc5f7572')

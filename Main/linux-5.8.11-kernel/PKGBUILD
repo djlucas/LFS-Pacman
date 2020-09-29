@@ -3,7 +3,7 @@
 # Use pkgver as part of pkgname so that multiple kernels can co-exist
 # In LFS-Pacman, the grub hook is installed with grub
 _pkgname=linux
-_pkgver=5.8.7
+_pkgver=5.8.11
 pkgname="linux-${_pkgver}-kernel"
 pkgver=1
 pkgrel=1
@@ -54,8 +54,12 @@ package() {
                  "${pkgdir}/boot/vmlinuz-${_pkgver}-lfs-${pkgrel}"
   install -vm644 System.map "${pkgdir}/boot/System.map-${_pkgver}-lfs-${pkgrel}"
   install -vm644 .config "${pkgdir}/boot/config-${_pkgver}-lfs-${pkgrel}"
+  _distver="${_pkgver}-lfs-${pkgrel}"
+  #install -vdm755 "${pkgdir}/etc/mkinitcpio.d/"
+  #sed "s@\%PKGBASE\%@${_distver}@g" /usr/share/mkinitcpio/hook.preset > \
+  #                                "${pkgdir}/etc/mkinitcpio.d/${_pkgver}.preset"
 }
 
 # vim:set ts=8 sts=2 sw=2 et:
-sha256sums=('7b0bf5029c94df72d1244b6b77e79e376cff2817a782c3ac50767a4121fd17fe'
+sha256sums=('3e5940ceb4b7a462c4886ab52ca3a957287951e2058c34694b14ff1e73f6c04b'
             '883ad284ee14a4694da6f25216e88957fffb88dbc997b4388ed3d2df5a5c9ca2')
