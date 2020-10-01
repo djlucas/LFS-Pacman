@@ -1,8 +1,8 @@
 post_install(){
-  if [ "$(getent group dhcpcd | cut -d ":" -f 3)" != "50" ]; then
+  if [ "$(getent group sshd | cut -d ":" -f 3)" != "50" ]; then
     groupadd -g 50 sshd
   fi 
-  if [ "$(getent passwd dhcpcd | cut -d ":" -f 3)" != "50" ]; then
+  if [ "$(getent passwd sshd | cut -d ":" -f 3)" != "50" ]; then
     useradd  -c 'sshd PrivSep' \
              -d /var/lib/sshd  \
              -g sshd           \
