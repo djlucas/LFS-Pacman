@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=libuv
-pkgver=1.39.0
+pkgver=1.40.0
 pkgrel=1
 pkgdesc="The libuv package is a multi-platform support library with a focus on asynchronous I/O."
 arch=('x86_64')
@@ -44,4 +44,4 @@ package(){
   make DESTDIR="${pkgdir}" install
 }
 
-sha256sums=('5c52de5bdcfb322dbe10f98feb56e45162e668ad08bc28ab4b914d4f79911697')
+sha256sums=('61a90db95bac00adec1cc5ddc767ebbcaabc70242bd1134a7a6b1fb1d498a194')
