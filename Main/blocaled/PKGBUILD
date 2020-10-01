@@ -1,0 +1,39 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=blocaled
+pkgver=0.3
+pkgrel=1
+pkgdesc="blocaled is an implementation of the org.freedesktop.locale1 D–Bus protocol."
+arch=('x86_64')
+url="https://github.com/pierre-labastie/blocaled/"
+license=('GPL3')
+groups=('core')
+depends=('glibc'
+         'elogind')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'sed')
+source=("https://github.com/pierre-labastie/${pkgname}/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.xz")
+install=blocaled.install
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr --sysconfdir=/etc
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('d5f81b20d53517b2095c4a5f1eef275825bf013444d3fcb69e917ee006fb30fd')
