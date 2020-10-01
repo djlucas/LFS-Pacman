@@ -1,0 +1,51 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=libdaemon
+pkgver=0.14
+pkgrel=1
+pkgdesc="The libdaemon package is a lightweight C library that eases the writing of UNIX daemons."
+arch=('x86_64')
+url="http://0pointer.de/lennart/projects/libdaemon/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'sed')
+optdepends=('doxygen'
+            'lynx')
+source=("http://0pointer.de/lennart/projects/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr --disable-static
+  make
+  if $(pacman -Qs doxygen lynx > /dev/null 2>&1); then
+    make -C doc doxygen
+  fi
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+
+  if $(pacman -Qs doxygen lynx > /dev/null 2>&1); then
+    install -vdm755 \
+            "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/reference/html"
+    install -vm644 doc/reference/html/* \
+            "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/reference/html"
+    install -vdm755 "${pkgdir}/usr/share/man/man3"
+    install -vm644 doc/reference/man/man3/* "${pkgdir}/usr/share/man/man3"
+  fi
+}
+
+sha256sums=('fd23eb5f6f986dcc7e708307355ba3289abe03cc381fc47a80bca4a50aa6b834')
