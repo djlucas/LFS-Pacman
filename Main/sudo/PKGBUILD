@@ -1,9 +1,9 @@
-# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=sudo
-pkgver=1.9.2
+pkgver=1.9.3p1
 pkgrel=1
-pkgdesc="The Sudo package allows a system administrator to give certain users (or groups of users) the ability to run some (or all) commands as root or another user while logging the commands and arguments." 
+pkgdesc="The Sudo package allows a system administrator to give certain users (or groups of users) the ability to run some (or all) commands as root or another user while logging the commands and arguments."
 arch=('x86_64')
 url="http://www.sudo.ws/"
 license=('GPL3')
@@ -79,4 +79,4 @@ EOF
   fi
 }
 
-sha256sums=('7c98d201f181c47152711b9f391e0f6b5545f3ef8926298a3e8bc6288e118314')
+sha256sums=('dcb9de53e45e1c39042074b847f5e0d8ae1890725dd6a9d9101a81569e6eb49e')
