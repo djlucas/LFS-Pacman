@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=cmake
-pkgver=3.18.2
+pkgver=3.18.3
 _pkgvers=3.18
 pkgrel=1
 pkgdesc="The CMake package contains a modern toolset used for generating Makefiles." 
@@ -62,4 +62,4 @@ package(){
   make DESTDIR="${pkgdir}" install
 }
 
-sha256sums=('5d4e40fc775d3d828c72e5c45906b4d9b59003c9433ff1b36a1cb552bbd51d7e')
+sha256sums=('2c89f4e30af4914fd6fb5d00f863629812ada848eee4e2d29ec7e456d7fa32e5')
