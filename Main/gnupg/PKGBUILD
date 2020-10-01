@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=gnupg
-pkgver=2.2.22
+pkgver=2.2.23
 pkgrel=1
 pkgdesc="The GnuPG package is GNU's tool for secure communication and data storage." 
 arch=('x86_64')
@@ -74,4 +74,4 @@ package(){
   fi
 }
 
-sha256sums=('7c1370565e1910b9d8c4e0fb57b9de34aa062ec7bb91abad5803d791f38d855b')
+sha256sums=('10b55e49d78b3e49f1edb58d7541ecbdad92ddaeeb885b6f486ed23d1cd1da5c')
