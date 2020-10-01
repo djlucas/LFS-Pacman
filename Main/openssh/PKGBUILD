@@ -1,8 +1,8 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=openssh
-pkgver=8.3p1
-pkgrel=2
+pkgver=8.4p1
+pkgrel=1
 pkgdesc="The OpenSSH package contains ssh and scp clients and the sshd daemon." 
 arch=('x86_64')
 url="http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/"
@@ -116,5 +116,5 @@ package(){
   fi
 }
 
-sha256sums=('f2befbe0472fe7eb75d23340eb17531cb6b3aac24075e2066b41f814e12387b2'
+sha256sums=('5a01d22e407eb1c05ba8a8f7c654d388a13e9f226e4ed33bd38748dafa1d2b24'
             '4994a393d945146ba2bd9ee73ded4284ebb183c0a5fdc68353057c6043ebf44f')
