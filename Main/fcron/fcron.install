@@ -1,0 +1,49 @@
+post_install(){
+  if [ "$(getent group fcron | cut -d ":" -f 3)" != "22" ]; then
+    groupadd -g 22 fcron
+  fi 
+  if [ "$(getent passwd fcron | cut -d ":" -f 3)" != "22" ]; then
+    useradd  -c 'Fcron User' \
+             -d /dev/null    \
+             -g fcron        \
+             -s /bin/false   \
+             -u 22 fcron
+  fi
+
+  # Add to syslog configuration if not already present
+  if ! $(grep "^cron" /etc/syslog.conf); then
+    sed "s@^# End@cron\.* -/var/log/cron.log\n\n# End@" -i /etc/syslog.conf
+    /etc/rc.d/init.d/sysklogd reload
+  fi
+
+  # Generate default systab if it doesn't already exist
+  if [ ! -f /var/spool/fcron/systab -a ! -f /var/spool/fcron/systab.orig ]; then
+    cat > /var/spool/fcron/systab.orig << "EOF"
+&bootrun 01 * * * * root run-parts /etc/cron.hourly
+&bootrun 02 4 * * * root run-parts /etc/cron.daily
+&bootrun 22 4 * * 0 root run-parts /etc/cron.weekly
+&bootrun 42 4 1 * * root run-parts /etc/cron.monthly
+EOF
+  /etc/rc.d/init.d/fcron start
+  fcrontab -z -u systab
+  /etc/rc.d/init.d/fcron stop
+  fi
+
+  echo -e "\\033[1;32mRemember to enable the fcron starup script with:\e[0m"
+  echo "     sudo install_initd fcron"
+  echo ""
+}
+post_upgrade(){
+  post_install
+}
+
+pre_remove() {
+  /etc/rc.d/init.d/fcron stop
+  remove_initd fcron
+}
+
+post_remove(){
+  groupdel fcron 2>/dev/null || true
+  userdel fcron 2>/dev/null  || true
+  sed '/^cron/d' -i /etc/syslog.conf
+}

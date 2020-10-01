@@ -1,0 +1,129 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=fcron
+pkgver=3.2.1
+pkgrel=1
+pkgdesc="The Fcron package contains a periodical command scheduler which aims at replacing Vixie Cron."
+arch=('x86_64')
+url="http://fcron.free.fr/"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'sed'
+             $(pacman -Qs linux-pam > /dev/null 2>&1 && echo 'linux-pam'))
+optdepends=('docbook-utils'
+            'exim'
+            'emacs'
+            'gedit'
+            'postfix'
+            'sendmail'
+            'vim'
+            $(pacman -Qs linux-pam > /dev/null 2>&1 || echo 'linux-pam'))
+source=("http://fcron.free.fr/archives/${pkgname}-${pkgver}.src.tar.gz"
+        "fcron.init")
+install=fcron.install
+
+prepare() {
+  if [ "$(getent group fcron | cut -d ":" -f 3)" != "22" ]; then
+    echo -e "\\033[1;31mERROR!!!"
+    echo -e "You must create a group 'fcron' with GID '22' before building this package!\e[0m" >&2
+    echo "Try the following:"
+    echo "      sudo groupadd -g 22 fcron"
+    exit 1
+  fi
+
+  if [ "$(getent passwd fcron | cut -d ":" -f 3)" != "22" ]; then
+    echo -e "\\033[1;31mERROR!!!"
+    echo -e "You must create a user 'fcron' with UID '22' before building this package!\e[0m" >&2
+    echo "Try the following:"
+    echo "     sudo useradd  -c 'Fcron User' \\
+                   -d /dev/null    \\
+                   -g fcron        \\
+                   -s /bin/false   \\
+                   -u 22 fcron"
+    exit 1
+  fi
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr          \
+              --sysconfdir=/etc      \
+              --localstatedir=/var   \
+              --with-piddir=/run     \
+              --without-sendmail     \
+              --with-boot-install=no \
+              --with-systemdsystemunitdir=no
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  # A default PAM configuration is installed, just avoid the error
+  install -vdm755 "${pkgdir}/etc/pam.d"
+  make DESTDIR="${pkgdir}" install
+  rm -rf "${pkgdir}/var/run"
+  cat > "${pkgdir}/usr/bin/run-parts" << "EOF"
+#!/bin/sh
+# run-parts:  Runs all the scripts found in a directory.
+# from Slackware, by Patrick J. Volkerding with ideas borrowed
+# from the Red Hat and Debian versions of this utility.
+
+# keep going when something fails
+set +e
+
+if [ $# -lt 1 ]; then
+  echo "Usage: run-parts <directory>"
+  exit 1
+fi
+
+if [ ! -d $1 ]; then
+  echo "Not a directory: $1"
+  echo "Usage: run-parts <directory>"
+  exit 1
+fi
+
+# There are several types of files that we would like to
+# ignore automatically, as they are likely to be backups
+# of other scripts:
+IGNORE_SUFFIXES="~ ^ , .bak .new .rpmsave .rpmorig .rpmnew .swp"
+
+# Main loop:
+for SCRIPT in $1/* ; do
+  # If this is not a regular file, skip it:
+  if [ ! -f $SCRIPT ]; then
+    continue
+  fi
+  # Determine if this file should be skipped by suffix:
+  SKIP=false
+  for SUFFIX in $IGNORE_SUFFIXES ; do
+    if [ ! "$(basename $SCRIPT $SUFFIX)" = "$(basename $SCRIPT)" ]; then
+      SKIP=true
+      break
+    fi
+  done
+  if [ "$SKIP" = "true" ]; then
+    continue
+  fi
+  # If we've made it this far, then run the script if it's executable:
+  if [ -x $SCRIPT ]; then
+    $SCRIPT || echo "$SCRIPT failed."
+  fi
+done
+
+exit 0
+EOF
+  chmod -v 755 "${pkgdir}/usr/bin/run-parts"
+  install -vdm754 "${pkgdir}"/etc/cron.{hourly,daily,weekly,monthly}
+  install -vdm755 "${pkgdir}/etc/rc.d/init.d"
+  install "${srcdir}/fcron.init" "${pkgdir}/etc/rc.d/init.d/fcron"
+}
+
+sha256sums=('6114d0a39a32853669c0c0ba0f96d92920e7cabca3ff1edf37d25750403e5f6a'
+            '3813eb5fa74cf74dd990baf9e6bc30d24af46e14389fb85e69af55ce733caa1f')
