@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=gobject-introspection
-pkgver=1.64.1
+pkgver=1.66.0
 pkgrel=1
 pkgdesc="The GObject Introspection is used to describe the program APIs and collect them in a uniform, machine readable format."
 arch=('x86_64')
@@ -30,7 +30,7 @@ optdepends=('gtk-doc'
             'python3-mako')
 _confargs=""
 
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/1.64/${pkgname}-${pkgver}.tar.xz")
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/1.66/${pkgname}-${pkgver}.tar.xz")
 
 build(){
   cd "${pkgname}-${pkgver}"
@@ -61,4 +61,4 @@ package(){
   DESTDIR="${pkgdir}" ninja install
 }
 
-sha256sums=('80beae6728c134521926affff9b2e97125749b38d38744dc901f4010ee3e7fa7')
+sha256sums=('3d66ea3aec7c3f8f1f83d89db3e78e18e36adc22b8bba45298119f0b3ea50060')
