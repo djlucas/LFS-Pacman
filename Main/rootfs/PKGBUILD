@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 pkgname=rootfs
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Skeleton directory layout and core /etc and /var/log files for initial install"
 arch=('any')
 license=('Creative Commons Attribution-NonCommercial-ShareAlike 4.0')
@@ -13,6 +13,7 @@ backup=('etc/bashrc'
         'etc/hosts'
         'etc/inputrc'
         'etc/ld.so.conf'
+        'etc/locale.conf'
         'etc/passwd'
         'etc/profile'
         'etc/profile.d/bash_completion.sh'
@@ -389,9 +390,34 @@ else
   umask 022
 fi
 EOF
+  # Use blocaled configuration for /etc/locale.conf and /etc/profile.d/i18n.sh
+  cat > ${pkgdir}/etc/locale.conf << EOF
+# Begin /etc/locale.conf
+
+LANG=en-US.UTF-8
+
+# End /etc/locale.conf
+EOF
   cat > ${pkgdir}/etc/profile.d/i18n.sh << "EOF"
-# Set up i18n variables - default to en_US.UTF-8
-export LANG=en_US.UTF-8
+# Begin /etc/profile.d/i18n.sh
+
+if [ -r /etc/locale.conf ]; then source /etc/locale.conf; fi
+
+if [ -n "$LANG" ];              then export LANG; fi
+if [ -n "$LC_TYPE" ];           then export LC_TYPE; fi
+if [ -n "$LC_NUMERIC" ];        then export LC_NUMERIC; fi
+if [ -n "$LC_TIME" ];           then export LC_TIME; fi
+if [ -n "$LC_COLLATE" ];        then export LC_COLLATE; fi
+if [ -n "$LC_MONETARY" ];       then export LC_MONETARY; fi
+if [ -n "$LC_MESSAGES" ];       then export LC_MESSAGES; fi
+if [ -n "$LC_PAPER" ];          then export LC_PAPER; fi
+if [ -n "$LC_NAME" ];           then export LC_NAME; fi
+if [ -n "$LC_ADDRESS" ];        then export LC_ADDRESS; fi
+if [ -n "$LC_TELEPHONE" ];      then export LC_TELEPHONE; fi
+if [ -n "$LC_MEASUREMENT" ];    then export LC_MEASUREMENT; fi
+if [ -n "$LC_IDENTIFICATION" ]; then export LC_IDENTIFICATION; fi
+
+# End /etc/profile.d/i18n.sh
 EOF
   cat > ${pkgdir}/etc/bashrc << "EOF"
 # Begin /etc/bashrc
