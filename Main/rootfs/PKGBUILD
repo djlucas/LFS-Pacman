@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 pkgname=rootfs
 pkgver=1.0
-pkgrel=2
+pkgrel=3
 pkgdesc="Skeleton directory layout and core /etc and /var/log files for initial install"
 arch=('any')
 license=('Creative Commons Attribution-NonCommercial-ShareAlike 4.0')
@@ -394,7 +394,7 @@ EOF
   cat > ${pkgdir}/etc/locale.conf << EOF
 # Begin /etc/locale.conf
 
-LANG=en-US.UTF-8
+LANG=en_US.UTF-8
 
 # End /etc/locale.conf
 EOF
