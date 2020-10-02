@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=bc
-pkgver=3.1.5
+pkgver=3.1.6
 pkgrel=1
 pkgdesc="The Bc package contains an arbitrary precision numeric processing language."
 arch=('x86_64')
@@ -39,4 +39,4 @@ package(){
   make DESTDIR="${pkgdir}" install
 }
 
-sha256sums=('0493c1eb76e94ace7a00532824121ab901ac1bd3580a340ea5de92a7d9c1a19e')
+sha256sums=('e523296e59f6ca82210d10baa12bd97de02cab0fd62be554bc6f0772869ad445')
