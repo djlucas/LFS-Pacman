@@ -1,4 +1,4 @@
-# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=openssl-1.0
 _ver=1.0.2l

@@ -1,4 +1,4 @@
-# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=texinfo
 pkgver=6.7

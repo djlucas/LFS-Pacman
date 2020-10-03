@@ -1,4 +1,4 @@
-# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 pkgname=bison
 pkgver=3.7.2
 pkgrel=1

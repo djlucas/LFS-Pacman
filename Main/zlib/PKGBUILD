@@ -1,4 +1,4 @@
-# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 pkgname=zlib
 pkgver=1.2.11
 pkgrel=1

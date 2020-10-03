@@ -1,4 +1,4 @@
-# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=kmod
 pkgver=27
