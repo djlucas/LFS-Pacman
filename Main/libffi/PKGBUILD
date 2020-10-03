@@ -2,15 +2,23 @@
 
 pkgname=libffi
 pkgver=3.3
-pkgrel=1
-pkgdesc='Portable foreign function interface library'
+pkgrel=2
+pkgdesc="Libffi is a portable foreign function interface library"
 arch=('x86_64')
-url='https://sourceware.org/libffi/'
+url="https://sourceware.org/${pkgname}/"
 license=('MIT')
 groupd=('core')
 depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'grep'
+             'make'
+             'sed')
 checkdepends=('dejagnu')
-source=(https://sourceware.org/pub/libffi/libffi-${pkgver}.tar.gz)
+source=(https://sourceware.org/pub/${pkgname}/${pkgname}-${pkgver}.tar.gz)
 
 build() {
   cd ${pkgname}-${pkgver}
