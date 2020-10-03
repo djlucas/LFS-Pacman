@@ -2,13 +2,23 @@
 
 pkgname=libnsl
 pkgver=1.3.0
-pkgrel=1
+pkgrel=2
 pkgdesc="The libnsl package contains the public client interface for NIS(YP) and NIS+."
 arch=(x86_64)
 url='https://github.com/thkukuk/libnsl'
 license=('LGPL2.1')
 groups=('core')
-depends=('libtirpc')
+depends=('glibc'
+         'libtirpc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'texinfo')
 source=("https://github.com/thkukuk/${pkgname}/archive/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
 
 build() {
