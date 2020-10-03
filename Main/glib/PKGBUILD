@@ -1,7 +1,7 @@
-# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=glib
-pkgver=2.66.0
+pkgver=2.66.1
 pkgrel=1
 pkgdesc="GLib provides the core application building blocks for libraries and applications written in C."
 arch=('x86_64')
@@ -27,12 +27,12 @@ makedepends=('bash'
              'ninja'
              'sed')
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/2.66/${pkgname}-${pkgver}.tar.xz"
-        "http://www.linuxfromscratch.org/patches/blfs/svn/glib-2.64.5-skip_warnings-1.patch")
+        "http://www.linuxfromscratch.org/patches/blfs/svn/glib-2.66.0-skip_warnings-1.patch")
 _confargs=""
 
 prepare(){
   cd "${pkgname}-${pkgver}"
-  patch -Np1 -i "${srcdir}/glib-2.64.5-skip_warnings-1.patch"
+  patch -Np1 -i "${srcdir}/glib-2.66.0-skip_warnings-1.patch"
   mkdir build
 }
 
@@ -59,5 +59,5 @@ package(){
   DESTDIR="${pkgdir}" ninja install
 }
 
-sha256sums=('c5a66bf143065648c135da4c943d2ac23cce15690fc91c358013b2889111156c'
+sha256sums=('a269ffe69fbcc3a21ff1acb1b6146b2a5723499d6e2de33ae16ccb6d2438ef60'
             'e1fd9ee7e4e943e25713032fdc8f720f2e566a5aa3653e340680cdc276744658')
