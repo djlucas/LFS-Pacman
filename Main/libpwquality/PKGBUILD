@@ -2,15 +2,23 @@
 
 pkgname=libpwquality
 pkgver=1.4.2
-pkgrel=1
+pkgrel=2
 pkgdesc="The libpwquality package provides common functions for password quality checking and also scoring them based on their apparent randomness."
 arch=('x86_64')
 url="https://github.com/libpwquality/libpwquality"
 license=('GPL')
 groups=('core')
 depends=('cracklib'
+         'glibc'
          'linux-pam')
-makedepends=('python')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'python3'
+             'sed')
 backup=('etc/security/pwquality.conf')
 source=("https://github.com/${pkgname}/${pkgname}/releases/download/${pkgname}-${pkgver}/${pkgname}-${pkgver}.tar.bz2")
 
