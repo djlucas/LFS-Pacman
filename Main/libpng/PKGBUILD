@@ -1,0 +1,46 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=libpng
+pkgver=1.6.37
+pkgrel=1
+pkgdesc="The libpng package contains libraries used by other programs for reading and writing PNG files."
+arch=('x86_64')
+url="http://www.sourceforge.net/${pkgname}"
+license=('GPL3')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gzip'
+             'make'
+             'patch')
+source=("https://downloads.sourceforge.net/${pkgname}/${pkgname}-${pkgver}.tar.xz"
+        "https://downloads.sourceforge.net/sourceforge/${pkgname}-apng/${pkgname}-${pkgver}-apng.patch.gz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  gzip -cd "${srcdir}/${pkgname}-${pkgver}-apng.patch.gz" | patch -p1
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr --disable-static
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/user/share/doc/${pkgname}-${pkgver}"
+  install -vm644  README libpng-manual.txt \
+                  "${pkgdir}/user/share/doc/${pkgname}-${pkgver}"
+}
+
+sha256sums=('505e70834d35383537b6491e7ae8641f1a4bed1876dbfe361201fc80868d88ca'
+            '823bb2d1f09dc7dae4f91ff56d6c22b4b533e912cbd6c64e8762255e411100b6')
