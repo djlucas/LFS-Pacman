@@ -1,0 +1,43 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=json-c
+pkgver=0.15
+pkgrel=1
+pkgdesc="The JSON-C implements a reference counting object model that allows you to easily construct JSON objects in C, output them as JSON formatted strings and parse JSON formatted strings back into the C representation of JSON objects."
+arch=('x86_64')
+url="https://s3.amazonaws.com/json-c_releases"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'cmake'
+             'coreutils'
+             'gcc')
+source=("${url}/releases/${pkgname}-${pkgver}.tar.gz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  mkdir build
+}
+
+build(){
+  cd "${pkgname}-${pkgver}/build"
+  cmake -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_STATIC_LIBS=OFF    \
+        ..
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}/build"
+  make test
+}
+
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('b8d80a1ddb718b3ba7492916237bbf86609e9709fb007e7f7d4322f02341a4c6')
