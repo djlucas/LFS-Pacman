@@ -7,7 +7,6 @@ pkgdesc="The FreeType2 package contains a library which allows applications to p
 arch=('x86_64')
 url="http://www.sourceforge.net/freetype/"
 license=('GPL3')
-groups=('core')
 depends=('glibc'
          'libpng'
          'which'
