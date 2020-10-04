@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=gobject-introspection
-pkgver=1.66.0
+pkgver=1.66.1
 pkgrel=1
 pkgdesc="The GObject Introspection is used to describe the program APIs and collect them in a uniform, machine readable format."
 arch=('x86_64')
@@ -61,4 +61,4 @@ package(){
   DESTDIR="${pkgdir}" ninja install
 }
 
-sha256sums=('3d66ea3aec7c3f8f1f83d89db3e78e18e36adc22b8bba45298119f0b3ea50060')
+sha256sums=('dd44a55ee5f426ea22b6b89624708f9e8d53f5cc94e5485c15c87cb30e06161d')
