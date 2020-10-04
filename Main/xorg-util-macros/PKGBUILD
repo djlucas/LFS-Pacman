@@ -1,0 +1,34 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=util-macros
+pkgname=xorg-util-macros
+pkgver=1.19.2
+pkgrel=1
+pkgdesc="The util-macros package contains the m4 macros used by all of the Xorg packages." 
+arch=('x86_64')
+url="https://xorg.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make')
+source=("${url}/releases/individual/util/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('d7e43376ad220411499a79735020f9d145fdc159284867e99467e0d771f3e712')
