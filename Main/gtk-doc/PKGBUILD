@@ -1,7 +1,8 @@
-# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=gtk-doc
-pkgver=1.32
+pkgver=1.33.0
+_spkgver=1.33
 pkgrel=1
 pkgdesc="The GTK-Doc package contains a code documenter."
 arch=('x86_64')
@@ -25,23 +26,28 @@ optdepends=('python3-pygments')
 #              'glib'
 #              'python3-lxml'
 #              'which')
-source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/${pkgver}/${pkgname}-${pkgver}.tar.xz")
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/${_spkgver}/${pkgname}-${pkgver}.tar.xz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  mkdir build
+}
 
 build(){
-  cd "${pkgname}-${pkgver}"
-  ./configure --prefix=/usr
-  make
+  cd "${pkgname}-${pkgver}/build"
+  meson --prefix=/usr ..
+  ninja
 }
 
 # Requires previous version installed
 #check(){
 #  cd "${pkgname}-${pkgver}"
-#  make check
+#  ninja check
 #}
 
 package(){
-  cd "${pkgname}-${pkgver}"
-  make DESTDIR="${pkgdir}" install
+  cd "${pkgname}-${pkgver}/build"
+  DESTDIR="${pkgdir}" ninja install
 }
 
-sha256sums=('de0ef034fb17cb21ab0c635ec730d19746bce52984a6706e7bbec6fb5e0b907c')
+sha256sums=('d5e3b3f837174d246fa8482455740627efec1e5210aa15d0c7989ca68f72bb51')
