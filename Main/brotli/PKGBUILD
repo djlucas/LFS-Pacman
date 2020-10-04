@@ -1,0 +1,46 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=brotli
+pkgver=1.0.9
+pkgrel=1
+pkgdesc="Brotli provides a general-purpose lossless compression algorithm that compresses data using a combination of a modern variant of the LZ77 algorithm, Huffman coding and 2nd order context modeling."
+arch=('x86_64')
+url="http://github.com/google/brotli"
+license=('GPL3')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'cmake'
+             'coreutils'
+             'gcc'
+             'python3')
+source=("${url}/archive/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  sed -i 's@-R..libdir.@@' scripts/*.pc.in
+  mkdir out
+}
+
+build(){
+  cd "${pkgname}-${pkgver}/out"
+  cmake -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_BUILD_TYPE=Release  \
+        ..
+  make
+}
+
+# Broken
+#check(){
+#  cd "${pkgname}-${pkgver}"
+#  make check
+#}
+
+package(){
+  cd "${pkgname}-${pkgver}/out"
+  make DESTDIR="${pkgdir}" install
+  cd ..
+  python3 setup.py install --optimize=1 --root="${pkgdir}"
+}
+
+sha256sums=('f9e8d81d0405ba66d181529af42a3354f838c939095ff99930da6aa9cdf6fe46')
