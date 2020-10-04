@@ -1,0 +1,50 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=freetype
+pkgver=2.10.2
+pkgrel=1
+pkgdesc="The FreeType2 package contains a library which allows applications to properly render TrueType fonts."
+arch=('x86_64')
+url="http://www.sourceforge.net/freetype/"
+license=('GPL3')
+groups=('core')
+depends=('glibc'
+         'libpng'
+         'which'
+         $(pacman -Qs brotli > /dev/null 2>&1 && echo 'brotli')
+         $(pacman -Qs harfbuzz > /dev/null 2>&1 && echo 'harfbuzz'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make')
+optdepends=($(pacman -Qs brotli > /dev/null 2>&1 || echo 'brotli')
+            $(pacman -Qs harfbuzz > /dev/null 2>&1 || echo 'harfbuzz'))
+source=("https://downloads.sourceforge.net/${pkgname}/${pkgname}-${pkgver}.tar.xz"
+        "https://downloads.sourceforge.net/${pkgname}/${pkgname}-doc-${pkgver}.tar.xz")
+noextract=("${pkgname}-doc-${pkgver}.tar.xz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  tar -xf "${srcdir}/${pkgname}-doc-${pkgver}.tar.xz"
+  sed -ri "s:.*(AUX_MODULES.*valid):\1:" modules.cfg
+  sed -r "s:.*(#.*SUBPIXEL_RENDERING) .*:\1:" \
+      -i include/freetype/config/ftoption.h
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr --enable-freetype-config --disable-static
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  cp -Rv docs/*   "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+}
+
+sha256sums=('1543d61025d2e6312e0a1c563652555f17378a204a61e99928c9fcef030a2d8b'
+            '22b9584040a2e3c4387b5998cb9b4340183888eef15c2ac0fd9115cad837cf91')
