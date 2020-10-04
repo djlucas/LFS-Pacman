@@ -7,7 +7,6 @@ pkgdesc="The JSON-C implements a reference counting object model that allows you
 arch=('x86_64')
 url="https://s3.amazonaws.com/json-c_releases"
 license=('GPL3')
-groups=('core')
 depends=('glibc')
 makedepends=('bash'
              'binutils'
