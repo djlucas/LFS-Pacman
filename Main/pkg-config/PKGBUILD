@@ -2,10 +2,10 @@
 
 pkgname=pkg-config
 pkgver=0.29.2
-pkgrel=1
-pkgdesc="The pkg-config package contains a tool for passing the include path and/or library paths to build tools during the configure and make file execution." 
+pkgrel=2
+pkgdesc="The pkg-config package contains a tool for passing the include path and/or library paths to build tools during the configure and make file execution."
 arch=('x86_64')
-url="http://www.freedesktop.org/wiki/Software/pkg-config"
+url="http://www.freedesktop.org/wiki/Software/${pkgname}"
 license=('GPL3')
 groups=('core')
 depends=('binutils'
@@ -16,7 +16,6 @@ makedepends=('bash'
              'gcc'
              'grep'
              'make'
-             'popt'
              'sed')
 source=("https://${pkgname}.freedesktop.org/releases/${pkgname}-${pkgver}.tar.gz")        
 
