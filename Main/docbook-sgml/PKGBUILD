@@ -1,0 +1,43 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=docbook-sgml
+pkgver=3.1
+pkgrel=1
+pkgdesc="The DocBook SGML DTD package contains document type definitions for verification of SGML data files against the DocBook rule set."
+arch=('x86_64')
+url="http://www.docbook.org/"
+license=('GPL3')
+depends=('sgml-common')
+makedepends=('coreutils'
+             'unzip')
+source=("${url}/sgml/3.1/docbk31.zip")
+noextract=('docbk31.zip')
+install='docbook-sgml.install'
+
+build(){
+  mkdir "${pkgname}-${pkgver}"
+  cd "${pkgname}-${pkgver}"
+  unzip "${srcdir}/docbk31.zip"
+  sed -e '/ISO 8879/d' \
+      -e 's|DTDDECL "-//OASIS//DTD DocBook V3.1//EN"|SGMLDECL|g' \
+      -i docbook.cat
+  cat >> docbook.cat << "EOF"
+  -- Begin Single Major Version catalog changes --
+
+PUBLIC "-//Davenport//DTD DocBook V3.0//EN" "docbook.dtd"
+
+  -- End Single Major Version catalog changes --
+EOF
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  install -vdm755 "${pkgdir}/usr/share/sgml/docook/sgml-dtd-${pkgver}"
+  install -vm644  docbook.cat \
+                  "${pkgdir}/usr/share/sgml/docook/sgml-dtd-${pkgver}/catalog"
+  install -vm644 *.dtd "${pkgdir}/usr/share/sgml/docook/sgml-dtd-${pkgver}"
+  install -vm644 *.mod "${pkgdir}/usr/share/sgml/docook/sgml-dtd-${pkgver}"
+  install -vm644 *.dcl "${pkgdir}/usr/share/sgml/docook/sgml-dtd-${pkgver}"
+}
+
+sha256sums=('20261d2771b9a052abfa3d8fab1aa62be05791a010281c566f9073bf0e644538')
