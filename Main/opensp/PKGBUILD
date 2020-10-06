@@ -11,14 +11,8 @@ depends=('glibc')
 makedepends=('bash'
              'binutils'
              'coreutils'
-             'diffutils'
              'gcc'
-             'gettext'
-             'grep'
-             'make'
-             'patch'
-             'sed'
-             'texinfo')
+             'make')
 source=("${url}/OpenSP-1.5.2.tar.gz")
 
 prepare(){
