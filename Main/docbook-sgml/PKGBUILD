@@ -4,7 +4,7 @@ pkgname=docbook-sgml
 pkgver=3.1
 pkgrel=1
 pkgdesc="The DocBook SGML DTD package contains document type definitions for verification of SGML data files against the DocBook rule set."
-arch=('x86_64')
+arch=('any')
 url="http://www.docbook.org/"
 license=('GPL3')
 depends=('sgml-common')
@@ -32,12 +32,12 @@ EOF
 
 package(){
   cd "${pkgname}-${pkgver}"
-  install -vdm755 "${pkgdir}/usr/share/sgml/docook/sgml-dtd-${pkgver}"
+  install -vdm755 "${pkgdir}/usr/share/sgml/docbook/sgml-dtd-${pkgver}"
   install -vm644  docbook.cat \
-                  "${pkgdir}/usr/share/sgml/docook/sgml-dtd-${pkgver}/catalog"
-  install -vm644 *.dtd "${pkgdir}/usr/share/sgml/docook/sgml-dtd-${pkgver}"
-  install -vm644 *.mod "${pkgdir}/usr/share/sgml/docook/sgml-dtd-${pkgver}"
-  install -vm644 *.dcl "${pkgdir}/usr/share/sgml/docook/sgml-dtd-${pkgver}"
+                  "${pkgdir}/usr/share/sgml/docbook/sgml-dtd-${pkgver}/catalog"
+  install -vm644 *.dtd "${pkgdir}/usr/share/sgml/docbook/sgml-dtd-${pkgver}"
+  install -vm644 *.mod "${pkgdir}/usr/share/sgml/docbook/sgml-dtd-${pkgver}"
+  install -vm644 *.dcl "${pkgdir}/usr/share/sgml/docbook/sgml-dtd-${pkgver}"
 }
 
 sha256sums=('20261d2771b9a052abfa3d8fab1aa62be05791a010281c566f9073bf0e644538')
