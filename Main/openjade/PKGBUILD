@@ -1,0 +1,57 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=openjade
+pkgver=1.3.2
+pkgrel=1
+pkgdesc="The OpenJade package contains a DSSSL engine. This is useful for SGML and XML transformations into RTF, TeX, SGML and XML."
+arch=('x86_64')
+url="http://openjade.sourceforge.net/"
+license=('GPL3')
+depends=('glibc'
+         'opensp')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make')
+source=("https://downloads.sourceforge.net/${pkgname}/${pkgname}-${pkgver}.tar.gz"
+        "http://www.linuxfromscratch.org/patches/blfs/svn/${pkgname}-${pkgver}-upstream-1.patch")
+install='openjade.install'
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-upstream-1.patch"
+  sed -e '/getopts/{N;s#&G#g#;s#do .getopts.pl.;##;}' \
+      -e '/use POSIX/ause Getopt::Std;' -i msggen.pl
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  export CXXFLAGS="$CXXFLAGS -fno-lifetime-dse"
+  ./configure --prefix=/usr                                \
+              --mandir=/usr/share/man                      \
+              --enable-http                                \
+              --disable-static                             \
+              --enable-default-catalog=/etc/sgml/catalog   \
+              --enable-default-search-path=/usr/share/sgml \
+              --datadir="/usr/share/sgml/${pkgname}-${pkgver}"
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  make DESTDIR="${pkgdir}" install-man
+  ln -sfv openjade       "${pkgdir}/usr/bin/jade"
+  ln -sfv libogrove.so   "${pkgdir}/usr/lib/libgrove.so"
+  ln -sfv libospgrove.so "${pkgdir}/usr/lib/libspgrove.so"
+  ln -sfv libostyle.so   "${pkgdir}/usr/lib/libstyle.so"
+  install -vm644 dsssl/catalog \
+          "${pkgdir}/usr/share/sgml/${pkgname}-${pkgver}/"
+
+  install -v -m644 dsssl/*.{dtd,dsl,sgm} \
+          "${pkgdir}/usr/share/sgml/${pkgname}-${pkgver}/"
+}
+
+sha256sums=('1d2d7996cc94f9b87d0c51cf0e028070ac177c4123ecbfd7ac1cb8d0b7d322d1'
+            'bccbeb193ae47f81d251b951218bc0a5d28eb3ceebe014e215be517ca4f49252')

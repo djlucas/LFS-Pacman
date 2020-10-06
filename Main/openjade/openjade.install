@@ -1,0 +1,11 @@
+post_install(){
+  install-catalog --add /etc/sgml/openjade-1.3.2.cat  \
+      /usr/share/sgml/openjade-1.3.2/catalog
+  install-catalog --add /etc/sgml/sgml-docbook.cat    \
+      /etc/sgml/openjade-1.3.2.cat
+}
+
+post_upgrade(){
+  post_install
+}
+
