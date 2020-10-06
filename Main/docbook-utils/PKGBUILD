@@ -1,0 +1,53 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=docbook-utils
+pkgver=0.6.14
+pkgrel=1
+pkgdesc="The DocBook-utils package is a collection of utility scripts used to convert and analyze SGML documents in general, and DocBook files in particular."
+arch=('any')
+url="https://sourceware.org/docbook-tools/"
+license=('GPL3')
+depends=('coreutils'
+         'docbook-dsssl'
+         'docbook-sgml'
+         'gawk'
+         'glibc'
+         'grep'
+         'openjade'
+         'sed'
+         'which')
+makedepends=('bash'
+             'binutils'
+             'gcc'
+             'make'
+             'patch')
+optdepends=('links'
+            'lynx'
+            'sgmlspm'
+            'w3m')
+source=("https://sourceware.org/ftp/docbook-tools/new-trials/SOURCES/${pkgname}-${pkgver}.tar.gz"
+        "http://www.linuxfromscratch.org/patches/blfs/svn/${pkgname}-${pkgver}-grep_fix-1.patch")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  patch -Np1 -i "${srcdir}/docbook-utils-0.6.14-grep_fix-1.patch"
+  sed -i 's:/html::' doc/HTML/Makefile.in
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr --mandir=/usr/share/man
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" docdir=/usr/share/doc install
+  for doctype in html ps dvi man pdf rtf tex texi txt
+  do
+      ln -svf docbook2$doctype "${pkgdir}/usr/bin/db2$doctype"
+  done
+}
+
+sha256sums=('48faab8ee8a7605c9342fb7b906e0815e3cee84a489182af38e8f7c0df2e92e9'
+            'ddf0ddca0a540fd4f34f38b7b9090f96746e37da12b4e2bf8f4174c5ad61f54a')
