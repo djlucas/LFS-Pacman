@@ -1,0 +1,64 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=opensp
+pkgver=1.5.2
+pkgrel=1
+pkgdesc=""
+arch=('x86_64')
+url="https://downloads.sourceforge.net/openjade"
+license=('GPL3')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'patch'
+             'sed'
+             'texinfo')
+source=("${url}/OpenSP-1.5.2.tar.gz")
+
+prepare(){
+  cd "OpenSP-${pkgver}"
+  sed 's/32,/253,/' -i lib/Syntax.cxx
+  sed 's/LITLEN          240 /LITLEN          8092/' \
+      -i unicode/{gensyntax.pl,unicode.syn}
+}
+
+build(){
+  cd "OpenSP-${pkgver}"
+  ./configure --prefix=/usr                              \
+              --disable-static                           \
+              --disable-doc-build                        \
+              --enable-default-catalog=/etc/sgml/catalog \
+              --enable-http                              \
+              --enable-default-search-path=/usr/share/sgml
+  make pkgdatadir="/usr/share/sgml/OpenSP-${pkgver}"
+}
+
+check(){
+  # Up to 23 are bad
+  cd "OpenSP-${pkgver}"
+  make check || true
+}
+
+package(){
+  cd "OpenSP-${pkgver}"
+  make DESTDIR="${pkgdir}" \
+       pkgdatadir="/usr/share/sgml/OpenSP-${pkgver}" \
+       docdir="/usr/share/doc/OpenSP-${pkgver}" \
+       install
+  ln -sfv onsgmls   "${pkgdir}/usr/bin/nsgmls"
+  ln -sfv osgmlnorm "${pkgdir}/usr/bin/sgmlnorm"
+  ln -sfv ospam     "${pkgdir}/usr/bin/spam"
+  ln -sfv ospcat    "${pkgdir}/usr/bin/spcat"
+  ln -sfv ospent    "${pkgdir}/usr/bin/spent"
+  ln -sfv osx       "${pkgdir}/usr/bin/sx"
+  ln -sfv osx       "${pkgdir}/usr/bin/sgml2xml"
+  ln -sfv libosp.so "${pkgdir}/usr/lib/libsp.so"
+}
+
+sha256sums=('57f4898498a368918b0d49c826aa434bb5b703d2c3b169beb348016ab25617ce')
