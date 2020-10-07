@@ -1,0 +1,60 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=fontconfig
+pkgver=2.13.1
+pkgrel=1
+pkgdesc="The Fontconfig package contains a library and support programs used for configuring and customizing font access."
+arch=('x86_64')
+url="https://www.freedesktop.org/software/${pkgname}"
+license=('GPL3')
+groups=('core')
+depends=('glibc'
+         'freetype'
+         $(pacman -Qs json-c > /dev/null 2>&1 && echo 'json-c'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make')
+optdepends=('docbook-utils'
+            'libxml2'
+            'tex'
+            $(pacman -Qs json-c > /dev/null 2>&1 || echo 'json-c'))
+source=("${url}/release/${pkgname}-${pkgver}.tar.bz2")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  rm -f src/fcobjshash.h
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-docs       \
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}"
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 \
+    "${pkgdir}"/usr/share/{man/man{1,3,5},doc/${pkgname}-${pkgver}/${pkgname}-devel}
+  install -vm644 fc-*/*.1 "${pkgdir}/usr/share/man/man1"
+  install -vm644 doc/*.3  "${pkgdir}/usr/share/man/man3"
+  install -vm644 doc/fonts-conf.5 "${pkgdir}/usr/share/man/man5"
+  install -vm644 doc/fontconfig-devel/* \
+                 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/fontconfig-devel"
+  install -vm644 doc/*.{pdf,sgml,txt,html} \
+                 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+}
+
+sha256sums=('f655dd2a986d7aa97e052261b36aa67b0a64989496361eca8d604e6414006741')
