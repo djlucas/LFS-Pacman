@@ -1,0 +1,46 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=libSM
+pkgname=xorg-libSM
+pkgver=1.2.3
+pkgrel=2
+pkgdesc="libSM contains the X.org session management library."
+arch=('x86_64')
+url="https://xorg.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'util-linux'
+         'xorg-libICE')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make'
+             'xorg-util-macros'
+             'xorg-xorgproto'
+             'xorg-xtrans')
+optdepends=('fop'
+            'libxslt'
+            'links'
+            'lynx'
+            'w3m'
+            'xmlto')
+source=("${url}/releases/individual/lib/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static     \
+              --docdir="/usr/share/doc/${_pkgname}-${pkgver}"
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('2d264499dcb05f56438dee12a1b4b71d76736ce7ba7aa6efbf15ebb113769cbb')
