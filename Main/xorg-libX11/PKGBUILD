@@ -1,0 +1,40 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=libX11
+pkgname=xorg-libX11
+pkgver=1.6.12
+pkgrel=1
+pkgdesc="libX11 contains the core X.org libraries."
+arch=('x86_64')
+url="https://xorg.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xorg-libXau'
+         'xorg-libXdmcp')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+source=("${url}/releases/individual/lib/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  rm -f "${pkgdir}/usr/include/X11/extensions/XKBgeom.h"
+}
+
+sha256sums=('f108227469419ac04d196df0f3b80ce1f7f65059bb54c0de811f4d8e03fd6ec7')
