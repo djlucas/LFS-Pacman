@@ -16,7 +16,8 @@ makedepends=('bash'
              'gcc'
              'make'
              'xorg-util-macros'
-             'xorg-xorgproto')
+             'xorg-xorgproto'
+             'xorg-xtrans')
 source=("${url}/releases/individual/lib/${_pkgname}-${pkgver}.tar.bz2")
 
 build(){
