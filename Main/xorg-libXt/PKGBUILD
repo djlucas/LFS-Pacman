@@ -3,7 +3,7 @@
 _pkgname=libXt
 pkgname=xorg-libXt
 pkgver=1.2.0
-pkgrel=1
+pkgrel=2
 pkgdesc="libXt contains the X.org toolkit library."
 arch=('x86_64')
 url="https://xorg.freedesktop.org/"
@@ -38,7 +38,9 @@ build(){
   ./configure --prefix=/usr        \
               --sysconfdir=/etc    \
               --localstatedir=/var \
-              --disable-static
+              --disable-static     \
+              --docdir="/usr/share/doc/${_pkgname}-${pkgver}" \
+              --with-appdefaultdir=/etc/X11/app-defaults
   make
 }
 
