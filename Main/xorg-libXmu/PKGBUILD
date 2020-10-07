@@ -1,0 +1,52 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=libXmu
+pkgname=xorg-libXmu
+pkgver=1.1.3
+pkgrel=1
+pkgdesc="libXmu contains the X.org miscellaneous utilties library."
+arch=('x86_64')
+url="https://xorg.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'util-linux'
+         'xorg-libICE'
+         'xorg-libSM'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXext'
+         'xorg-libXdmcp'
+         'xorg-libXt')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make'
+             'xorg-util-macros'
+             'xorg-xorgproto'
+             'xorg-xtrans')
+optdepends=('fop'
+            'libxslt'
+            'links'
+            'lynx'
+            'w3m'
+            'xmlto')
+source=("${url}/releases/individual/lib/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('9c343225e7c3dc0904f2122b562278da5fed639b1b5e880d25111561bac5b731')
