@@ -1,0 +1,49 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=libXScrnSaver
+pkgname=xorg-libXScrnSaver
+pkgver=1.2.3
+pkgrel=1
+pkgdesc="libXScrnSaver contains the X.org screen saver library."
+arch=('x86_64')
+url="https://xorg.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXdmcp'
+         'xorg-libXext')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make'
+             'xorg-libICE'
+             'xorg-util-macros'
+             'xorg-xorgproto'
+             'xorg-xtrans')
+optdepends=('fop'
+            'libxslt'
+            'links'
+            'lynx'
+            'w3m'
+            'xmlto')
+source=("${url}/releases/individual/lib/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('f917075a1b7b5a38d67a8b0238eaab14acd2557679835b154cf2bca576e89bf8')
