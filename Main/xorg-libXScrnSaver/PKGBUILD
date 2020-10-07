@@ -3,7 +3,7 @@
 _pkgname=libXScrnSaver
 pkgname=xorg-libXScrnSaver
 pkgver=1.2.3
-pkgrel=1
+pkgrel=2
 pkgdesc="libXScrnSaver contains the X.org screen saver library."
 arch=('x86_64')
 url="https://xorg.freedesktop.org/"
@@ -37,7 +37,8 @@ build(){
   ./configure --prefix=/usr        \
               --sysconfdir=/etc    \
               --localstatedir=/var \
-              --disable-static
+              --disable-static     \
+              --docdir="/usr/share/doc/${_pkgname}-${pkgver}"
   make
 }
 

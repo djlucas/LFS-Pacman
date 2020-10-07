@@ -3,7 +3,7 @@
 _pkgname=libFS
 pkgname=xorg-libFS
 pkgver=1.0.8
-pkgrel=1
+pkgrel=2
 pkgdesc="libFS contains the X.org Font Service library."
 arch=('x86_64')
 url="https://xorg.freedesktop.org/"
@@ -31,7 +31,8 @@ build(){
   ./configure --prefix=/usr        \
               --sysconfdir=/etc    \
               --localstatedir=/var \
-              --disable-static
+              --disable-static     \
+              --docdir="/usr/share/doc/${_pkgname}-${pkgver}"
   make
 }
 

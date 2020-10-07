@@ -3,7 +3,7 @@
 _pkgname=xtrans
 pkgname=xorg-xtrans
 pkgver=1.4.0
-pkgrel=1
+pkgrel=2
 pkgdesc="xtrans is a network API translation layer to insulate X applications and libraries from the OS networking stack (former X11R6 transport layer)."
 arch=('any')
 url="https://xorg.freedesktop.org/"
@@ -16,6 +16,12 @@ makedepends=('bash'
              'make'
              'xorg-util-macros'
              'xorg-xorgproto')
+optdepends=('fop'
+            'libxslt'
+            'links'
+            'lynx'
+            'w3m'
+            'xmlto')
 source=("${url}/releases/individual/lib/${_pkgname}-${pkgver}.tar.bz2")
 
 build(){
@@ -23,7 +29,8 @@ build(){
   ./configure --prefix=/usr        \
               --sysconfdir=/etc    \
               --localstatedir=/var \
-              --disable-static
+              --disable-static     \
+              --docdir="/usr/share/doc/${_pkgname}-${pkgver}"
   make
 }
 
