@@ -18,6 +18,12 @@ makedepends=('bash'
              'xorg-util-macros'
              'xorg-xorgproto'
              'xorg-xtrans')
+optdepends=('fop'
+            'libxslt'
+            'links'
+            'lynx'
+            'w3m'
+            'xmlto')
 source=("${url}/releases/individual/lib/${_pkgname}-${pkgver}.tar.bz2")
 
 build(){
