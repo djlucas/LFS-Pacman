@@ -37,6 +37,9 @@ package(){
   install -vdm755 "${pkgdir}/usr/share/doc/${_pkgname}-${pkgver}"
   install -vm644  ../[^m]*.txt ../PM_spec \
                   "${pkgdir}/usr/share/doc/${_pkgname}-${pkgver}"
+  # Apple WM protocols are not appropriate on Linux
+  rm -f "${pkgdir}"/usr/include/X11/extensions/apple*
+  rm -f "${pkgdir}"/usr/share/pkgconfig/applewmproto.pc
 }
 
 sha256sums=('54a153f139035a376c075845dd058049177212da94d7a9707cf9468367b699d2')
