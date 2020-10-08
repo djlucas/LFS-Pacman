@@ -3,7 +3,7 @@
 _pkgname=xtrans
 pkgname=xorg-xtrans
 pkgver=1.4.0
-pkgrel=2
+pkgrel=3
 pkgdesc="xtrans is a network API translation layer to insulate X applications and libraries from the OS networking stack (former X11R6 transport layer)."
 arch=('any')
 url="https://xorg.freedesktop.org/"
@@ -12,6 +12,7 @@ groups=('xorg')
 makedepends=('bash'
              'binutils'
              'coreutils'
+             'elogind'
              'gcc'
              'make'
              'xorg-util-macros'
