@@ -3,7 +3,7 @@
 _pkgname=libXaw
 pkgname=xorg-libXaw
 pkgver=1.0.13
-pkgrel=12
+pkgrel=2
 pkgdesc="libXaw contains the X.org Athena widgets library."
 arch=('x86_64')
 url="https://xorg.freedesktop.org/"
