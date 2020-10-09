@@ -1,0 +1,68 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=libXfont2
+pkgname=xorg-libXfont2
+pkgver=2.0.4
+pkgrel=1
+pkgdesc="libXfont2 contains the X.org X11 font raterisation library."
+arch=('x86_64')
+url="https://xorg.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('brotli'
+         'bzip2'
+         'freetype'
+         'harfbuzz'
+         'glib'
+         'glibc'
+         'graphite2'
+         'libpng'
+         'libxcb'
+         'xorg-libfontenc'
+         'zlib')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'make'
+             'xorg-util-macros'
+             'xorg-xorgproto'
+             'xorg-xtrans')
+optdepends=('fop'
+            'libxslt'
+            'links'
+            'lynx'
+            'w3m'
+            'xmlto')
+source=("${url}/releases/individual/lib/${_pkgname}-${pkgver}.tar.bz2")
+_confargs=""
+
+build(){
+  if $(pacman -Qs xmlto > /dev/null 2>&1); then
+    if ! $(pacman -Qs links > /dev/null 2>&1); then
+      if ! $(pacman -Qs lynx > /dev/null 2>&1); then
+        if ! $(pacman -Qs w3m > /dev/null 2>&1); then
+          _confargs="${_confargs} --disable-devel-docs"
+        fi
+      fi
+    fi
+  fi
+
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static     \
+              ${_confargs}         \
+              --docdir="/usr/share/doc/${_pkgname}-${pkgver}"
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('6d151b3368e5035efede4b6264c0fdc6662c1c99dbc2de425e3480cababc69e6')
