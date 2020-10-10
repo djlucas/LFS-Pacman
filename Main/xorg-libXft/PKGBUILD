@@ -1,0 +1,62 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=libXft
+pkgname=xorg-libXft
+pkgver=2.3.3
+pkgrel=1
+pkgdesc="libXft contains the X.org font rendereing library."
+arch=('x86_64')
+url="https://xorg.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('brotli'
+         'bzip2'
+         'expat'
+         'fontconfig'
+         'freetype'
+         'glib'
+         'glibc'
+         'graphite2'
+         'harfbuzz'
+         'libpng'
+         'libxcb'
+         'pcre'
+         'util-linux'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXdmcp'
+         'xorg-libXrender'
+         'zlib')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'make'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+optdepends=('fop'
+            'libxslt'
+            'links'
+            'lynx'
+            'w3m'
+            'xmlto')
+source=("${url}/releases/individual/lib/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static     \
+              --docdir="/usr/share/doc/${_pkgname}-${pkgver}"
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('225c68e616dd29dbb27809e45e9eadf18e4d74c50be43020ef20015274529216')
