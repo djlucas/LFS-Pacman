@@ -1,0 +1,43 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=xcb-util-cursor
+pkgver=0.1.3
+pkgrel=1
+pkgdesc="The xcb-util-cursor package provides a module that implements the XCB cursor library. It is the XCB replacement for libXcursor."
+arch=('x86_64')
+url="https://xcb.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xcb-util'
+         'xcb-util-image'
+         'xcb-util-renderutil'
+         'xorg-libXau'
+         'xorg-libXdmcp')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make'
+             'python3'
+             'xcb-proto')
+optdepends=('doxygen'
+            'libxslt')
+source=("${url}dist/${pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('05a10a0706a1a789a078be297b5fb663f66a71fb7f7f1b99658264c35926394f')
