@@ -3,7 +3,7 @@
 _pkgname=libxkbfile
 pkgname=xorg-libxkbfile
 pkgver=1.1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="libxkbfile contains the X.org keyboard file manipulation library."
 arch=('x86_64')
 url="https://xorg.freedesktop.org/"
@@ -21,7 +21,6 @@ makedepends=('bash'
              'gcc'
              'gettext'
              'make'
-             'xorg-libXxf86vm'
              'xorg-util-macros'
              'xorg-xorgproto')
 optdepends=('fop'
