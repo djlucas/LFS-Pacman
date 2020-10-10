@@ -1,0 +1,46 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=xcb-util-renderutil
+pkgver=0.3.9
+pkgrel=1
+pkgdesc="The xcb-util-renderutil package provides additional extensions to the XCB library."
+arch=('x86_64')
+url="https://xcb.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xorg-libXau'
+         'xorg-libXdmcp')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make'
+             'python3'
+             'xcb-proto')
+optdepends=('doxygen'
+            'libxslt')
+source=("${url}dist/${pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static
+  make
+}
+
+# Check requires an Xorg environment
+#check(){
+#  cd "${pkgname}-${pkgver}"
+#  make check
+#}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('c6e97e48fb1286d6394dddb1c1732f00227c70bd1bedb7d1acabefdd340bea5b')
