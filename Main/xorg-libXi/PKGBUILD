@@ -1,0 +1,51 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=libXi
+pkgname=xorg-libXi
+pkgver=1.7.10
+pkgrel=1
+pkgdesc="libXi contains the X.org input extension library."
+arch=('x86_64')
+url="https://xorg.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXdmcp'
+         'xorg-libXext'
+         'xorg-libXfixes')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'make'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+optdepends=('fop'
+            'libxslt'
+            'links'
+            'lynx'
+            'w3m'
+            'xmlto')
+source=("${url}/releases/individual/lib/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static     \
+              --docdir="/usr/share/doc/${_pkgname}-${pkgver}"
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('36a30d8f6383a72e7ce060298b4b181fd298bc3a135c8e201b7ca847f5f81061')
