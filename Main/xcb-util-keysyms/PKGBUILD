@@ -1,0 +1,46 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=xcb-util-keysyms
+pkgver=0.4.0
+pkgrel=1
+pkgdesc="The xcb-util-keysyms package contains a library for handling standard X key constants and conversion to/from keycodes."
+arch=('x86_64')
+url="https://xcb.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xorg-libXau'
+         'xorg-libXdmcp')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make'
+             'python3'
+             'xcb-proto')
+optdepends=('doxygen'
+            'libxslt')
+source=("${url}dist/${pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static
+  make
+}
+
+# Check requires an Xorg environment
+#check(){
+#  cd "${pkgname}-${pkgver}"
+#  make check
+#}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('0ef8490ff1dede52b7de533158547f8b454b241aa3e4dcca369507f66f216dd9')
