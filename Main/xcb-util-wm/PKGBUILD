@@ -1,0 +1,46 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=xcb-util-wm
+pkgver=0.3.9
+pkgrel=1
+pkgdesc="The xcb-util-wm package contains libraries which provide client and window-manager helpers for EWMH and ICCCM."
+arch=('x86_64')
+url="https://xcb.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xorg-libXau'
+         'xorg-libXdmcp')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'make'
+             'python3'
+             'xcb-proto')
+optdepends=('doxygen'
+            'libxslt')
+source=("${url}dist/${pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static
+  make
+}
+
+# Check requires an Xorg environment
+#check(){
+#  cd "${pkgname}-${pkgver}"
+#  make check
+#}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('038f9bdb917b1f6d98a164f57dfb32212a102d771ab6f03de49fef3786746030')
