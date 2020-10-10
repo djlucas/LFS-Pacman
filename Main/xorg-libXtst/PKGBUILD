@@ -1,0 +1,51 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=libXtst
+pkgname=xorg-libXtst
+pkgver=1.2.3
+pkgrel=1
+pkgdesc="libXtst contains the X.org record extension library."
+arch=('x86_64')
+url="https://xorg.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXdmcp'
+         'xorg-libXext'
+         'xorg-libXi')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'make'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+optdepends=('fop'
+            'libxslt'
+            'links'
+            'lynx'
+            'w3m'
+            'xmlto')
+source=("${url}/releases/individual/lib/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static     \
+              --docdir="/usr/share/doc/${_pkgname}-${pkgver}"
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('4655498a1b8e844e3d6f21f3b2c4e2b571effb5fd83199d428a6ba7ea4bf5204')
