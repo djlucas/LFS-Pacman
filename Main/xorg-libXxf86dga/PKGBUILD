@@ -1,0 +1,50 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=libXxf86dga
+pkgname=xorg-libXxf86dga
+pkgver=1.1.5
+pkgrel=1
+pkgdesc="libXxf86dga contains the X.org direct graphics access extension library."
+arch=('x86_64')
+url="https://xorg.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXdmcp'
+         'xorg-libXext')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'make'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+optdepends=('fop'
+            'libxslt'
+            'links'
+            'lynx'
+            'w3m'
+            'xmlto')
+source=("${url}/releases/individual/lib/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static     \
+              --docdir="/usr/share/doc/${_pkgname}-${pkgver}"
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('2b98bc5f506c6140d4eddd3990842d30f5dae733b64f198a504f07461bdb7203')
