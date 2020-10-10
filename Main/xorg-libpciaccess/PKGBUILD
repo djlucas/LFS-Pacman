@@ -1,0 +1,44 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=libpciaccess
+pkgname=xorg-libpciaccess
+pkgver=0.16
+pkgrel=1
+pkgdesc="libpciaccess contains the X.org PCI access library."
+arch=('x86_64')
+url="https://xorg.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'make'
+             'xorg-util-macros')
+optdepends=('fop'
+            'libxslt'
+            'links'
+            'lynx'
+            'w3m'
+            'xmlto')
+source=("${url}/releases/individual/lib/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static     \
+              --docdir="/usr/share/doc/${_pkgname}-${pkgver}"
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('214c9d0d884fdd7375ec8da8dcb91a8d3169f263294c9a90c575bf1938b9f489')
