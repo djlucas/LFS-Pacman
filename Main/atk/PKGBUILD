@@ -1,0 +1,52 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=atk
+pkgver=2.36.0
+pkgrel=1
+pkgdesc="ATK provides the set of accessibility interfaces that are implemented by other toolkits and applications."
+arch=('x86_64')
+url="https://developer.gnome.org/atk/"
+license=('GPL3')
+groups=('core')
+depends=('gobject-introspection'
+         'glib')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'docbook-xml'
+             'docbook-xsl'
+             'gcc'
+             'grep'
+             'gtk-doc'
+             'meson'
+             'ninja'
+             'sed')
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/2.36/${pkgname}-${pkgver}.tar.xz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  mkdir build
+}
+
+build(){
+  if $(pacman -Q gtk-doc > /dev/null 2>&1); then
+    _confargs="${_confargs} -Ddoc=true"
+  fi
+
+  cd "${pkgname}-${pkgver}/build"
+  meson --prefix=/usr      \
+        ${_confargs} ..
+  ninja
+}
+
+#check(){
+#  cd "${pkgname}-${pkgver}"
+#  make check
+#}
+
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  DESTDIR="${pkgdir}" ninja install
+}
+
+sha256sums=('fb76247e369402be23f1f5c65d38a9639c1164d934e40f6a9cf3c9e96b652788')
