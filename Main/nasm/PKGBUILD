@@ -1,0 +1,48 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=nasm
+pkgver=2.15.05
+pkgrel=1
+pkgdesc="NASM (Netwide Assembler) is an 80x86 assembler designed for portability and modularity. It includes a disassembler as well."
+arch=('x86_64')
+url="http://www.nasm.us/"
+license=('GPL3')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'patch'
+             'sed'
+             'texinfo')
+optdepends=('asciidoc'
+            'xmlto')
+source=("${url}pub/${pkgname}/releasebuilds/${pkgver}/${pkgname}-${pkgver}.tar.xz"
+        "${url}pub/${pkgname}/releasebuilds/${pkgver}/${pkgname}-${pkgver}-xdoc.tar.xz")
+noextract=("${pkgname}-${pkgver}-xdoc.tar.xz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  tar -xf "${srcdir}/${pkgname}-${pkgver}-xdoc.tar.xz" --strip-components=1
+}
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/html"
+  cp -v doc/html/*.html "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/html"
+  cp -v doc/*.{txt,ps,pdf} "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+}
+
+sha256sums=('3caf6729c1073bf96629b57cee31eeb54f4f8129b01902c73428836550b30a3f'
+            '02a260cabb649bf55a06e3dc5abb1413746704156c80afc742b8fc1510262ed1')
