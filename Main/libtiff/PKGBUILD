@@ -1,0 +1,50 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=libtiff
+_pkgname=tiff
+pkgver=4.1.0
+pkgrel=1
+pkgdesc="The TIFF package contains the TIFF libraries and associated utilities."
+arch=('x86_64')
+url="https://osgeo.org/libtiff/"
+license=('GPL3')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'cmake'
+             'coreutils'
+             'gcc'
+             'grep'
+             'ninja'
+             'sed'
+             $(pacman -Q freeglue > /dev/null 2>&1 && echo 'freeglut')
+             $(pacman -Q libjpeg-turbo > /dev/null 2>&1 && echo 'libjpeg-turbo')
+             $(pacman -Q libwebp > /dev/null 2>&1 && echo 'libwebp'))
+optdepends=($(pacman -Q freeglue > /dev/null 2>&1 || echo 'freeglut')
+            $(pacman -Q libjpeg-turbo > /dev/null 2>&1 || echo 'libjpeg-turbo')
+            $(pacman -Q libwebp > /dev/null 2>&1 || echo 'libwebp'))
+source=("http://download.osgeo.org/${pkgname}/${_pkgname}-${pkgver}.tar.gz")
+
+prepare(){
+  cd "${_pkgname}-${pkgver}"
+  mkdir libtiff-build
+}
+
+build(){
+  cd "${_pkgname}-${pkgver}/libtiff-build"
+  cmake -DCMAKE_INSTALL_DOCDIR="/usr/share/doc/${pkgname}-${pkgver}" \
+        -DCMAKE_INSTALL_PREFIX=/usr -G Ninja ..
+  ninja
+}
+
+check(){
+  cd "${_pkgname}-${pkgver}/libtiff-build"
+  make test
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}/libtiff-build"
+  DESTDIR="${pkgdir}" ninja install
+}
+
+sha256sums=('5d29f32517dadb6dbcd1255ea5bbc93a2b54b94fbf83653b4d65c7d6775b8634')
