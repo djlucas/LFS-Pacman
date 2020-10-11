@@ -1,0 +1,49 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=libjpeg-turbo
+pkgver=2.0.5
+pkgrel=1
+pkgdesc="libjpeg-turbo is a fork of the original IJG libjpeg which uses SIMD to accelerate baseline JPEG compression and decompression. libjpeg is a library that implements JPEG image encoding, decoding and transcoding."
+arch=('x86_64')
+url="http://libjpeg-turbo.sourceforge.net/"
+license=('GPL3')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'cmake'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'nasm'
+             'sed'
+             'texinfo')
+source=("https://downloads.sourceforge.net/${pkgname}/${pkgname}-${pkgver}.tar.gz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  mkdir build
+}
+
+build(){
+  cd "${pkgname}-${pkgver}/build"
+  cmake -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_BUILD_TYPE=RELEASE  \
+        -DENABLE_STATIC=FALSE       \
+        -DCMAKE_INSTALL_DOCDIR="/usr/share/doc/${pkgname}-${pkgver}" \
+        -DCMAKE_INSTALL_DEFAULT_LIBDIR=lib  \
+        ..
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}/build"
+  make test
+}
+
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('16f8f6f2715b3a38ab562a84357c793dd56ae9899ce130563c72cd93d8357b5d')
