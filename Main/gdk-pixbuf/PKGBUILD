@@ -1,0 +1,57 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=gdk-pixbuf
+pkgver=2.40.0
+pkgrel=2
+pkgdesc="The Gdk Pixbuf package is a toolkit for image loading and pixel buffer manipulation."
+arch=('x86_64')
+url="https://developer.gnome.org/gdk-pixbuf"
+license=('GPL3')
+depends=('glib'
+         'glibc'
+         'libjpeg-turbo'
+         'libpng'
+         'shared-mime-info'
+         $(pacman -Q gobject-introspection > /dev/null 2>&1 && echo 'gobject-introspection')
+         $(pacman -Q jasper > /dev/null 2>&1 && echo 'jasper')
+         $(pacamn -Q librsvg > /dev/null 2>&1 && echo 'librsvg')
+         $(pacman -Q libtiff > /dev/null 2>&1 && echo 'libtiff'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'meson'
+             'ninja'
+             'sed'
+             'texinfo')
+optdepends=('gtk-doc'
+            $(pacman -Q gobject-introspection > /dev/null 2>&1 || echo 'gobject-introspection')
+            $(pacman -Q jasper > /dev/null 2>&1 || echo 'jasper')
+            $(pacman -Q librsvg > /dev/null 2>&1 || echo 'librsvg')
+            $(pacman -Q libtiff > /dev/null 2>&1 || echo 'libtiff'))
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/2.40/${pkgname}-${pkgver}.tar.xz"
+        "${pkgname}-${pkgver}-fix_tests-1.patch")
+install=gdk-pixbuf.install
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  # Libpng tests kill the build
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-fix_tests-1.patch"
+  mkdir build
+}
+
+build(){
+  cd "${pkgname}-${pkgver}/build"
+  meson --prefix=/usr -Dtests=no ..
+  ninja
+}
+
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  DESTDIR="${pkgdir}" ninja install
+}
+
+sha256sums=('1582595099537ca8ff3b99c6804350b4c058bb8ad67411bbaae024ee7cead4e6'
+            '6c5158b2ac2bdabd10b78a68331e8c22505ab201a2366ed637dcfff4ab12d36b')
