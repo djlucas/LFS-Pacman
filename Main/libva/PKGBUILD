@@ -1,0 +1,39 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=libva
+pkgver=2.9.0
+pkgrel=1
+pkgdesc="The libva package contains a library which provides access to hardware accelerated video processing."
+arch=('x86_64')
+url="https://github.com/intel/libva"
+license=('GPL3')
+depends=('glibc'
+         'libdrm'
+         $(pacman -Q mesa > /dev/null 2>&1 && echo 'mesa')
+         $(pacman -Q wayland > /dev/null 2>&1 && echo 'wayland'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'sed')
+optdepends=($(pacman -Q mesa > /dev/null 2>&1 || echo 'mesa')
+            $(pacman -Q wayland > /dev/null 2>&1 || echo 'wayland'))
+source=("${url}/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('e344c1392dde92696c9ffd9cb3c7277d0a3b912236eb4e0fdedf7f375434584b')
