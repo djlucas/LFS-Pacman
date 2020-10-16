@@ -1,0 +1,47 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=wayland
+pkgver=1.18.0
+pkgrel=1
+pkgdesc="Wayland is a project to define a protocol for a compositor to talk to its clients as well as a library implementation of the protocol."
+arch=('x86_64')
+url="https://wayland.freedesktop.org"
+license=('GPL3')
+depends=('glibc'
+         'libxml2')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'sed')
+optdepends=('doxygen'
+            'graphvis'
+            'docbook-xml'
+            'docbook-xsl'
+            'libxslt'
+            'xmlto')
+source=("${url}/releases/${pkgname}-${pkgver}.tar.xz")
+_confargs=""
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  if ! $(pacamn -Q doxygen graphvis docbook-xml docbook-xsl libxslt xmlto > /dev/null 2>&1); then
+    _confargs="${_confargs} --disable-documentation"
+  fi
+  ./configure --prefix=/usr --disable-static ${_confargs}
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('4675a79f091020817a98fd0484e7208c8762242266967f55a67776936c2e294d')
