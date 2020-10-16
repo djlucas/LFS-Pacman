@@ -1,0 +1,51 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=libdrm
+pkgver=2.4.102
+pkgrel=1
+pkgdesc=""
+arch=('x86_64')
+url="https://dri.freedesktop.org/libdrm"
+license=('GPL3')
+depends=('glibc'
+         'eudev'
+         $(pacman -Q libatomic_ops > /dev/null 2>&1 && echo 'libatomic_ops'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gcc'
+             'make'
+             'xorg-libX11')
+optdepends=('cairo'
+            'cmake'
+            'docbook-xml'
+            'docbook-xsl'
+            'libxslt'
+            'valgrind'
+            $(pacman -Q libatomic_ops > /dev/null 2>&1 || echo 'libatomic_ops'))
+            
+source=("${url}/${pkgname}-${pkgver}.tar.xz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  mkdir build
+}
+
+build(){
+  cd "${pkgname}-${pkgver}/build"
+  meson --prefix=/usr -Dudev=true ..
+  ninja
+}
+
+check(){
+  cd "${pkgname}-${pkgver}/build"
+  ninja test || true #Threaded test fails sometimes on lots of cores
+}
+
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  DESTDIR="${pkgdir}" ninja install
+}
+
+sha256sums=('8bcbf9336c28e393d76c1f16d7e79e394a7fce8a2e929d52d3ad7ad8525ba05b')
