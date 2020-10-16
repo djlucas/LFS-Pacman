@@ -1,0 +1,47 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=libvdpau
+pkgver=1.4
+pkgrel=1
+pkgdesc="The libvdpau package contains a library which implements the Video Decode and Presentation API for Unix."
+arch=('x86_64')
+url="https://gitlab.freedesktop.org/vdpau"
+license=('GPL3')
+depends=('glibc'
+         'libdrm'
+         'xorg-libX11'
+         'mesa')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'sed')
+optdepends=('doxygen'
+            'graphvis'
+            'tex')
+source=("${url}/${pkgname}/-/archive/${pkgver}/${pkgname}-${pkgver}.tar.bz2")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  mkdir build
+}
+
+build(){
+  cd "${pkgname}-${pkgver}/build"
+  meson --prefix=/usr ..
+  ninja
+}
+
+check(){
+  cd "${pkgname}-${pkgver}/build"
+  ninja test
+}
+
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  DESTDIR="${pkgdir}" ninja install
+}
+
+sha256sums=('4258824c5a4555ef31de0a7d82b3caf19e75a16a13949f1edafc5f6fb2d33f30')
