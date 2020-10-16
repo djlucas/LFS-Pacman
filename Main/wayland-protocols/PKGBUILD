@@ -1,0 +1,37 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=wayland-protocols
+pkgver=1.20
+pkgrel=1
+pkgdesc="The Wayland-Protocols package contains additional Wayland protocols that add functionality outside of protocols already in the Wayland core."
+arch=('any')
+url="https://wayland.freedesktop.org"
+license=('GPL3')
+depends=('glibc'
+         'wayland')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'sed')
+source=("${url}/releases/${pkgname}-${pkgver}.tar.xz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('9782b7a1a863d82d7c92478497d13c758f52e7da4f197aa16443f73de77e4de7')
