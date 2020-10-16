@@ -1,0 +1,38 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=libatomic_ops
+pkgver=7.6.10
+pkgrel=1
+pkgdesc="libatomic_ops provides implementations for atomic memory update operations on a number of architectures."
+arch=('x86_64')
+url="https://github.com/ivmai/libatomic_ops"
+license=('GPL3')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make')
+source=("${url}/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr    \
+              --enable-shared  \
+              --disable-static \
+              --docdir="/usr/share/doc/${pkgname}-${pkgver}"
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('587edf60817f56daf1e1ab38a4b3c729b8e846ff67b4f62a6157183708f099af')
