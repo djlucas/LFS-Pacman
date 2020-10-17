@@ -2,7 +2,7 @@
 
 pkgname=binutils
 pkgver=2.35.1
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 pkgdesc="The Binutils package contains a linker, an assembler, and other tools for handling object files."
 url="http://www.gnu.org/software/${pkgname}/"
