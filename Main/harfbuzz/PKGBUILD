@@ -2,43 +2,43 @@
 
 pkgname=harfbuzz
 pkgver=2.7.2
-pkgrel=1
+pkgrel=2
 pkgdesc="The HarfBuzz package contains an OpenType text shaping engine."
 arch=('x86_64')
 url="https://github.com/${pkgname}/${pkgname}"
 license=('GPL3')
 depends=('glibc'
-         $(pacman -Qs glib > /dev/null 2>&1 && echo 'glib')
-         $(pacman -Qs graphite2 > /dev/null 2>&1 && echo 'graphite2')
-         $(pacman -Qs icu > /dev/null 2>&1 && echo 'icu')
-         $(pacman -Qs freetype > /dev/null 2>&1 && echo 'freetype')
-         $(pacman -Qs cairo > /dev/null 2>&1 && echo 'cairo')
-         $(pacman -Qs gobject-introspection > /dev/null 2>&1 && echo 'gobject-introspection'))
+         $(pacman -Q glib > /dev/null 2>&1 && echo 'glib')
+         $(pacman -Q graphite2 > /dev/null 2>&1 && echo 'graphite2')
+         $(pacman -Q icu > /dev/null 2>&1 && echo 'icu')
+         $(pacman -Q freetype > /dev/null 2>&1 && echo 'freetype')
+         $(pacman -Q cairo > /dev/null 2>&1 && echo 'cairo')
+         $(pacman -Q gobject-introspection > /dev/null 2>&1 && echo 'gobject-introspection'))
 makedepends=('bash'
              'binutils'
              'coreutils'
              'diffutils'
              'gcc'
              'make')
-optdepends=($(pacman -Qs glib > /dev/null 2>&1 || echo 'glib')
-            $(pacman -Qs graphite2 > /dev/null 2>&1 || echo 'graphite2')
-            $(pacman -Qs icu > /dev/null 2>&1 || echo 'icu')
-            $(pacman -Qs freetype > /dev/null 2>&1 || echo 'freetype')
-            $(pacman -Qs cairo > /dev/null 2>&1 || echo 'cairo')
-            $(pacman -Qs gobject-introspection > /dev/null 2>&1 || echo 'gobject-introspection'))
+optdepends=($(pacman -Q glib > /dev/null 2>&1 || echo 'glib')
+            $(pacman -Q graphite2 > /dev/null 2>&1 || echo 'graphite2')
+            $(pacman -Q icu > /dev/null 2>&1 || echo 'icu')
+            $(pacman -Q freetype > /dev/null 2>&1 || echo 'freetype')
+            $(pacman -Q cairo > /dev/null 2>&1 || echo 'cairo')
+            $(pacman -Q gobject-introspection > /dev/null 2>&1 || echo 'gobject-introspection'))
 checkdepends=('python3-fonttools')
 source=("${url}/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.xz")
 _confargs=""
 
 build(){
   cd "${pkgname}-${pkgver}"
-  if $(pacman -Qs graphite2 > /dev/null 2>&1); then
+  if $(pacman -Q graphite2 > /dev/null 2>&1); then
     _confargs="${_confargs} --with-graphite2"
   fi
-  if $(pacman -Qs gobject-introspection > /dev/null 2>&1); then
+  if $(pacman -Q gobject-introspection > /dev/null 2>&1); then
     _confargs="${_confargs} --with-gobject"
   fi
-  if $(pacamn -Qs gtk-doc > /dev/null 2>&1); then
+  if $(pacamn -Q gtk-doc > /dev/null 2>&1); then
     _confargs="${_confargs} --enable-gtk-doc"
   fi
   ./configure ${_confargs} --prefix=/usr 

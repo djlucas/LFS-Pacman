@@ -2,7 +2,7 @@
 
 pkgname=libdaemon
 pkgver=0.14
-pkgrel=1
+pkgrel=2
 pkgdesc="The libdaemon package is a lightweight C library that eases the writing of UNIX daemons."
 arch=('x86_64')
 url="http://0pointer.de/lennart/projects/libdaemon/"
@@ -24,7 +24,7 @@ build(){
   cd "${pkgname}-${pkgver}"
   ./configure --prefix=/usr --disable-static
   make
-  if $(pacman -Qs doxygen lynx > /dev/null 2>&1); then
+  if $(pacman -Q doxygen lynx > /dev/null 2>&1); then
     make -C doc doxygen
   fi
 }
@@ -38,7 +38,7 @@ package(){
   cd "${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
 
-  if $(pacman -Qs doxygen lynx > /dev/null 2>&1); then
+  if $(pacman -Q doxygen lynx > /dev/null 2>&1); then
     install -vdm755 \
             "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/reference/html"
     install -vm644 doc/reference/html/* \

@@ -2,7 +2,7 @@
 
 pkgname=libxcb
 pkgver=1.14
-pkgrel=1
+pkgrel=2
 pkgdesc="The libxcb package provides an interface to the X Window System protocol, which replaces the current Xlib interface."
 arch=('x86_64')
 url="https://xcb.freedesktop.org/"
@@ -12,7 +12,7 @@ groups=('xorg')
 depends=('glibc'
          'xorg-libXau'
          'xcb-proto'
-         $(pacman -Qs xorg-libXdmcp > /dev/null 2>&1 && echo 'xorg-libXdmcp'))
+         $(pacman -Q xorg-libXdmcp > /dev/null 2>&1 && echo 'xorg-libXdmcp'))
 makedepends=('bash'
              'binutils'
              'coreutils'
@@ -21,13 +21,13 @@ makedepends=('bash'
              'python3')
 optdepends=('doxygen'
             'libxslt'
-            $(pacman -Qs xorg-libxdmcp > /dev/null 2>&1 || echo 'xorg-libXdmcp'))
+            $(pacman -Q xorg-libxdmcp > /dev/null 2>&1 || echo 'xorg-libXdmcp'))
 source=("${_url}/releases/individual/lib/${pkgname}-${pkgver}.tar.xz")
 _confargs=""
 
 build(){
   cd "${pkgname}-${pkgver}"
-  if ! $(pacman -Qs doxygen > /dev/null 2>&1); then
+  if ! $(pacman -Q doxygen > /dev/null 2>&1); then
     _confarg="${_confargs} --without-doxygen"
   fi
   CFLAGS+=-Wno-error=format-extra-args \

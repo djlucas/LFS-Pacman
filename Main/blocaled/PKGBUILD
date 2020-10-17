@@ -2,7 +2,7 @@
 
 pkgname=blocaled
 pkgver=0.3
-pkgrel=1
+pkgrel=2
 pkgdesc="blocaled is an implementation of the org.freedesktop.locale1 D–Bus protocol."
 arch=('x86_64')
 url="https://github.com/pierre-labastie/blocaled/"

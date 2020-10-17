@@ -2,7 +2,7 @@
 
 pkgname=freetype
 pkgver=2.10.2
-pkgrel=1
+pkgrel=2
 pkgdesc="The FreeType2 package contains a library which allows applications to properly render TrueType fonts."
 arch=('x86_64')
 url="http://www.sourceforge.net/freetype/"
@@ -10,16 +10,16 @@ license=('GPL3')
 depends=('glibc'
          'libpng'
          'which'
-         $(pacman -Qs brotli > /dev/null 2>&1 && echo 'brotli')
-         $(pacman -Qs harfbuzz > /dev/null 2>&1 && echo 'harfbuzz'))
+         $(pacman -Q brotli > /dev/null 2>&1 && echo 'brotli')
+         $(pacman -Q harfbuzz > /dev/null 2>&1 && echo 'harfbuzz'))
 makedepends=('bash'
              'binutils'
              'coreutils'
              'gcc'
              'grep'
              'make')
-optdepends=($(pacman -Qs brotli > /dev/null 2>&1 || echo 'brotli')
-            $(pacman -Qs harfbuzz > /dev/null 2>&1 || echo 'harfbuzz'))
+optdepends=($(pacman -Q brotli > /dev/null 2>&1 || echo 'brotli')
+            $(pacman -Q harfbuzz > /dev/null 2>&1 || echo 'harfbuzz'))
 source=("https://downloads.sourceforge.net/${pkgname}/${pkgname}-${pkgver}.tar.xz"
         "https://downloads.sourceforge.net/${pkgname}/${pkgname}-doc-${pkgver}.tar.xz")
 noextract=("${pkgname}-doc-${pkgver}.tar.xz")

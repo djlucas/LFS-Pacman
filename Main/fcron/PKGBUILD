@@ -2,13 +2,14 @@
 
 pkgname=fcron
 pkgver=3.2.1
-pkgrel=1
+pkgrel=2
 pkgdesc="The Fcron package contains a periodical command scheduler which aims at replacing Vixie Cron."
 arch=('x86_64')
 url="http://fcron.free.fr/"
 license=('GPL3')
 groups=('core')
 depends=('glibc')
+provides=('cron')
 makedepends=('bash'
              'binutils'
              'coreutils'
@@ -16,7 +17,7 @@ makedepends=('bash'
              'grep'
              'make'
              'sed'
-             $(pacman -Qs linux-pam > /dev/null 2>&1 && echo 'linux-pam'))
+             $(pacman -Q linux-pam > /dev/null 2>&1 && echo 'linux-pam'))
 optdepends=('docbook-utils'
             'exim'
             'emacs'
@@ -24,7 +25,7 @@ optdepends=('docbook-utils'
             'postfix'
             'sendmail'
             'vim'
-            $(pacman -Qs linux-pam > /dev/null 2>&1 || echo 'linux-pam'))
+            $(pacman -Q linux-pam > /dev/null 2>&1 || echo 'linux-pam'))
 source=("http://fcron.free.fr/archives/${pkgname}-${pkgver}.src.tar.gz"
         "fcron.init")
 install=fcron.install

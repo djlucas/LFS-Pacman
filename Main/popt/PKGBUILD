@@ -2,7 +2,7 @@
 
 pkgname=popt
 pkgver=1.18
-pkgrel=1
+pkgrel=2
 pkgdesc="The popt package contains the popt libraries which are used by some programs to parse command-line options."
 arch=('x86_64')
 url="http://www.rpm.org/popt"
@@ -18,15 +18,15 @@ makedepends=('bash'
              'make'
              'patch'
              'sed'
-             $(pacamn -Qs doxygen > /dev/null 2>&1 && echo 'doxygen'))
-optdepends=($(pacman -Qs doxygen > /dev/null 2>&1 || echo 'doxygen'))
+             $(pacamn -Q doxygen > /dev/null 2>&1 && echo 'doxygen'))
+optdepends=($(pacman -Q doxygen > /dev/null 2>&1 || echo 'doxygen'))
 source=("http://ftp.rpm.org/${pkgname}/releases/popt-1.x/${pkgname}-${pkgver}.tar.gz")
 
 build(){
   cd "${pkgname}-${pkgver}"
   ./configure --prefix=/usr --disable-static
   make
-  if $(pacman -Qs doxygen > /dev/null 2>&1); then
+  if $(pacman -Q doxygen > /dev/null 2>&1); then
     sed -i 's@\./@src/@' Doxyfile
     doxygen
   fi
@@ -40,7 +40,7 @@ check(){
 package(){
   cd "${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
-  if $(pacman -Qs doxygen > /dev/null 2>&1); then
+  if $(pacman -Q doxygen > /dev/null 2>&1); then
     install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
     install -vm644  doxygen/html/* "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
   fi

@@ -2,7 +2,7 @@
 
 pkgname=graphite2
 pkgver=1.3.14
-pkgrel=1
+pkgrel=2
 pkgdesc="Graphite2 is a rendering engine for graphite fonts."
 arch=('x86_64')
 url="http://github.com/silnrsi/graphite"
@@ -31,7 +31,7 @@ build(){
   cd "${pkgname}-${pkgver}/build"
   cmake -DCMAKE_INSTALL_PREFIX=/usr ..
   make
-  if $(pacman -Qs asciidoc doxygen tex > /dev/null 2>&1); then
+  if $(pacman -Q asciidoc doxygen tex > /dev/null 2>&1); then
     make docs
   fi
 }
@@ -39,7 +39,7 @@ build(){
 ## cmp tests will fail if python3-fonttools is not installed
 check(){
   cd "${pkgname}-${pkgver}/build"
-  if $(pacman -Qs python3-fonttools > /dev/null 2>&1); then
+  if $(pacman -Q python3-fonttools > /dev/null 2>&1); then
     make test
   fi
 }
@@ -47,7 +47,7 @@ check(){
 package(){
   cd "${pkgname}-${pkgver}/build"
   make DESTDIR="${pkgdir}" install
-  if $(pacman -Qs asciidoc doxygen tex > /dev/null 2>&1); then
+  if $(pacman -Q asciidoc doxygen tex > /dev/null 2>&1); then
     install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
     cp -vf doc/{GTF,manual}.html \
            "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"

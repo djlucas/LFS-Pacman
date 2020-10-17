@@ -1,5 +1,5 @@
 post_install(){
-  if $(pacman -Qs libxll > /dev/null 2>&1); then
+  if $(pacman -Q xorg-libxll > /dev/null 2>&1); then
     if [ ! -d /etc/X11/xorg.conf.d ]; then
       install -vdm755 /etc/X11/xorg.conf.d
     fi

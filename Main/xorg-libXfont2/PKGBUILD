@@ -3,7 +3,7 @@
 _pkgname=libXfont2
 pkgname=xorg-libXfont2
 pkgver=2.0.4
-pkgrel=1
+pkgrel=2
 pkgdesc="libXfont2 contains the X.org X11 font raterisation library."
 arch=('x86_64')
 url="https://xorg.freedesktop.org/"
@@ -40,10 +40,10 @@ source=("${url}/releases/individual/lib/${_pkgname}-${pkgver}.tar.bz2")
 _confargs=""
 
 build(){
-  if $(pacman -Qs xmlto > /dev/null 2>&1); then
-    if ! $(pacman -Qs links > /dev/null 2>&1); then
-      if ! $(pacman -Qs lynx > /dev/null 2>&1); then
-        if ! $(pacman -Qs w3m > /dev/null 2>&1); then
+  if $(pacman -Q xmlto > /dev/null 2>&1); then
+    if ! $(pacman -Q links > /dev/null 2>&1); then
+      if ! $(pacman -Q lynx > /dev/null 2>&1); then
+        if ! $(pacman -Q w3m > /dev/null 2>&1); then
           _confargs="${_confargs} --disable-devel-docs"
         fi
       fi
