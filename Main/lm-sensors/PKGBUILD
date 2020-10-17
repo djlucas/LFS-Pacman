@@ -1,0 +1,40 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=lm-sensors
+pkgver=3.6.0
+_pkgver=3-6-0
+pkgrel=1
+pkgdesc="The lm_sensors package provides user-space support for the hardware monitoring drivers in the Linux kernel."
+arch=('x86_64')
+url="https://github.com/${pkgname}"
+license=('GPL3')
+depends=('glibc'
+         'which')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make')
+optdepends=('rrdtool')
+source=("${url}/${pkgname}/archive/V${_pkgver}/${pkgname}-${_pkgver}.tar.gz")
+
+build(){
+  cd "${pkgname}-${_pkgver}"
+  make PREFIX=/usr        \
+       BUILD_STATIC_LIB=0 \
+       MANDIR=/usr/share/man
+}
+
+package(){
+  cd "${pkgname}-${_pkgver}"
+  make DESTDIR="${pkgdir}" \
+       PREFIX=/usr         \
+       BUILD_STATIC_LIB=0  \
+       MANDIR=/usr/share/man install
+  install -vdm755 "${pkgdir}/usr/share/doc/${pkgname}-${pkgdir}"
+  cp -rfv README INSTALL doc/* \
+          "${pkgdir}/usr/share/doc/${pkgname}-${pkgdir}"
+}
+
+sha256sums=('0591f9fa0339f0d15e75326d0365871c2d4e2ed8aa1ff759b3a55d3734b7d197')
