@@ -1,0 +1,98 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=mesa
+pkgver=20.2.1
+pkgrel=1
+pkgdesc=""
+arch=('x86_64')
+url="https://mesa.freedesktop.org"
+license=('GPL3')
+depends=('glibc'
+         'libdrm'
+         'python3-mako'
+         'xorg-libX11'
+         $(pacman -Q clang > /dev/null 2>&1 && echo 'clang')
+         $(pacman -Q libgcrypt > /dev/null 2>&1 && echo 'libgcrypt')
+         $(pacman -Q libunwind > /dev/null 2>&1 && echo 'libunwind')
+         $(pacamn -Q libva > /dev/null 2>&1 && echo 'libva')
+         $(pacman -Q libvdpau > /dev/null 2>&1 && echo 'libvdpau')
+         $(pacman -Q llvm > /dev/null 2>&1 && echo 'llvm')
+         $(pacman -Q lm-sensors > /dev/null 2>&1 && echo 'lm-sensors')
+         $(pacman -Q nettle > /dev/null 2>&1 && echo 'nettle')
+         $(pacman -Q wayland > /dev/null 2>&1 && echo 'wayland'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'meson'
+             'ninja'
+             'patch'
+             'sed')
+optdepends=('valgrind'
+            $(pacman -Q clang > /dev/null 2>&1 || echo 'clang')
+            $(pacman -Q libgcrypt > /dev/null 2>&1 || echo 'libgcrypt')
+            $(pacman -Q libunwind > /dev/null 2>&1 || echo 'libunwind')
+            $(pacamn -Q libva > /dev/null 2>&1 || echo 'libva')
+            $(pacman -Q libvdpau > /dev/null 2>&1 || echo 'libvdpau')
+            $(pacman -Q llvm > /dev/null 2>&1 || echo 'llvm')
+            $(pacman -Q lm-sensors > /dev/null 2>&1 || echo 'lm-sensors')
+            $(pacman -Q nettle > /dev/null 2>&1 || echo 'nettle')
+            $(pacman -Q wayland > /dev/null 2>&1 || echo 'wayland'))
+source=("${url}/archive/${pkgname}-${pkgver}.tar.xz"
+        "http://www.linuxfromscratch.org/patches/blfs/svn/${pkgname}-${pkgver}-add_xdemos-1.patch")
+_confargs=""
+_mflags=""
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-add_xdemos-1.patch"
+  sed '1s/python/&3/' -i bin/symbols-check.py
+  mkdir build
+}
+
+build(){
+  cd "${pkgname}-${pkgver}/build"
+  _mflags=`echo "${MAKEFLAGS}" | grep -o -- "-j[ ]\{0,1\}[0-9]\{1,2\}"`
+  GALLIUM_DRV="i915,iris,nouveau,r300,r600,radeonsi,svga,swrast,virgl"
+  DRI_DRIVERS="i965,nouveau,r100,r200"
+
+  if $(pacman -Q libunwind > /dev/null 2>&1); then
+    _confargs="${_confargs} -Dlibunwind=enabled"
+  else
+    _confargs="${_confargs} -Dlibunwind=disabled"
+  fi
+    if $(pacman -Q valgrind > /dev/null 2>&1); then
+    _confargs="${_confargs} -Dvalgrind=enabled"
+  else
+    _confargs="${_confargs} -Dvalgrind=disabled"
+  fi
+
+  meson --prefix=/usr                  \
+        -Dbuildtype=release            \
+        -Ddri-drivers=$DRI_DRIVERS     \
+        -Dgallium-drivers=$GALLIUM_DRV \
+        -Dgallium-nine=false           \
+        -Dglx=dri                      \
+        -Dosmesa=gallium               \
+        ${_confargs} ..
+        # Tests are broken currently
+        # -Dbuild-tests=true             \
+  ninja ${_mflags}
+}
+
+#check(){
+#  cd "${pkgname}-${pkgver}/build"
+#  _mflags=`echo "${MAKEFLAGS}" | grep -o -- "-j[ ]\{0,1\}[0-9]\{1,2\}"`
+#  ninja ${_mflags}  test
+#}
+
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  DESTDIR="${pkgdir}" ninja install
+  install -vdm755   "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  cp -rfv ../docs/* "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+}
+
+sha256sums=('d1a46d9a3f291bc0e0374600bdcb59844fa3eafaa50398e472a36fc65fd0244a'
+            '678033cb82c5f82c534dd92a6f5dad8dcc5711e997b387f78b97f3f88830ac1b')
