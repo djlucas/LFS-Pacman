@@ -2,7 +2,7 @@
 
 pkgname=pacman
 pkgver=5.2.2
-pkgrel=2
+pkgrel=3
 pkgdesc="Pacman is a library-based package manager with dependency support."
 arch=('x86_64')
 url="http://www.archlinux.org/pacman/"
@@ -22,11 +22,11 @@ backup=('etc/pacman.conf'
 source=("https://sources.archlinux.org/other/${pkgname}/${pkgname}-${pkgver}.tar.gz"
         "makepkg.conf"
         "pacman.conf"
-        "${pkgname}-${pkgver}-no_debug_src-1.patch")
+        "http://www.linuxfromscratch.org/~dj/${pkgname}-${pkgver}-no_debug_src-2.patch")
 
 prepare() {
   cd "${pkgname}-${pkgver}"
-  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-no_debug_src-1.patch"
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-no_debug_src-2.patch"
 }
 
 build() {
@@ -56,5 +56,5 @@ package() {
 sha256sums=('bb201a9f2fb53c28d011f661d50028efce6eef2c1d2a36728bdd0130189349a0'
             '9f16591284066460ce0eee253be549ed4962489fd1e53e7e10401f3816e8e71c'
             'a8fa9ac9746481ab5fa9ff01cd82bcf6c7d9c2e5e5648340757529243a03e286'
-            '62d00d50a53a2a8be940ee11460d7edb22c72cb2b50a56c436a571959e94cb58')
+            '181562fba675fa4cd97ff045b8bdf264f4dba2129afd4b3fa8b5f87ecf67d3f0')
 
