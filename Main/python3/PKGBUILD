@@ -1,8 +1,8 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=python3
-pkgver=3.8.6
-pkgverb=3.8
+pkgver=3.9.0
+pkgverb=3.9
 pkgrel=1
 pkgdesc="The Python 3 package contains the Python development environment. It is useful for object-oriented programming, writing scripts, prototyping large programs, or developing entire applications."
 arch=('x86_64')
@@ -16,22 +16,21 @@ depends=('expat'
          'libffi'
          'zlib'
          'libnsl'
-         $(pacman -Q valgrind >/dev/null 2>&1 && echo 'valgrind')
-         $(pacman -Q bluez >/dev/null 2>&1 && echo 'bluez')
-         $(pacman -Q mpdecimal >/dev/null 2>&1 && echo 'mpdecimal')
-         $(pacman -Q llvm >/dev/null 2>&1 && echo 'llvm')
-         $(pacman -Q gdb >/dev/null 2>&1 && echo 'gdb')
-         $(pacman -Q xorg-server >/dev/null 2>&1 && echo 'xorg-server')
-         $(pacman -Q ttf-fonts >/dev/null 2>&1 && echo 'ttf-fonts'))
-makedepends=('tk'
-             'sqlite')
-optdepends=('valgrind'
-            'bluez'
-            'mpdecimal'
-            'llvm'
-            'gdb'
-            'xorg-server'
-            'ttf-fonts')
+         $(pacman -Q valgrind > /dev/null 2>&1 && echo 'valgrind')
+         $(pacman -Q bluez > /dev/null 2>&1 && echo 'bluez')
+         $(pacman -Q mpdecimal > /dev/null 2>&1 && echo 'mpdecimal')
+         $(pacman -Q llvm > /dev/null 2>&1 && echo 'llvm')
+         $(pacman -Q gdb > /dev/null 2>&1 && echo 'gdb')
+         $(pacman -Q xorg-server > /dev/null 2>&1 && echo 'xorg-server'))
+makedepends=('sqlite')
+optdepends=($(pacman -Q valgrind > /dev/null 2>&1 && echo 'valgrind')
+            $(pacman -Q bluez > /dev/null 2>&1 && echo 'bluez')
+            $(pacman -Q mpdecimal > /dev/null 2>&1 && echo 'mpdecimal')
+            $(pacman -Q llvm > /dev/null 2>&1 && echo 'llvm')
+            $(pacman -Q gdb > /dev/null 2>&1 && echo 'gdb')
+            'tk'
+            $(pacman -Q xorg-server > /dev/null 2>&1 || echo 'xorg-server')
+            'xorg-ttf-fonts')
 source=("https://www.python.org/ftp/python/${pkgver}/Python-${pkgver}.tar.xz")
 _confargs=""
 
@@ -72,4 +71,4 @@ package() {
   chmod -v 755 "${pkgdir}/usr/lib/libpython${pkgverb}.so"
   chmod -v 755 "${pkgdir}/usr/lib/libpython3.so"
 }
-sha256sums=('a9e0b79d27aa056eb9cce8d63a427b5f9bab1465dee3f942dcfdb25a82f4ab8a')
+sha256sums=('9c73e63c99855709b9be0b3cc9e5b072cb60f37311e8c4e50f15576a0bf82854')
