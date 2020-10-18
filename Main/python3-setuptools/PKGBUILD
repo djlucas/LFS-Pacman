@@ -2,7 +2,7 @@
 
 pkgname=python3-setuptools
 pkgnamed=setuptools
-pkgver=50.3.0
+pkgver=50.3.2
 pkgrel=1
 pkgdesc="Easily download, build, install, upgrade, and uninstall Python packages"
 arch=('any')
@@ -22,4 +22,4 @@ package() {
   cd ${pkgnamed}-${pkgver}
   python3 setup.py install --prefix=/usr --root="$pkgdir" --optimize=1 --skip-build
 }
-sha256sums=('ff35597b0df84df22f139ce5f94ba0d1536876829a0ec777eba906496ccb6167')
+sha256sums=('7d97c001ce9193c6d947bc584b6a19f593e1d2dd4d6c443de3b1e545875bc132')
