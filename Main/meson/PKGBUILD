@@ -1,8 +1,8 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=meson
-pkgver=0.55.1
-pkgrel=3
+pkgver=0.55.2
+pkgrel=1
 pkgdesc="Meson is an open source build system meant to be both extremely fast and as user friendly as possible."
 url='https://mesonbuild.com/'
 arch=('any')
@@ -49,4 +49,4 @@ package() {
     install -vDm644 data/shell-completions/zsh/* "${pkgdir}/usr/share/zsh/site-functions"
   fi
 }
-sha256sums=('3b5741f884e04928bdfa1947467ff06afa6c98e623c25cef75adf71ca39ce080')
+sha256sums=('78a3f4ee3864a8fce9f028d38d900ef997fd398b851765e35a0185e5c01b11f7')
