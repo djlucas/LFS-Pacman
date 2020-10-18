@@ -1,7 +1,7 @@
 # Maintainer:  DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=expat
-pkgver=2.2.9
+pkgver=2.2.10
 pkgrel=1
 pkgdesc="The Expat package contains a stream oriented C library for parsing XML."
 arch=('x86_64')
@@ -17,12 +17,18 @@ makedepends=('bash'
              'grep'
              'make'
              'sed')
+optdepends=('docbook2x')
 source=("http://prdownloads.sourceforge.net/${pkgname}/${pkgname}-${pkgver}.tar.bz2")
+_confargs=""
 
 build() {
   cd "${pkgname}-${pkgver}"
+  if ! $(pacman -Q docbook2x > /dev/null 2>&1); then
+    _confargs="${_confargs} --without-docbook"
+  fi
   ./configure --prefix=/usr    \
               --disable-static \
+              ${_confargs}     \
               --docdir=/usr/share/doc/"${pkgname}-${pkgver}"
   make
 }
@@ -40,5 +46,5 @@ package() {
                   "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
 }
 
-sha256sums=('f1063084dc4302a427dabcca499c8312b3a32a29b7d2506653ecc8f950a9a237')
+sha256sums=('b2c160f1b60e92da69de8e12333096aeb0c3bf692d41c60794de278af72135a5')
 
