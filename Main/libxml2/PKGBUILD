@@ -2,8 +2,8 @@
 
 pkgname=libxml2
 pkgver=2.9.10
-pkgrel=1
-pkgdesc="The libxml2 package contains libraries and utilities used for parsing XML files." 
+pkgrel=2
+pkgdesc="The libxml2 package contains libraries and utilities used for parsing XML files."
 arch=('x86_64')
 url="http://www.xmlsoft.org/"
 license=('GPL3')
@@ -14,11 +14,13 @@ makedepends=('bash'
              'coreutils'
              'gcc'
              'make')
-source=("http://xmlsoft.org/sources/${pkgname}-${pkgver}.tar.gz")
+source=("http://xmlsoft.org/sources/${pkgname}-${pkgver}.tar.gz"
+        "http://www.linuxfromscratch.org/patches/downloads/${pkgname}/${pkgname}-${pkgver}-python_3_9-1.patch")
 
 prepare(){
   cd "${pkgname}-${pkgver}"
   sed -i 's/test.test/#&/' python/tests/tstLastError.py
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-python_3_9-1.patch"
 }
 
 build(){
@@ -35,4 +37,5 @@ package(){
   make DESTDIR="${pkgdir}" install
 }
 
-sha256sums=('aafee193ffb8fe0c82d4afef6ef91972cbaf5feea100edc2f262750611b4be1f')
+sha256sums=('aafee193ffb8fe0c82d4afef6ef91972cbaf5feea100edc2f262750611b4be1f'
+            '55acbc1dc0b229297674f67c4b2a604f6dc1dc3a31047a62a0fc6691c19e772e')

@@ -2,7 +2,7 @@
 
 pkgname=meson
 pkgver=0.55.1
-pkgrel=2
+pkgrel=3
 pkgdesc="Meson is an open source build system meant to be both extremely fast and as user friendly as possible."
 url='https://mesonbuild.com/'
 arch=('any')

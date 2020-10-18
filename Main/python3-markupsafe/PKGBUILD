@@ -3,7 +3,7 @@
 pkgname=python3-markupsafe
 pkgnamed=MarkupSafe
 pkgver=1.1.1
-pkgrel=1
+pkgrel=2
 pkgdesc="MarkupSafe is a Python module that implements a XML/HTML/XHTML Markup safe string."
 arch=('x86_64')
 license=('PSF')

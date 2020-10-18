@@ -3,7 +3,7 @@
 pkgname=python3-mako
 pkgnamed=Mako
 pkgver=1.1.3
-pkgrel=1
+pkgrel=2
 pkgdesc="Mako is a Python module that implements hyperfast and lightweight templating for the Python platform."
 arch=('any')
 license=('PSF')

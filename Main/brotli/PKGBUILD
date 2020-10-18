@@ -2,7 +2,7 @@
 
 pkgname=brotli
 pkgver=1.0.9
-pkgrel=1
+pkgrel=2
 pkgdesc="Brotli provides a general-purpose lossless compression algorithm that compresses data using a combination of a modern variant of the LZ77 algorithm, Huffman coding and 2nd order context modeling."
 arch=('x86_64')
 url="http://github.com/google/brotli"
