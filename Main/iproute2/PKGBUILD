@@ -1,9 +1,9 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=iproute2
-pkgver=5.8.0
+pkgver=5.9.0
 pkgrel=1
-pkgdesc="The IPRoute2 package contains programs for basic and advanced IP networking." 
+pkgdesc="The IPRoute2 package contains programs for basic and advanced IP networking."
 arch=('x86_64')
 url="https://www.kernel.org/pub/linux/utils/net/${pkgname}/"
 license=('GPL3')
@@ -18,7 +18,7 @@ makedepends=('bash'
              'libcap'
              'libelf'
              'linux-api-headers')
-source=("https://www.kernel.org/pub/linux/utils/net/${pkgname}//${pkgname}-${pkgver}.tar.xz")
+source=("https://www.kernel.org/pub/linux/utils/net/${pkgname}/${pkgname}-${pkgver}.tar.xz")
 
 prepare() {
   cd "${pkgname}-${pkgver}"
@@ -37,4 +37,4 @@ package(){
   make DESTDIR="${pkgdir}" DOCDIR="/usr/share/doc/${pkgname}-${pkgver}" install
 }
 
-sha256sums=('cfcd1f890290f8c8afcc91d9444ad929b9252c16f9ab3f286c50dd3c59dc646e')
+sha256sums=('a25dac94bcdcf2f73316c7f812115ea7a5710580bad892b08a83d00c6b33dacf')
