@@ -1,9 +1,9 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=libcap
-pkgver=2.43
+pkgver=2.44
 pkgrel=1
-pkgdesc="The Libcap package implements the user-space interfaces to the POSIX 1003.1e capabilities available in Linux kernels. These capabilities are a partitioning of the all powerful root privilege into a set of distinct privileges."
+pkgdesc="The Libcap package implements the user-space interfaces to the POSIX 1003.1e capabilities available in Linux kernels."
 arch=('x86_64')
 url="https://sites.google.com/site/fullycapable/"
 license=('GPL3')
@@ -22,23 +22,29 @@ backup=('etc/security/capability.conf')
 
 prepare() {
   cd "${pkgname}-${pkgver}"
-  # Do not install the static library
-  sed -i '/install.*STALIBNAME/d' libcap/Makefile
+  # use our buildflags - thanks Arch
+  sed -i "s/CFLAGS :=/CFLAGS += \$(CPPFLAGS) /" Make.Rules
+  sed -i "s/LDFLAGS :=/LDFLAGS +=/" Make.Rules
 }
 
 build() {
   cd "${pkgname}-${pkgver}"
-  make
+  make -C libcap lib=lib PKGCONFIGDIR=/usr/lib/pkgconfig
+  make -C progs
+  make -C doc
   make -C pam_cap
 }
 
 package() {
   cd "${pkgname}-${pkgver}"
-  install -vdm755 "${pkgdir}/usr/lib" "${pkgdir}"/{etc,lib}/security
-  make RAISE_SETFCAP=no lib=lib prefix="${pkgdir}/usr" install
+  make -C libcap lib=lib PKGCONFIGDIR="${pkgdir}"/usr/lib/pkgconfig \
+          prefix="${pkgdir}/usr" install-shared-cap
   chmod -v 755 "${pkgdir}/usr/lib/libcap.so"
+  make -C progs prefix="${pkgdir}/usr" install
+  make -C doc   prefix="${pkgdir}/usr" install
+  install -vdm755 "${pkgdir}"/{etc,lib}/security
   install -v -m755 pam_cap/pam_cap.so "${pkgdir}/lib/security"
   install -v -m644 pam_cap/capability.conf "${pkgdir}/etc/security"
 }
 
-sha256sums=('512a0e5fc4c1e06d472a20da26aa96a9b9bf2a26b23f094f77f1b8da56cc427f')
+sha256sums=('92188359cd5be86e8e5bd3f6483ac6ce582264f912398937ef763def2205c8e1')
