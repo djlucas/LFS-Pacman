@@ -1,7 +1,7 @@
-# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=tzdata
-_ver=2020a
+_ver=2020b
 pkgver=${_ver/[a-z]/.${_ver//[0-9.]/}}
 pkgrel=1
 pkgdesc="The Time Zone Database (often called tz or zoneinfo) contains code and data that represent the history of local time for many representative locations around the globe."
@@ -23,7 +23,7 @@ package(){
   install -vdm755 "${ZONEINFO}"/{posix,right}
 
   for tz in etcetera southamerica northamerica europe africa antarctica  \
-          asia australasia backward pacificnew systemv; do
+          asia australasia backward; do
     /usr/sbin/zic -L /dev/null   -d "${ZONEINFO}"       "${tz}"
     /usr/sbin/zic -L /dev/null   -d "${ZONEINFO}/posix" "${tz}"
     /usr/sbin/zic -L leapseconds -d "${ZONEINFO}/right" "${tz}"
@@ -34,4 +34,4 @@ package(){
   unset ZONEINFO
 }
 
-sha256sums=('547161eca24d344e0b5f96aff6a76b454da295dc14ed4ca50c2355043fb899a2')
+sha256sums=('9b053f951d245ce89d850b96ee4711d82d833559b1fc96ba19f90bc4d745e809')
