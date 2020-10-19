@@ -1,0 +1,41 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=iceauth
+pkgname=xorg-iceauth
+pkgver=1.0.8
+pkgrel=1
+pkgdesc="iceauth is the ICE authority file utility."
+arch=('x86_64')
+url="https://xorg.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'xorg-libICE')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+source=("${url}/releases/individual/app/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              --disable-static
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('e6ee213a217265cc76050e4293ea70b98c32dce6505c6421227efbda62ab60c6')
