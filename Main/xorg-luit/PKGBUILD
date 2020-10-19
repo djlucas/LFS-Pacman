@@ -1,0 +1,46 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=luit
+pkgname=xorg-luit
+pkgver=1.1.1
+pkgrel=1
+pkgdesc="luit provides locale and ISO 2022 support for Unicode terminals."
+arch=('x86_64')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'xorg-libfontenc'
+         'zlib')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+source=("${url}/releases/individual/app/${_pkgname}-${pkgver}.tar.bz2")
+
+prepare(){
+  cd "${_pkgname}-${pkgver}"
+  sed -i -e "/D_XOPEN/s/5/6/" configure
+}
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('30b0e787cb07a0f504b70f1d6123930522111ce9d4276f6683a69b322b49c636')
