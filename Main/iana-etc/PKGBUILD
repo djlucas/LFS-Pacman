@@ -2,7 +2,7 @@
 
 pkgname=iana-etc
 pkgver=4.0
-pkgrel=1
+pkgrel=2
 pkgdesc="The Iana-Etc package provides data for network services and protocols."
 arch=('x86_64')
 url="https://github.com/djlucas/iana-etc"
