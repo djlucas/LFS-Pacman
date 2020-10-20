@@ -1,0 +1,52 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=mkfontscale
+pkgname=xorg-mkfontscale
+pkgver=1.2.1
+pkgrel=1
+pkgdesc="mkfontscale creates an index of scalable font files for X.org."
+arch=('x86_64')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('bzip2'
+         'glib'
+         'glibc'
+         'freetype'
+         'libpng'
+         'xorg-libfontenc'
+         'zlib'
+         $(pacman -Q brotli > /dev/null 2>&1 && echo 'brotli')
+         $(pacman -Q graphite2 > /dev/null 2>&1 && echo 'graphite2')
+         $(pacman -Q harfbuzz > /dev/null 2>&1 && echo 'harfbuzz'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'pkg-config'
+             'sed'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+optdepends=($(pacman -Q brotli > /dev/null 2>&1 || echo 'brotli')
+            $(pacman -Q graphite2 > /dev/null 2>&1 || echo 'graphite2')
+            $(pacman -Q harfbuzz > /dev/null 2>&1 || echo 'harfbuzz'))
+source=("${url}/releases/individual/app/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('ca0495eb974a179dd742bfa6199d561bda1c8da4a0c5a667f21fd82aaab6bac7')
