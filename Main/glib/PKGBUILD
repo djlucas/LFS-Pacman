@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=glib
-pkgver=2.66.1
+pkgver=2.66.2
 pkgrel=1
 pkgdesc="GLib provides the core application building blocks for libraries and applications written in C."
 arch=('x86_64')
@@ -27,12 +27,14 @@ makedepends=('bash'
              'ninja'
              'sed')
 source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/2.66/${pkgname}-${pkgver}.tar.xz"
-        "http://www.linuxfromscratch.org/patches/blfs/svn/glib-2.66.0-skip_warnings-1.patch")
+        "http://www.linuxfromscratch.org/patches/downloads/${pkgname}/${pkgname}-${pkgver}-skip_warnings-1.patch"
+        "gio-querymodules.hook"
+        "glib-compile-schemas.hook")
 _confargs=""
 
 prepare(){
   cd "${pkgname}-${pkgver}"
-  patch -Np1 -i "${srcdir}/glib-2.66.0-skip_warnings-1.patch"
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver}-skip_warnings-1.patch"
   mkdir build
 }
 
@@ -57,7 +59,14 @@ build(){
 package(){
   cd "${pkgname}-${pkgver}/build"
   DESTDIR="${pkgdir}" ninja install
+  install -vdm755 "${pkgdir}/usr/lib/libalpm/hooks/"
+  install -vm644 "${srcdir}/glib-compile-schemas.hook" \
+                 "${pkgdir}/usr/lib/libalpm/hooks/"
+  install -vm644 "${srcdir}/gio-querymodules.hook" \
+                 "${pkgdir}/usr/lib/libalpm/hooks/"
 }
 
-sha256sums=('a269ffe69fbcc3a21ff1acb1b6146b2a5723499d6e2de33ae16ccb6d2438ef60'
-            'e1fd9ee7e4e943e25713032fdc8f720f2e566a5aa3653e340680cdc276744658')
+sha256sums=('ec390bed4e8dd0f89e918f385e8d4cfd7470b1ef7c1ce93ec5c4fc6e3c6a17c4'
+            'e1fd9ee7e4e943e25713032fdc8f720f2e566a5aa3653e340680cdc276744658'
+            '557c88177f011ced17bdeac1af3f882b2ca33b386a866fdf900b35f927a2bbe8'
+            '64ae5597dda3cc160fc74be038dbe6267d41b525c0c35da9125fbf0de27f9b25')
