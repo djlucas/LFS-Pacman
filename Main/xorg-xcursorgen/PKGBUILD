@@ -1,0 +1,47 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=xcursorgen
+pkgname=xorg-xcursorgen
+pkgver=1.0.7
+pkgrel=1
+pkgdesc="xcursorgen creates an X cursor file from a collection of PNG images."
+arch=('x86_64')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXcursor'
+         'xorg-libXdmcp'
+         'xorg-libXext'
+         'xorg-libXfixes'
+         'xorg-libXrender')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+source=("${url}/releases/individual/app/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('35b6f844b24f1776e9006c880a745728800764dbe3b327a128772b4610d8eb3d')
