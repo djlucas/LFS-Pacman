@@ -1,0 +1,53 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=xdpyinfo
+pkgname=xorg-xdpyinfo
+pkgver=1.3.2
+pkgrel=1
+pkgdesc="xdpyinfo is a display information utility for X."
+arch=('x86_64')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xorg-libdmx'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXcomposite'
+         'xorg-libXdmcp'
+         'xorg-libXext'
+         'xorg-libXi'
+         'xorg-libXinerama'
+         'xorg-libXinerama'
+         'xorg-libXrender'
+         'xorg-libXtst'
+         'xorg-libXxf86vm'
+         'xorg-libXxf86dga')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+source=("${url}/releases/individual/app/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('30238ed915619e06ceb41721e5f747d67320555cc38d459e954839c189ccaf51')
