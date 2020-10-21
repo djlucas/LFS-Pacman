@@ -1,0 +1,57 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=x11perf
+pkgname=xorg-x11perf
+pkgver=1.6.1
+pkgrel=1
+pkgdesc="x11perf is an X11 server performance test program."
+arch=('x86_64')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('bzip2'
+         'fontconfig'
+         'freetype'
+         'glib'
+         'glibc'
+         'graphite2'
+         'harfbuzz'
+         'libpng'
+         'libxcb'
+         'pcre'
+         'util-linux'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXdmcp'
+         'xorg-libXext'
+         'xorg-libXft'
+         'xorg-libXmu'
+         'xorg-libXrender'
+         'zlib')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+source=("${url}/releases/individual/app/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('1c7e0b8ffc2794b4ccf11e04d551823abe0ea47b4f7db0637390db6fbe817c34')
