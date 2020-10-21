@@ -1,0 +1,49 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=xdriinfo
+pkgname=xorg-xdriinfo
+pkgver=1.0.6
+pkgrel=1
+pkgdesc="xdriinfo queries configuration information of DRI drivers."
+arch=('x86_64')
+url="https://xorg.freedesktop.org/"
+license=('custom')
+groups=('xorg')
+depends=('expat'
+         'glibc'
+         'libdrm'
+         'libxcb'
+         'mesa'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXdamage'
+         'xorg-libXdmcp'
+         'xorg-libXext'
+         'xorg-libXfixes'
+         'xorg-libXxf86vm'
+         'xorg-libxshmfence')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'make'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+source=("${url}/releases/individual/app/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('d9ccd2c3e87899417acc9ea1f3e319a4198112babe1dc711273584f607449d51')
