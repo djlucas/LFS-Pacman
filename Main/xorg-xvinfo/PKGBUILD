@@ -1,0 +1,43 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=xvinfo
+pkgname=xorg-xvinfo
+pkgver=1.1.4
+pkgrel=1
+pkgdesc="xvinfo prints out X-Video extension adaptor information."
+arch=('x86_64')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXdmcp'
+         'xorg-libXext'
+         'xorg-libXv')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'make'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+source=("${url}/releases/individual/app/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('0353220d6606077ba42363db65f50410759f9815352f77adc799e2adfa76e73f')
