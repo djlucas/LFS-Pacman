@@ -1,0 +1,51 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=xkbutils
+pkgname=xorg-xkbutils
+pkgver=1.0.4
+pkgrel=1
+pkgdesc="xkbutils contains additional XKB utilities"
+arch=('x86_64')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xorg-libICE'
+         'xorg-libSM'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXaw'
+         'xorg-libXdmcp'
+         'xorg-libXext'
+         'xorg-libXmu'
+         'xorg-libXpm'
+         'xorg-libXt'
+         'util-linux')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+source=("${url}/releases/individual/app/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('d2a18ab90275e8bca028773c44264d2266dab70853db4321bdbc18da75148130')
