@@ -1,0 +1,40 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=xlsclients
+pkgname=xorg-xlsclients
+pkgver=1.1.4
+pkgrel=1
+pkgdesc="xlsclients lists client applications running on a display."
+arch=('x86_64')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xorg-libXau'
+         'xorg-libXdmcp')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'make'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+source=("${url}/releases/individual/app/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('773f2af49c7ea2c44fba4213bee64325875c1b3c9bc4bbcd8dac9261751809c1')
