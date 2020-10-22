@@ -1,0 +1,43 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=xset
+pkgname=xorg-xset
+pkgver=1.2.4
+pkgrel=1
+pkgdesc="xset is the user preference utility for X."
+arch=('x86_64')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXdmcp'
+         'xorg-libXext'
+         'xorg-libXmu')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'make'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+source=("${url}/releases/individual/app/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('e4fd95280df52a88e9b0abc1fee11dcf0f34fc24041b9f45a247e52df941c957')
