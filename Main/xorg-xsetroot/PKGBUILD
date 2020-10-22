@@ -1,0 +1,46 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=xsetroot
+pkgname=xorg-xsetroot
+pkgver=1.1.2
+pkgrel=1
+pkgdesc="xsetroot is the root window parameter setting utility for X."
+arch=('x86_64')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('glibc'
+         'libxcb'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXcursor'
+         'xorg-libXdmcp'
+         'xorg-libXext'
+         'xorg-libXfixes'
+         'xorg-libXmu'
+         'xorg-libXrender')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'make'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+source=("${url}/releases/individual/app/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('10c442ba23591fb5470cea477a0aa5f679371f4f879c8387a1d9d05637ae417c')
