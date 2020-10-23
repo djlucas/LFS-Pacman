@@ -1,0 +1,38 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=font-bh-ttf
+pkgname=xorg-font-bh-ttf
+pkgver=1.0.3
+pkgrel=1
+pkgdesc="X.org bh ttf font."
+arch=('any')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('rootfs')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'xorg-font-util'
+             'xorg-util-macros')
+source=("${url}/releases/individual/font/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  ln -sfv ./X11/TTF "${pkgdir}/usr/share/fonts/X11-TTF"
+}
+
+sha256sums=('1b4bea63271b4db0726b5b52c97994c3313b6023510349226908090501abd25f')
