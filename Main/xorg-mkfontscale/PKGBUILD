@@ -3,7 +3,7 @@
 _pkgname=mkfontscale
 pkgname=xorg-mkfontscale
 pkgver=1.2.1
-pkgrel=1
+pkgrel=2
 pkgdesc="mkfontscale creates an index of scalable font files for X.org."
 arch=('x86_64')
 url="https://xorg.freedesktop.org"
@@ -34,7 +34,10 @@ makedepends=('bash'
 optdepends=($(pacman -Q brotli > /dev/null 2>&1 || echo 'brotli')
             $(pacman -Q graphite2 > /dev/null 2>&1 || echo 'graphite2')
             $(pacman -Q harfbuzz > /dev/null 2>&1 || echo 'harfbuzz'))
-source=("${url}/releases/individual/app/${_pkgname}-${pkgver}.tar.bz2")
+source=("${url}/releases/individual/app/${_pkgname}-${pkgver}.tar.bz2"
+        "mkfontscale.hook"
+        "mkfontscale.script")
+install=mkfontscale.install
 
 build(){
   cd "${_pkgname}-${pkgver}"
@@ -47,6 +50,13 @@ build(){
 package(){
   cd "${_pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}"/usr/share/libalpm/{hooks,scripts}
+  install -vm644 "${srcdir}/mkfontscale.hook" \
+                 "${pkgdir}/usr/share/libalpm/hooks"
+  install -vm755 "${srcdir}/mkfontscale.script" \
+                 "${pkgdir}/usr/share/libalpm/scripts/mkfontscale"
 }
 
-sha256sums=('ca0495eb974a179dd742bfa6199d561bda1c8da4a0c5a667f21fd82aaab6bac7')
+sha256sums=('ca0495eb974a179dd742bfa6199d561bda1c8da4a0c5a667f21fd82aaab6bac7'
+            '7e713ad3a2976706c63081204fe29c3bf3414ae5b4dd1de6bd9cb56ce58398be'
+            '06c60e3e46a76b5300c3224cea6b5094556ea712a08ff9a0103be2eb58d222b5')
