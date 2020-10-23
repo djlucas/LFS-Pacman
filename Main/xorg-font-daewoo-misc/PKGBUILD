@@ -1,0 +1,39 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=font-daewoo-misc
+pkgname=xorg-font-daewoo-misc
+pkgver=1.0.3
+pkgrel=1
+pkgdesc="X.org Daewoo misc font."
+arch=('any')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('rootfs'
+         'xorg-mkfontscale')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'xorg-font-util'
+             'xorg-util-macros')
+source=("${url}/releases/individual/font/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  rm -f "${pkgdir}"/usr/share/fonts/X11/misc/fonts.dir
+}
+
+sha256sums=('bc65de70bee12698caa95b523d3b652c056347e17b68cc8b5d6bbdff235c4be8')
