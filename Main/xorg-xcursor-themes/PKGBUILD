@@ -1,0 +1,38 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=xcursor-themes
+pkgname=xorg-xcursor-themes
+pkgver=1.0.6
+pkgrel=1
+pkgdesc="xcursor-themes package contains the redglass and whiteglass animated cursor themes."
+arch=('any')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('xorg-xcursorgen')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'xorg-util-macros')
+source=("${url}/releases/individual/data/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('ee1ec574741293abcf66ac14ce7e74add7ac6be7deb8b38179ef010d22354999')
