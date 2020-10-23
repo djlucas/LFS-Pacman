@@ -1,0 +1,39 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=font-ibm-type1
+pkgname=xorg-font-ibm-type1
+pkgver=1.0.3
+pkgrel=1
+pkgdesc="X.org IBM Type1 font."
+arch=('any')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('rootfs'
+         'xorg-mkfontscale')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'xorg-font-util'
+             'xorg-util-macros')
+source=("${url}/releases/individual/font/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  rm -f "${pkgdir}"/usr/share/fonts/X11/Type1/fonts.{dir,scale}
+}
+
+sha256sums=('fddb28d3db5a07f4b4ca15388488a9680a10e1367a18f358f903b2a608a5d2df')
