@@ -1,0 +1,39 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=font-isas-misc
+pkgname=xorg-font-isas-misc
+pkgver=1.0.3
+pkgrel=1
+pkgdesc="X.org isas misc font."
+arch=('any')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('rootfs'
+         'xorg-mkfontscale')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'xorg-font-util'
+             'xorg-util-macros')
+source=("${url}/releases/individual/font/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  rm -f "${pkgdir}"/usr/share/fonts/X11/misc/fonts.dir
+}
+
+sha256sums=('5824ab4b485951107dd245b8f7717d2822f1a6dbf6cea98f1ac7f49905c0a867')
