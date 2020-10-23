@@ -2,7 +2,7 @@
 
 pkgname=fontconfig
 pkgver=2.13.1
-pkgrel=2
+pkgrel=3
 pkgdesc="The Fontconfig package contains a library and support programs used for configuring and customizing font access."
 arch=('x86_64')
 url="https://www.freedesktop.org/software/${pkgname}"
@@ -21,7 +21,9 @@ optdepends=('docbook-utils'
             'libxml2'
             'tex'
             $(pacman -Q json-c > /dev/null 2>&1 || echo 'json-c'))
-source=("${url}/release/${pkgname}-${pkgver}.tar.bz2")
+source=("${url}/release/${pkgname}-${pkgver}.tar.bz2"
+        "fontconfig.hook")
+install=fontconfig.install
 
 prepare(){
   cd "${pkgname}-${pkgver}"
@@ -56,6 +58,9 @@ package(){
                  "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}/fontconfig-devel"
   install -vm644 doc/*.{pdf,sgml,txt,html} \
                  "${pkgdir}/usr/share/doc/${pkgname}-${pkgver}"
+  install -vdm755 "${pkgdir}/usr/share/libalpm/hooks"
+  install -vm644 "${srcdir}/fontconfig.hook" "${pkgdir}/usr/share/libalpm/hooks"
 }
 
-sha256sums=('f655dd2a986d7aa97e052261b36aa67b0a64989496361eca8d604e6414006741')
+sha256sums=('f655dd2a986d7aa97e052261b36aa67b0a64989496361eca8d604e6414006741'
+            '8883f7e6e9d574ed52b89256507a6224507925715ddc85b3dfab9683df2f1e25')
