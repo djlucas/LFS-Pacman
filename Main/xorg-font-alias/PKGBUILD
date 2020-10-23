@@ -1,0 +1,37 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=font-alias
+pkgname=xorg-font-alias
+pkgver=1.0.4
+pkgrel=1
+pkgdesc="X.org encodings font."
+arch=('any')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('rootfs')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'xorg-font-util'
+             'xorg-util-macros')
+source=("${url}/releases/individual/font/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('f3111ae8bf2e980f5f56af400e8eefe5fc9f4207f4a412ea79637fd66c945276')
