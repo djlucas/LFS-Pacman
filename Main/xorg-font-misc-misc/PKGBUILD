@@ -1,0 +1,39 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=font-misc-misc
+pkgname=xorg-font-misc-misc
+pkgver=1.1.2
+pkgrel=1
+pkgdesc="X.org misc misc font."
+arch=('any')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('rootfs'
+         'xorg-mkfontscale')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'xorg-font-util'
+             'xorg-util-macros')
+source=("${url}/releases/individual/font/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  rm -f "${pkgdir}"/usr/share/fonts/X11/misc/fonts.dir
+}
+
+sha256sums=('b8e77940e4e1769dc47ef1805918d8c9be37c708735832a07204258bacc11794')
