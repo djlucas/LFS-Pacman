@@ -32,6 +32,7 @@ build(){
 package(){
   cd "${_pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
+  rm -f "${pkgdir}/usr/share/fonts/X11/TTF/fonts.dir"
   ln -sfv ./X11/TTF "${pkgdir}/usr/share/fonts/X11-TTF"
 }
 
