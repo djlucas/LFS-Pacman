@@ -1,0 +1,39 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+_pkgname=encodings
+pkgname=xorg-encodings
+pkgver=1.0.5
+pkgrel=1
+pkgdesc="X.org encodings font."
+arch=('any')
+url="https://xorg.freedesktop.org"
+license=('custom')
+groups=('xorg')
+depends=('rootfs')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'xorg-font-util'
+             'xorg-util-macros')
+source=("${url}/releases/individual/font/${_pkgname}-${pkgver}.tar.bz2")
+
+build(){
+  cd "${_pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var
+  make
+}
+
+package(){
+  cd "${_pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('bd96e16143a044b19e87f217cf6a3763a70c561d1076aad6f6d862ec41774a31')
