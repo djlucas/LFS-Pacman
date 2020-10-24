@@ -2,16 +2,38 @@
 
 pkgname=xorg-server
 pkgver=1.20.9
-pkgrel=2
+pkgrel=3
 pkgdesc="The Xorg Server is the core of the X Window system."
 arch=('x86_64')
 url="https://www.x.org"
 license=('GPL3')
 groups=('xorg')
-depends=('glibc'
+depends=('bzip2'
+         'fontconfig'
+         'freetype'
+         'glib'
+         'glibc'
+         'harfbuzz'
          'pixman'
-         'xorg-xkeyboard-config'
+         'libdrm'
+         'libffi'
+         'libpng'
          'xorg-font-util'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXdamage'
+         'xorg-libXdmcp'
+         'xorg-libXext'
+         'xorg-libXfixes'
+         'xorg-libXfont2'
+         'xorg-libXxf86vm'
+         'xorg-libfontenc'
+         'xorg-libxshmfence'
+         'xorg-xkeyboard-config'
+         'zlib'
+         $(pacman -Q brotli > /dev/null 2>&1 && echo 'brotli')
+         $(pacman -Q graphite2 > /dev/null 2>&1 && echo 'graphite2')
+         $(pacman -Q mesa > /dev/null 2>&1 && echo 'mesa')
          $(pacman -Q elogind > /dev/null 2>&1 && echo 'elogind')
          $(pacman -Q libepoxy > /dev/null 2>&1 && echo 'libepoxy')
          $(pacman -Q polkit > /dev/null 2>&1 && echo 'polkit')
@@ -19,6 +41,8 @@ depends=('glibc'
          $(pacman -Q wayland-protools > /dev/null 2>&1 && echo 'wayland-protocols')
          $(pacman -Q nettle > /dev/null 2>&1 && echo 'nettle')
          $(pacman -Q libgcrypt > /dev/null 2>&1 && echo 'libgcrypt')
+         $(pacman -Q libgpg-error > /dev/null 2>&1 && echo 'libgpg-error')
+         $(pacman -Q libxcb > /dev/null 2>&1 && echo 'libxcb')
          $(pacman -Q xcb-util-keysyms > /dev/null 2>&1 && echo 'xcb-util-keysyms')
          $(pacman -Q xcb-util-image > /dev/null 2>&1 && echo 'xcb-util-image')
          $(pacman -Q xcb-util-renderutil > /dev/null 2>&1 && echo 'xcb-util-renderutil')
@@ -26,23 +50,26 @@ depends=('glibc'
 makedepends=('bash'
              'binutils'
              'coreutils'
-             'diffutils'
+             'gawk'
              'gcc'
-             'gettext'
              'grep'
              'make'
-             'patch'
-             'sed'
-             'texinfo')
-optdepends=('doxygen'
+             'sed')
+optdepends=('acpid'
+            'doxygen'
             'fop'
+            $(pacman -Q brotli > /dev/null 2>&1 || echo 'brotli')
             $(pacman -Q elogind > /dev/null 2>&1 || echo 'elogind')
+            $(pacman -Q graphite2 > /dev/null 2>&1 || echo 'graphite2')
+            $(pacman -Q mesa > /dev/null 2>&1 || echo 'mesa')
             $(pacman -Q libepoxy > /dev/null 2>&1 || echo 'libepoxy')
             $(pacman -Q polkit > /dev/null 2>&1 || echo 'polkit')
             $(pacman -Q wayland > /dev/null 2>&1 || echo 'wayland')
             $(pacman -Q wayland-protools > /dev/null 2>&1 || echo 'wayland-protocols')
             $(pacman -Q nettle > /dev/null 2>&1 || echo 'nettle')
             $(pacman -Q libgcrypt > /dev/null 2>&1 || echo 'libgcrypt')
+            $(pacman -Q libgpg-error > /dev/null 2>&1 || echo 'libgpg-error')
+            $(pacman -Q libxcb > /dev/null 2>&1 || echo 'libxcb')
             $(pacman -Q xcb-util-keysyms > /dev/null 2>&1 || echo 'xcb-util-keysyms')
             $(pacman -Q xcb-util-image > /dev/null 2>&1 || echo 'xcb-util-image')
             $(pacman -Q xcb-util-renderutil > /dev/null 2>&1 || echo 'xcb-util-renderutil')
