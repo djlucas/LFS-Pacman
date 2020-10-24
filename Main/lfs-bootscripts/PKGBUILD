@@ -1,9 +1,9 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=lfs-bootscripts
-pkgver=20200818
+pkgver=20201019
 pkgrel=1
-pkgdesc="The Sysvinit package contains programs for controlling the startup, running, and shutdown of the system." 
+pkgdesc="The Sysvinit package contains programs for controlling the startup, running, and shutdown of the system."
 arch=('x86_64')
 url="http://www.linuxfromscratch.org"
 license=('GPL3')
@@ -14,15 +14,22 @@ makedepends=('coreutils'
              'make'
              'grep'
              'sed')
+optdepends=('python3-lsb-tools')
 backup=('etc/inittab'
         'etc/sysconfig/clock'
-        'etc/sysconfig/rc.site')
+        'etc/sysconfig/console'
+        'etc/sysconfig/createfiles'
+        'etc/sysconfig/modules'
+        'etc/sysconfig/rc.site'
+        'etc/sysconfig/udev_retry')
 source=("http://www.linuxfromscratch.org/lfs/downloads/development/${pkgname}-${pkgver}.tar.xz")
 options=('emptydirs')
+install=lfs-bootscripts.install
 
 package(){
   cd "${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
+  rm -f "${pkgdir}"/etc/rc.d/rc?.d/*
   cat > "${pkgdir}/etc/inittab" << "EOF"
 # Begin /etc/inittab
 
@@ -64,4 +71,4 @@ CLOCKPARAMS=
 EOF
 }
 
-sha256sums=('5a1510959008ce2f158c5c33454a528bb04d7eec2f7e0177af88d4b9586b6d0c')
+sha256sums=('58bfe996e0d08d0bc3af31d7b2d3a7af8fcbe2249c41e312ba7af25d37c2d1a6')
