@@ -1,0 +1,44 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=pixman
+pkgver=0.40.0
+pkgrel=1
+pkgdesc="The Pixman package contains a library that provides low-level pixel manipulation features such as image compositing and trapezoid rasterization."
+arch=('x86_64')
+url="http://www.cairographics.org"
+license=('GPL3')
+groups=('core')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'make'
+             'sed')
+optdepends=('gtk'
+            'libpng')
+source=("${url}/releases/${pkgname}-${pkgver}.tar.gz")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  mkdir build
+}
+
+build(){
+  cd "${pkgname}-${pkgver}/build"
+  meson --prefix=/usr
+  ninja
+}
+
+check(){
+  cd "${pkgname}-${pkgver}/build"
+  ninja test
+}
+
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  DESTDIR="${pkgdir}" ninja install
+}
+
+sha256sums=('6d200dec3740d9ec4ec8d1180e25779c00bc749f94278c8b9021f5534db223fc')
