@@ -1,0 +1,85 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=xorg-server
+pkgver=1.20.9
+pkgrel=1
+pkgdesc="The Xorg Server is the core of the X Window system."
+arch=('x86_64')
+url="https://www.x.org"
+license=('GPL3')
+groups=('core')
+depends=('glibc'
+         'pixman'
+         'xorg-xkeyboard-config'
+         'xorg-font-util'
+         $(pacman -Q elogind > /dev/null 2>&1 && echo 'elogind')
+         $(pacman -Q libepoxy > /dev/null 2>&1 && echo 'libepoxy')
+         $(pacman -Q polkit > /dev/null 2>&1 && echo 'polkit')
+         $(pacman -Q wayland > /dev/null 2>&1 && echo 'wayland')
+         $(pacman -Q wayland-protools > /dev/null 2>&1 && echo 'wayland-protocols')
+         $(pacman -Q nettle > /dev/null 2>&1 && echo 'nettle')
+         $(pacman -Q libgcrypt > /dev/null 2>&1 && echo 'libgcrypt')
+         $(pacman -Q xcb-util-keysyms > /dev/null 2>&1 && echo 'xcb-util-keysyms')
+         $(pacman -Q xcb-util-image > /dev/null 2>&1 && echo 'xcb-util-image')
+         $(pacman -Q xcb-util-renderutil > /dev/null 2>&1 && echo 'xcb-util-renderutil')
+         $(pacman -Q xcb-util-wm > /dev/null 2>&1 && echo 'xcb-util-wm'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'patch'
+             'sed'
+             'texinfo')
+optdepends=('doxygen'
+            'fop'
+            $(pacman -Q elogind > /dev/null 2>&1 || echo 'elogind')
+            $(pacman -Q libepoxy > /dev/null 2>&1 || echo 'libepoxy')
+            $(pacman -Q polkit > /dev/null 2>&1 || echo 'polkit')
+            $(pacman -Q wayland > /dev/null 2>&1 || echo 'wayland')
+            $(pacman -Q wayland-protools > /dev/null 2>&1 || echo 'wayland-protocols')
+            $(pacman -Q nettle > /dev/null 2>&1 || echo 'nettle')
+            $(pacman -Q libgcrypt > /dev/null 2>&1 || echo 'libgcrypt')
+            $(pacman -Q xcb-util-keysyms > /dev/null 2>&1 || echo 'xcb-util-keysyms')
+            $(pacman -Q xcb-util-image > /dev/null 2>&1 || echo 'xcb-util-image')
+            $(pacman -Q xcb-util-renderutil > /dev/null 2>&1 || echo 'xcb-util-renderutil')
+            $(pacman -Q xcb-util-wm > /dev/null 2>&1 || echo 'xcb-util-wm'))
+source=("${url}/pub/individual/xserver/${pkgname}-${pkgver}.tar.bz2")
+install=xorg-server.install
+_confargs=""
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  if $(pacman -Q libepoxy > /dev/null 2>&1); then
+    _confargs="${_confargs} --enable-glamor"
+  fi
+  if ! $(pacman -Q elogind > /dev/null 2>&1); then
+    _confargs="${_confargs} --disable-systemd-logind --enable-install-setuid"
+  else
+    _confargs="${_confargs} --enable-suid-wrapper"
+  fi
+
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var \
+              ${_confargs}         \
+              --with-xkb-output=/var/lib/xkb
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  ldconfig || true
+  make check
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -vdm755 "${pkgdir}/etc/X11/xorg.conf.d"
+}
+
+sha256sums=('e219f2e0dfe455467939149d7cd2ee53b79b512cc1d2094ae4f5c9ed9ccd3571')
