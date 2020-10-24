@@ -2,12 +2,12 @@
 
 pkgname=xorg-server
 pkgver=1.20.9
-pkgrel=1
+pkgrel=2
 pkgdesc="The Xorg Server is the core of the X Window system."
 arch=('x86_64')
 url="https://www.x.org"
 license=('GPL3')
-groups=('core')
+groups=('xorg')
 depends=('glibc'
          'pixman'
          'xorg-xkeyboard-config'
