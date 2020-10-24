@@ -1,7 +1,8 @@
-# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=linux-firmware
-pkgver=20200814
+pkgver=20201024
+_ucodever=20200616
 pkgrel=1
 pkgdesc="The Linux-Firmware package contains propietary kernel "blobs" required for some specific hardware."
 arch=('x86_64')
@@ -11,13 +12,19 @@ license=('custom')
 makedepends=('bash'
              'coreutils')
 depends=('rootfs')
-source=("http://www.linuxfromscratch.org/~dj/${pkgname}-${pkgver}.tar.xz")
+# Note, you cannot distribute firmware from NVidia separate from the closed
+# source driver. See the "nouveau-fw" package for NVidia firmware
+source=("http://www.linuxfromscratch.org/~dj/${pkgname}-${pkgver}.tar.xz"
+        "https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files/archive/microcode-${_ucodever}.tar.gz")
 options=('!strip' '!debug')
 
 package(){
   cd "${pkgname}-${pkgver}"
   install -vdm755 "${pkgdir}/lib/firmware"
   cp -Rv * "${pkgdir}/lib/firmware"
+  cp -Rv "${srcdir}/Intel-Linux-Processor-Microcode-Data-Files-microcode-${_ucodever}/intel-ucode" \
+        "${pkgdir}/lib/firmware"
 }
 
-sha256sums=('c01fd6b6cd492660aeb835984de8352f0111590ce1c4a56de5ea4b709ae23cf8')
+sha256sums=('9150fb10a1c94dae28678924d218d780dad74b5bf964c1ff6c38b9bd5bf2bc68'
+            'eb4f939421ac6cdea3c586c9d984ec518320f00c07eb2b3d6754309c83c93371')
