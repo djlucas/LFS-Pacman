@@ -1,0 +1,40 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=libevdev
+pkgver=1.9.1
+pkgrel=1
+pkgdesc="The libevdev package contains common functions for Xorg input drivers."
+arch=('x86_64')
+url="https://www.freedesktop.org/software/libevdev"
+license=('custom')
+depends=('glibc'
+         'python3')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gawk'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'sed'
+             'xorg-util-macros'
+             'xorg-xorgproto')
+optdepends=('doxygen'
+            'valgrind')
+source=("${url}/${pkgname}-${pkgver}.tar.xz")
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr        \
+              --sysconfdir=/etc    \
+              --localstatedir=/var
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('f5603c48c5afd76b14df7a5124e0a94a102f8da0d45826192325069d1bbc7acb')
