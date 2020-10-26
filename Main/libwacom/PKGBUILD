@@ -1,0 +1,47 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=libwacom
+pkgver=1.5
+pkgrel=1
+pkgdesc="The libwacom package contains a library used to identify wacom tablets and their model-specific features."
+arch=('x86_64')
+url="https://github.com/linuxwacom"
+license=('GPL3')
+depends=('eudev'
+         'glibc'
+         'libgudev'
+         'libxml2'
+         $(pacman -Q gtk2 > /dev/null 2>&1 && echo 'gtk2')
+         $(pacman -Q librsvg > /dev/null 2>&1 && echo 'librsvg'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'meson'
+             'ninja'
+             'sed')
+source=("${url}/${pkgname}/releases/download/${pkgname}-${pkgver}/${pkgname}-${pkgver}.tar.bz2")
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  mkdir build
+}
+
+build(){
+  cd "${pkgname}-${pkgver}/build"
+  meson --prefix=/usr -Dudev-dir=/lib/udev ..
+  ninja
+}
+
+check(){
+  cd "${pkgname}-${pkgver}/build"
+  ninja test
+}
+
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  DESTDIR="${pkgdir}" ninja install
+}
+
+sha256sums=('6b349fb73c8edcf0288d17c49049648214924846b6a58914c2ed3477ff36d47b')
