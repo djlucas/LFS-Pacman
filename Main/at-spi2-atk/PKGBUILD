@@ -1,0 +1,63 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=at-spi2-atk
+pkgver=2.38.0
+pkgrel=1
+pkgdesc="The At-Spi2 Core package provides a Service Provider Interface for the Assistive Technologies."
+arch=('x86_64')
+url="https://developer.gnome.org/at-spi2/"
+license=('GPL3')
+groups=('core')
+depends=('at-spi2-core'
+         'atk'
+         'dbus'
+         'desktop-file-utils'
+         'elogind'
+         'glib'
+         'glibc'
+         'pcre'
+         'libcap'
+         'libffi'
+         'libxcb'
+         'libxml2'
+         'xorg-libX11'
+         'xorg-libXau'
+         'xorg-libXdmcp'
+         'shared-mime-info'
+         $(pacman -Q gobject-introspection > /dev/null 2>&1 && echo 'gobject-introspection'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'gcc'
+             'grep'
+             'meson'
+             'ninja'
+             'sed')
+optdepend=('gtk-doc'
+           $(pacman -Q gobject-introspection > /dev/null 2>&1 || echo 'gobject-introspection'))
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/2.38/${pkgname}-${pkgver}.tar.xz")
+install=at-spi2-atk.install
+_confargs=""
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  mkdir build
+}
+
+build(){
+  cd "${pkgname}-${pkgver}/build"
+  meson --prefix=/usr ..
+  ninja
+}
+
+#check(){
+#  cd "${pkgname}-${pkgver}"
+#  make check
+#}
+
+package(){
+  cd "${pkgname}-${pkgver}/build"
+  DESTDIR="${pkgdir}" ninja install
+}
+
+sha256sums=('cfa008a5af822b36ae6287f18182c40c91dd699c55faa38605881ed175ca464f')
