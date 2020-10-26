@@ -1,0 +1,56 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=libgudev
+pkgver=234
+pkgrel=1
+pkgdesc="The libgudev package contains GObject bindings for libudev."
+arch=('x86_64')
+url="http://developer.gnome.org/libgudev/"
+license=('GPL3')
+depends=('glib'
+         'glibc'
+         $(pacman -Q gobject-introspection > /dev/null 2>&1 && echo 'gobject-introspection'))
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'gcc'
+             'gettext'
+             'grep'
+             'make'
+             'patch'
+             'sed'
+             'texinfo')
+optdepends=($(pacman -Q gobject-introspection > /dev/null 2>&1 || echo 'gobject-introspection')
+            $(pacman -Q gtk-doc > /dev/null 2>&1 || echo 'gtk-doc')
+            $(pacman -Q umockdev > /dev/null 2>&1 || echo 'umockdev'))
+source=("http://ftp.gnome.org/pub/gnome/sources/${pkgname}/${pkgver}/${pkgname}-${pkgver}.tar.xz")
+_confargs=""
+
+build(){
+  cd "${pkgname}-${pkgver}"
+  if ! $(pacman -Q umockdev > /dev/null 2>&1); then
+    _confargs="${_confargs} --disable-umockdev"
+  fi
+  if $(pacman -Q gtk-doc > /dev/null 2>&1); then
+    _confargs="${_confargs} --enable-gtk-doc"
+  fi
+  ./configure --prefix=/usr ${_confargs}
+  make
+}
+
+check(){
+  cd "${pkgname}-${pkgver}"
+  if $(pacman -Q umockdev > /dev/null 2>&1); then
+    make check
+  else
+    echo "Test suite not available...OK"
+  fi
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('1baeacacf0db42fa073ad5183d1decce9317857416a2b0f82ce3370d711a2e37')
