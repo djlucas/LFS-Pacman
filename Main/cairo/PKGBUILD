@@ -1,0 +1,78 @@
+# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+
+pkgname=cairo
+pkgver=1.17.2+f93fc72c03e
+pkgrel=1
+pkgdesc="Cairo is a 2D graphics library with support for multiple output devices."
+arch=('x86_64')
+url="https://www.cairographics.org/"
+license=('GPL3')
+depends=('glibc')
+makedepends=('bash'
+             'binutils'
+             'coreutils'
+             'diffutils'
+             'fontconfig'
+             'gcc'
+             'grep'
+             'glib'
+             'libpng'
+             'make'
+             'pixman'
+             'sed'
+             $(pacman -Q cogl > /dev/null 2>&1 && echo 'cogl')
+             $(pacman -Q ghostscript > /dev/null 2>&1 && echo 'ghostscript')
+             $(pacman -Q gtk3 > /dev/null 2>&1 && echo 'gtk3')
+             $(pacman -Q gtk2 > /dev/null 2>&1 && echo 'gtk2')
+             $(pacman -Q gtk-doc > /dev/null 2>&1 && echo 'gtk-doc')
+             $(pacman -Q libdrm > /dev/null 2>&1 && echo 'libdrm')
+             $(pacman -Q librsvg > /dev/null 2>&1 && echo 'librsvg')
+             $(pacman -Q libxml2 > /dev/null 2>&1 && echo 'libxml2')
+             $(pacman -Q lzo > /dev/null 2>&1 && echo 'lzo')
+             $(pacman -Q mesa > /dev/null 2>&1 && echo 'mesa')
+             $(pacman -Q poppler > /dev/null 2>&1 && echo 'poppler')
+             $(pacman -Q qt5 > /dev/null 2>&1 && echo 'qt5')
+             $(pacman -Q valgrind > /dev/null 2>&1 && echo 'valgrind'))
+optdepends=($(pacman -Q cogl > /dev/null 2>&1 && echo 'cogl')
+            $(pacman -Q ghostscript > /dev/null 2>&1 || echo 'ghostscript')
+            $(pacman -Q gtk3 > /dev/null 2>&1 || echo 'gtk3')
+            $(pacman -Q gtk2 > /dev/null 2>&1 || echo 'gtk2')
+            $(pacman -Q gtk-doc > /dev/null 2>&1 || echo 'gtk-doc')
+            $(pacman -Q libdrm > /dev/null 2>&1 || echo 'libdrm')
+            $(pacman -Q librsvg > /dev/null 2>&1 || echo 'librsvg')
+            $(pacman -Q libxml2 > /dev/null 2>&1 || echo 'libxml2')
+            $(pacman -Q lzo > /dev/null 2>&1 || echo 'lzo')
+            $(pacman -Q mesa > /dev/null 2>&1 || echo 'mesa')
+            $(pacman -Q poppler > /dev/null 2>&1 || echo 'poppler')
+            $(pacman -Q qt5 > /dev/null 2>&1 || echo 'qt5')
+            $(pacman -Q valgrind > /dev/null 2>&1 || echo 'valgrind'))
+source=("http://anduin.linuxfromscratch.org/BLFS/cairo/cairo-1.17.2+f93fc72c03e.tar.xz")
+_confargs=""
+
+prepare(){
+  cd "${pkgname}-${pkgver}"
+  autoreconf -fiv
+}
+
+build(){
+  if $(pacman -Q mesa > /dev/null 2>&2); then
+    _confargs="${_confargs} --enable-gl"
+
+  fi
+  if $(pacman -Q gtk-doc > /dev/null 2>&1); then
+    _confargs="${_confargs} --enable-gtk-doc"
+  fi
+
+  cd "${pkgname}-${pkgver}"
+  ./configure --prefix=/usr    \
+              --disable-static \
+              --enable-tee ${_confargs}
+  make
+}
+
+package(){
+  cd "${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('cc7f9ec3fae845d6c66e48f54d57bf5e85854d70182c67dd5e3fcf2d646a762f')
