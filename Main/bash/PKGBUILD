@@ -1,9 +1,10 @@
-# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=bash
-pkgbver=5.0
-patchver=018
-pkgver="${pkgbver}.${patchver}"
+pkgver=5.1
+#pkgbver=5.1
+#patchver=000
+#pkgver="${pkgbver}.${patchver}"
 pkgrel=1
 pkgdesc="The Bash package contains the Bourne-Again SHell."
 arch=('x86_64')
@@ -25,35 +26,33 @@ depends=('glibc'
          'readline'
          'gettext')
 _confargs=""
-source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgbver}.tar.gz"
-        "http://www.linuxfromscratch.org/~dj/${pkgname}-${pkgbver}-upstream_fixes-${patchver}.patch")
+source=("http://ftp.gnu.org/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz")
 
-prepare() {
-  cd "${pkgname}-${pkgbver}"
-  patch -Np1 -i "${srcdir}/${pkgname}-${pkgbver}-upstream_fixes-${patchver}.patch"
-}
+#prepare() {
+#  cd "${pkgname}-${pkgbver}"
+#  patch -Np1 -i "${srcdir}/${pkgname}-${pkgbver}-upstream_fixes-${patchver}.patch"
+#}
 
 build() {
-  cd "${pkgname}-${pkgbver}"
+  cd "${pkgname}-${pkgver}"
   ./configure --prefix=/usr                                \
-              --docdir=/usr/share/doc/${pkgname}-${pkgbver} \
+              --docdir=/usr/share/doc/${pkgname}-${pkgver} \
               --without-bash-malloc                        \
               --with-installed-readline
   make
 }
 
 check() {
-  cd "${pkgname}-${pkgbver}"
+  cd "${pkgname}-${pkgver}"
   make tests
 }
 
 package() {
   # Setup for LFS /usr merge filesystem layout
-  cd "${pkgname}-${pkgbver}"
+  cd "${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
   install -vdm755 "${pkgdir}/bin"
   mv -vf "${pkgdir}/usr/bin/bash" "${pkgdir}/bin"
 }
 
-sha256sums=('b4a80f2ac66170b2913efbfb9f2594f1f76c7b1afd11f799e22035d63077fb4d'
-            '7d24bf3d02977e7767a1269b7c6d189226e640470a7e3d9d70f819f5ba03d503')
+sha256sums=('cc012bc860406dcf42f64431bcd3d2fa7560c02915a601aba9cd597a39329baa')
