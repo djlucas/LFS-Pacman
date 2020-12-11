@@ -1,7 +1,7 @@
-# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 pkgname=linux-pam
 pkgver=1.4.0
-pkgrel=2
+pkgrel=3
 pkgdesc="The Linux PAM package contains Pluggable Authentication Modules used to enable the local system administrator to choose how applications authenticate users."
 arch=('i686' 'x86_64')
 url="http://www.gnu.org/software/${pkgname}/"
@@ -75,6 +75,7 @@ EOF
 # Begin /etc/pam.d/system-auth
 
 auth      required    pam_unix.so
+auth      optional    pam_cap.so
 
 # End /etc/pam.d/system-auth
 EOF
