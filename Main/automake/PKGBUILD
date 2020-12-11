@@ -1,7 +1,7 @@
-# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=automake
-pkgver=1.16.2
+pkgver=1.16.3
 pkgrel=1
 pkgdesc="The Automake package contains programs for generating Makefiles for use with Autoconf."
 arch=('any')
@@ -51,4 +51,4 @@ package(){
   make DESTDIR="${pkgdir}" install
 }
 
-sha256sums=('ccc459de3d710e066ab9e12d2f119bd164a08c9341ca24ba22c9adaa179eedd0')
+sha256sums=('ff2bf7656c4d1c6fdda3b8bebb21f09153a736bcba169aaf65eab25fa113bf3a')
