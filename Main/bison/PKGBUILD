@@ -1,6 +1,6 @@
-# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 pkgname=bison
-pkgver=3.7.2
+pkgver=3.7.4
 pkgrel=1
 pkgdesc="The Bison package contains a parser generator."
 arch=('x86_64')
@@ -49,4 +49,4 @@ package(){
   cd ${srcdir}/${pkgname}-${pkgver}
   make DESTDIR=${pkgdir} install
 }
-sha256sums=('7948d193104d979c0fb0294a1854c73c89d72ae41acfc081826142578a78a91b')
+sha256sums=('a3b5813f48a11e540ef26f46e4d288c0c25c7907d9879ae50e430ec49f63c010')
