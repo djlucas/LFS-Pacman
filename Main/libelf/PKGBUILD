@@ -2,7 +2,7 @@
 
 _pkgbase=elfutils
 pkgname=libelf
-pkgver=0.181
+pkgver=0.182
 pkgrel=1
 pkgdesc='Library to handle ELF object files and DWARF debugging information'
 arch=(x86_64)
@@ -43,4 +43,4 @@ package() {
   install -vm644  config/libelf.pc ${pkgdir}/usr/lib/pkgconfig
 }
 
-sha256sums=('29a6ad7421ec2acfee489bb4a699908281ead2cb63a20a027ce8804a165f0eb3')
+sha256sums=('ecc406914edf335f0b7fc084ebe6c460c4d6d5175bfdd6688c1c78d9146b8858')
