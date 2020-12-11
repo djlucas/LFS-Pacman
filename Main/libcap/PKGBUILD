@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=libcap
-pkgver=2.44
+pkgver=2.45
 pkgrel=1
 pkgdesc="The Libcap package implements the user-space interfaces to the POSIX 1003.1e capabilities available in Linux kernels."
 arch=('x86_64')
@@ -29,22 +29,23 @@ prepare() {
 
 build() {
   cd "${pkgname}-${pkgver}"
-  make -C libcap lib=lib PKGCONFIGDIR=/usr/lib/pkgconfig
-  make -C progs
-  make -C doc
+  make lib=lib
   make -C pam_cap
 }
 
 package() {
   cd "${pkgname}-${pkgver}"
-  make -C libcap lib=lib PKGCONFIGDIR="${pkgdir}"/usr/lib/pkgconfig \
-          prefix="${pkgdir}/usr" install-shared-cap
-  chmod -v 755 "${pkgdir}/usr/lib/libcap.so"
-  make -C progs prefix="${pkgdir}/usr" install
-  make -C doc   prefix="${pkgdir}/usr" install
+  install -vdm755 "${pkgdir}/usr/lib/pkgconfig"
+  make lib=lib PKGCONFIGDIR="/usr/lib/pkgconfig" FAKEROOT="${pkgdir}" install
+  install -vdm755 "${pkgdir}/usr/lib"
+  for libname in cap psx; do
+      chmod -v 755 "${pkgdir}/lib/lib${libname}.so.2.45"
+      rm -v "${pkgdir}/lib/lib${libname}.so"
+      ln -sfv ../../lib/lib${libname}.so.2 "${pkgdir}/usr/lib/lib${libname}.so"
+  done
   install -vdm755 "${pkgdir}"/{etc,lib}/security
   install -v -m755 pam_cap/pam_cap.so "${pkgdir}/lib/security"
   install -v -m644 pam_cap/capability.conf "${pkgdir}/etc/security"
 }
 
-sha256sums=('92188359cd5be86e8e5bd3f6483ac6ce582264f912398937ef763def2205c8e1')
+sha256sums=('d66639f765c0e10557666b00f519caf0bd07a95f867dddaee131cd284fac3286')
