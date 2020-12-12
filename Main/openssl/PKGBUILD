@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=openssl
-_ver=1.1.1g
+_ver=1.1.1i
 # use a pacman compatible version scheme
 pkgver=${_ver/[a-z]/.${_ver//[0-9.]/}}
 pkgrel=1
@@ -47,5 +47,5 @@ package() {
   cp -vfr doc/* "${pkgdir}/usr/share/doc/${pkgname}-${_ver}"
 }
 
-sha256sums=('ddb04774f1e32f0c49751e21b67216ac87852ceb056b75209af2443400636d46')
+sha256sums=('e8be6a35fe41d10603c3cc635e93289ed00bf34b79671a3a4de64fcee00d5242')
 
