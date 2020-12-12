@@ -2,7 +2,7 @@
 
 pkgbase="linux"
 pkgname=("linux" "linux-api-headers" "linux-docs")
-pkgver=5.9.1
+pkgver=5.9.13
 pkgrel=1
 arch=('x86_64')
 url="http://www.kernel.org/"
@@ -58,4 +58,4 @@ package_linux-docs(){
     cp -r Documentation/* "${pkgdir}/usr/share/doc/${pkgbase}"
 }
 
-sha256sums=('ba4a11e93896305835c630969cf330ae808b0e43f09b375b510cde1bd0efc036')
+sha256sums=('b436a89a5c872a2a029d5dee6aa5bc61128978f4cae6fcb7e507c35cdd6acc2a')
