@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=tzdata
-_ver=2020c
+_ver=2020d
 pkgver=${_ver/[a-z]/.${_ver//[0-9.]/}}
 pkgrel=1
 pkgdesc="The Time Zone Database (often called tz or zoneinfo) contains code and data that represent the history of local time for many representative locations around the globe."
@@ -34,4 +34,4 @@ package(){
   unset ZONEINFO
 }
 
-sha256sums=('7890ac105f1aa4a5d15c5be2409580af401ee2f3fffe2a1e4748af589e194bd9')
+sha256sums=('8d813957de363387696f05af8a8889afa282ab5016a764c701a20758d39cbaf3')
