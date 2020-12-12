@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=meson
-pkgver=0.55.2
+pkgver=0.56.0
 pkgrel=1
 pkgdesc="Meson is an open source build system meant to be both extremely fast and as user friendly as possible."
 url='https://mesonbuild.com/'
@@ -18,13 +18,19 @@ optdepends=($(pacman -Q bash >/dev/null 2>&1 || echo 'bash')
             $(pacman -Q vim >/dev/null 2>&1 || echo 'vim')
             $(pacman -Q emacs >/dev/null 2>&1 || echo 'emacs')
             $(pacman -Q zsh >/dev/null 2>&1 || echo 'zsh'))
-source=("https://github.com/mesonbuild/meson/releases/download/${pkgver}/meson-${pkgver}.tar.gz")
+source=("https://github.com/mesonbuild/meson/releases/download/${pkgver}/meson-${pkgver}.tar.gz"
+        "http://www.linuxfromscratch.org/patches/lfs/development/meson-${pkgver}-upstream_fix-1.patch")
 
 if $(pacman -Q vim > /dev/null); then
   _vimfilesdir="/usr/share/vim/vim$(vim --version | grep -m1 -o "[0-9]\.[0-9]" | sed 's@\.@@')"
 else
   _vimfilesdir="/usr/share/vim/vim82"
 fi
+
+prepare() {
+  cd ${pkgname}-${pkgver}
+  patch -Np1 -i "${srcdir}/meson-${pkgver}-upstream_fix-1.patch"
+}
 
 build() {
   cd ${pkgname}-${pkgver}
@@ -33,20 +39,21 @@ build() {
 
 package() {
   cd ${pkgname}-${pkgver}
-  python3 setup.py install --root="${pkgdir}" --optimize=1 --skip-build
+  python3 setup.py install --root="${pkgdir}"
 
-  if $(pacman -Q vim > /dev/null); then
+  if $(pacman -Q vim > /dev/null 2>&1); then
   install -vdm755 "${pkgdir}/${_vimfilesdir}"
   cp -Rv data/syntax-highlighting/vim/*/ "${pkgdir}/${_vimfilesdir}/"
   fi
-  if $(pacman -Q bash > /dev/null); then
+  if $(pacman -Q bash > /dev/null 2>&1); then
     install -vDm644 data/shell-completions/bash/* "${pkgdir}/usr/share/bash-completion/completion"
   fi
-  if $(pacman -Q emacs > /dev/null); then
+  if $(pacman -Q emacs > /dev/null 2>&1); then
     install -vDm644 data/syntax-highlighting/emacs/* "${pkgdir}/usr/share/emacs/site-lisp"
   fi
-  if $(pacman -Q zsh > /dev/null); then
+  if $(pacman -Q zsh > /dev/null 2>&1); then
     install -vDm644 data/shell-completions/zsh/* "${pkgdir}/usr/share/zsh/site-functions"
   fi
 }
-sha256sums=('78a3f4ee3864a8fce9f028d38d900ef997fd398b851765e35a0185e5c01b11f7')
+sha256sums=('291dd38ff1cd55fcfca8fc985181dd39be0d3e5826e5f0013bf867be40117213'
+            '9c8a0e14e0f15da36b3c9b106e3ca8f96676217e36226c19e785ddb26f22c4da')
