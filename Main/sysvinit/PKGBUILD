@@ -1,7 +1,7 @@
-# Maintainer: DJ Lucas <dj@linuxfromscratch.org>
+# Maintainer: DJ Lucas <dj_AT_linuxfromscratch_DOT_org>
 
 pkgname=sysvinit
-pkgver=2.97
+pkgver=2.98
 pkgrel=1
 pkgdesc="The Sysvinit package contains programs for controlling the startup, running, and shutdown of the system." 
 arch=('x86_64')
@@ -33,5 +33,5 @@ package(){
   make ROOT="${pkgdir}" install
 }
 
-sha256sums=('2d5996857519bfd8634d2e1debabb3238fb38440f65fbfdc46420ee8bdf25110'
+sha256sums=('7b2c3ffaf19eaf1ca80268762f85f9e4eb8e3c973213d49f9802605b72caa7dc'
             'b11f6b6550a284491be53abc6d22908b3f699b5ee746f07c20f2c2f918ae1247')
