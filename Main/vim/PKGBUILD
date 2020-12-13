@@ -1,7 +1,7 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname="vim"
-pkgver=8.2.1862
+pkgver=8.2.2127
 shortver=82
 pkgrel=1
 pkgdesc="The Vim package contains a powerful text editor."
@@ -69,4 +69,4 @@ rm -f "${pkgdir}/usr/share/vim/vim${shortver}/indent/meson.vim"
 rm -f "${pkgdir}/usr/share/vim/vim${shortver}/syntax"/{meson,ninja,PKGBUILD}.vim
 rm -f "${pkgdir}/usr/share/vim/vim${shortver}/ftplugin"/{meson,PKGBUILD}.vim
 }
-sha256sums=('82a240e579d66ed94ea05759de82ae718ca301e7d90078365a9ddb80b48e2cb6')
+sha256sums=('7d5ec13f80b7cf46799dda0acea0ca5d459994112ee8f39be7acab29eb69543e')
