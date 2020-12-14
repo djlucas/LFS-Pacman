@@ -1,14 +1,15 @@
 # Maintainer: DJ Lucas <dj@linuxfromscratch.org>
 
 pkgname=compiler-rt
-pkgver=10.0.1
+pkgver=11.0.0
 pkgrel=1
 pkgdesc="The compiler runtime contains the runtime libraries for Clang."
 arch=('x86_64')
 url="https://github.com/llvm/"
 license=('GPL3')
 groups=('core')
-depends=('glibc' 'llvm')
+depends=('glibc'
+         'llvm')
 makedepends=('bash'
              'binutils'
              'cmake'
@@ -42,4 +43,4 @@ package(){
   mv "${pkgdir}"/usr/{share/*.txt,lib/clang/${pkgver}/share/}
 }
 
-sha256sums=('d90dc8e121ca0271f0fd3d639d135bfaa4b6ed41e67bd6eb77808f72629658fa')
+sha256sums=('374aff82ff573a449f9aabbd330a5d0a441181c535a3599996127378112db234')
